@@ -1,3 +1,4 @@
+
 import { UserDTO } from '../dtos/user.dto';
 
 export class UserModel {

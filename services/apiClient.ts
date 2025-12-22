@@ -1,3 +1,4 @@
+
 import axios from 'axios';
 
 // Instância base que poderia apontar para um real backend

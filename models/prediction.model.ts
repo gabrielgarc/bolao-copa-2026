@@ -1,3 +1,4 @@
+
 import { PredictionDTO } from '../dtos/prediction.dto';
 
 export class PredictionModel {

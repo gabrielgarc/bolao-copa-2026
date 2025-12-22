@@ -1,0 +1,16 @@
+using System.Linq.Expressions;
+
+namespace CopaPixel.API.Repositories
+{
+    public interface IRepository<T> where T : class
+    {
+        Task<List<T>> GetAllAsync();
+        Task<T?> GetByIdAsync(string id);
+        Task<T?> FindOneAsync(Expression<Func<T, bool>> filter);
+        Task<List<T>> FindAsync(Expression<Func<T, bool>> filter);
+        Task CreateAsync(T entity);
+        Task UpdateAsync(string id, T entity);
+        Task DeleteAsync(string id);
+        Task<bool> AnyAsync();
+    }
+}

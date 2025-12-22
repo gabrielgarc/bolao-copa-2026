@@ -1,0 +1,53 @@
+using CopaPixel.API.DTOs;
+using CopaPixel.API.Models;
+using CopaPixel.API.Repositories;
+
+namespace CopaPixel.API.Services
+{
+    public class MatchService
+    {
+        private readonly IRepository<Match> _matchRepo;
+        private readonly IRepository<Team> _teamRepo;
+
+        public MatchService(IRepository<Match> matchRepo, IRepository<Team> teamRepo)
+        {
+            _matchRepo = matchRepo;
+            _teamRepo = teamRepo;
+        }
+
+        public async Task<List<MatchDto>> GetAllMatchesAsync()
+        {
+            var matches = await _matchRepo.GetAllAsync();
+            var teams = await _teamRepo.GetAllAsync();
+            
+            // Map manual para simular o "Include" do EF
+            var teamMap = teams.ToDictionary(t => t.Id);
+
+            var dtos = new List<MatchDto>();
+
+            foreach (var m in matches)
+            {
+                // Fallback seguro caso o time não exista no banco (TBD)
+                var homeTeam = teamMap.ContainsKey(m.HomeTeamId) ? teamMap[m.HomeTeamId] : new Team { Name = "Unknown" };
+                var awayTeam = teamMap.ContainsKey(m.AwayTeamId) ? teamMap[m.AwayTeamId] : new Team { Name = "Unknown" };
+
+                dtos.Add(new MatchDto(
+                    m.Id,
+                    new TeamDto(homeTeam.Id, homeTeam.Name, homeTeam.Code, homeTeam.FlagType, homeTeam.Colors, homeTeam.TextColor),
+                    new TeamDto(awayTeam.Id, awayTeam.Name, awayTeam.Code, awayTeam.FlagType, awayTeam.Colors, awayTeam.TextColor),
+                    m.Date,
+                    m.Time,
+                    m.Group,
+                    m.Stadium,
+                    m.Stage,
+                    m.RealHomeScore,
+                    m.RealAwayScore,
+                    m.IsLocked,
+                    m.PlaceholderLabel
+                ));
+            }
+
+            return dtos;
+        }
+    }
+}

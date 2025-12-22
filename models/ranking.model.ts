@@ -1,3 +1,4 @@
+
 import { RankingDTO } from '../dtos/ranking.dto';
 import { UserRanking } from '../types';
 

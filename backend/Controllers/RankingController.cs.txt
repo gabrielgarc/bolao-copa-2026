@@ -1,0 +1,25 @@
+using CopaPixel.API.DTOs;
+using CopaPixel.API.Services;
+using Microsoft.AspNetCore.Mvc;
+
+namespace CopaPixel.API.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class RankingController : ControllerBase
+    {
+        private readonly RankingService _service;
+
+        public RankingController(RankingService service)
+        {
+            _service = service;
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<List<RankingDto>>> GetLeaderboard()
+        {
+            var leaderboard = await _service.GetLeaderboardAsync();
+            return Ok(leaderboard);
+        }
+    }
+}

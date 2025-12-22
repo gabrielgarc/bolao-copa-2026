@@ -1,3 +1,4 @@
+
 export const calculatePoints = (
   predHome: number, 
   predAway: number, 

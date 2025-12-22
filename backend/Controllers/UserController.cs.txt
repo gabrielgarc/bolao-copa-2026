@@ -1,0 +1,25 @@
+using CopaPixel.API.DTOs;
+using CopaPixel.API.Services;
+using Microsoft.AspNetCore.Mvc;
+
+namespace CopaPixel.API.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class UserController : ControllerBase
+    {
+        private readonly UserService _service;
+
+        public UserController(UserService service)
+        {
+            _service = service;
+        }
+
+        [HttpGet("me")]
+        public async Task<ActionResult<UserDto>> GetCurrentUser()
+        {
+            var user = await _service.GetCurrentUserAsync();
+            return Ok(user);
+        }
+    }
+}

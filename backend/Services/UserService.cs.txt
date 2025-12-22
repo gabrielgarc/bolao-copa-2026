@@ -1,0 +1,33 @@
+using CopaPixel.API.DTOs;
+using CopaPixel.API.Models;
+using CopaPixel.API.Repositories;
+
+namespace CopaPixel.API.Services
+{
+    public class UserService
+    {
+        private readonly IRepository<User> _userRepo;
+        private const string CURRENT_USER_ID = "u-current";
+
+        public UserService(IRepository<User> userRepo)
+        {
+            _userRepo = userRepo;
+        }
+
+        public async Task<UserDto> GetCurrentUserAsync()
+        {
+            var user = await _userRepo.GetByIdAsync(CURRENT_USER_ID);
+            
+            if (user == null)
+            {
+                user = new User { Id = CURRENT_USER_ID, Name = "Ronaldinho8Bit", Avatar = "user-ronaldo", TotalPoints = 0 };
+                await _userRepo.CreateAsync(user);
+            }
+
+            var allUsers = await _userRepo.GetAllAsync();
+            var rank = allUsers.Count(u => u.TotalPoints > user.TotalPoints) + 1;
+
+            return new UserDto(user.Id, user.Name, rank, user.TotalPoints);
+        }
+    }
+}
