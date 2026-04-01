@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { AppView } from '../types';
 import { PixelButton } from './PixelComponents';
+import { UserService } from '../services/userService';
 
 interface HeaderProps {
   currentView: AppView;
@@ -22,7 +23,10 @@ export const Header: React.FC<HeaderProps> = ({ currentView, onViewChange, userN
     <header className="bg-gray-900 border-b-4 border-black p-4 sticky top-0 z-50 shadow-[0px_4px_0px_0px_rgba(0,0,0,0.5)]">
       <div className="max-w-6xl mx-auto flex justify-between items-center">
         <div className="flex flex-col">
-          <h1 className="text-sm md:text-2xl text-yellow-400 drop-shadow-[2px_2px_0px_rgba(255,0,0,1)] uppercase font-bold">
+          <h1 
+            className="text-sm md:text-2xl text-yellow-400 drop-shadow-[3px_3px_0px_rgba(255,0,0,1)] uppercase"
+            style={{ fontFamily: "'Press Start 2P', cursive", lineHeight: "1.5" }}
+          >
             Bolão da Copa '26
           </h1>
           <div className="text-[8px] md:text-xs text-white/80 font-bold uppercase mt-1 flex items-center gap-2">
@@ -52,16 +56,10 @@ export const Header: React.FC<HeaderProps> = ({ currentView, onViewChange, userN
               <div className="absolute right-0 mt-2 w-56 bg-gray-800 border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,0.8)] z-20 overflow-hidden">
                 <nav className="flex flex-col">
                   <button 
-                    className={`w-full text-left p-4 uppercase text-[10px] md:text-xs font-bold border-b-2 border-black transition-colors ${currentView === AppView.MATCHES ? 'bg-yellow-400 text-black' : 'text-yellow-400 hover:bg-gray-700'}`}
-                    onClick={() => handleNav(AppView.MATCHES)}
-                  >
-                    Palpites (Cards)
-                  </button>
-                  <button 
                     className={`w-full text-left p-4 uppercase text-[10px] md:text-xs font-bold border-b-2 border-black transition-colors ${currentView === AppView.SPREADSHEET ? 'bg-blue-500 text-white' : 'text-yellow-400 hover:bg-gray-700'}`}
                     onClick={() => handleNav(AppView.SPREADSHEET)}
                   >
-                    Planilha
+                    Palpites
                   </button>
                   <button 
                     className={`w-full text-left p-4 uppercase text-[10px] md:text-xs font-bold border-b-2 border-black transition-colors ${currentView === AppView.OFFICIAL_RESULTS ? 'bg-red-500 text-white' : 'text-yellow-400 hover:bg-gray-700'}`}
@@ -80,6 +78,15 @@ export const Header: React.FC<HeaderProps> = ({ currentView, onViewChange, userN
                     onClick={() => handleNav(AppView.LEADERBOARD)}
                   >
                     Ranking
+                  </button>
+                  <button 
+                    className="w-full text-left p-4 uppercase text-[10px] md:text-xs font-bold text-red-500 hover:bg-red-900 border-t-4 border-black transition-colors"
+                    onClick={() => {
+                        UserService.logout();
+                        window.location.reload();
+                    }}
+                  >
+                    Sair
                   </button>
                 </nav>
               </div>

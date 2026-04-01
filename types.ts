@@ -6,6 +6,7 @@ export interface Team {
   flagType: 'v-tri' | 'h-tri' | 'v-bi' | 'h-bi' | 'solid' | 'cross' | 'circle' | 'usa' | 'bra';
   colors: string[]; // Hex codes or standard CSS colors
   textColor: string;
+  crestUrl?: string;
 }
 
 export type MatchStage = 'GROUPS' | 'R32' | 'R16' | 'QF' | 'SF' | 'FINAL';

@@ -9,6 +9,7 @@ export class TeamModel implements Team {
   flagType: Team['flagType'];
   colors: string[];
   textColor: string;
+  crestUrl: string;
 
   constructor(dto: TeamDTO) {
     this.id = dto.id;
@@ -17,5 +18,6 @@ export class TeamModel implements Team {
     this.flagType = dto.flagType as Team['flagType'];
     this.colors = dto.colors;
     this.textColor = dto.textColor;
+    this.crestUrl = dto.crestUrl || '';
   }
 }

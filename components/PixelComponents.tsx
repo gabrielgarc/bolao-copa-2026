@@ -120,13 +120,19 @@ export const PixelFlag: React.FC<{ team: Team, className?: string }> = ({ team, 
 
   return (
     <div 
-      className={`border border-black inline-block shadow-[1px_1px_0px_0px_rgba(0,0,0,0.2)] ${className}`}
-      style={{
-        ...backgroundStyle,
-        backgroundSize: '100% 100%',
-        boxSizing: 'border-box'
-      }}
+      className={`border border-black inline-flex items-center justify-center bg-white shadow-[1px_1px_0px_0px_rgba(0,0,0,0.2)] overflow-hidden ${className}`}
       title={team.name}
-    />
+    >
+      {team.crestUrl ? (
+        <img 
+          src={team.crestUrl} 
+          alt={`Bandeira ${team.name}`} 
+          className="w-full h-full object-cover" 
+          style={{ imageRendering: 'pixelated' }}
+        />
+      ) : (
+        <div style={{ ...backgroundStyle, width: '100%', height: '100%' }} />
+      )}
+    </div>
   );
 };

@@ -6,4 +6,5 @@ export interface TeamDTO {
   flagType: string;
   colors: string[];
   textColor: string;
+  crestUrl?: string;
 }

@@ -1,32 +1,39 @@
 
 import { Match, UserRanking, Team, MatchStage } from '../types';
-import { MOCK_MATCHES, MOCK_LEADERBOARD, GROUP_DEFINITIONS } from '../constants';
 
-const simulateNetwork = <T>(data: T): Promise<T> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(data);
-    }, 500);
-  });
-};
+const BASE_URL = 'http://localhost:5000';
 
 export const ApiService = {
   async getMatches(): Promise<Match[]> {
-    return simulateNetwork(MOCK_MATCHES);
+    const response = await fetch(`${BASE_URL}/api/matches`);
+    if (!response.ok) {
+      throw new Error('Falha ao buscar partidas.');
+    }
+    return response.json();
   },
 
   async getMatchesByStage(stage: MatchStage): Promise<Match[]> {
-    const matches = MOCK_MATCHES.filter(m => m.stage === stage);
-    return simulateNetwork(matches);
+    const response = await fetch(`${BASE_URL}/api/matches?stage=${stage}`);
+    if (!response.ok) {
+      throw new Error(`Falha ao buscar partidas para a fase ${stage}.`);
+    }
+    return response.json();
   },
 
   async getLeaderboard(): Promise<UserRanking[]> {
-    return simulateNetwork(MOCK_LEADERBOARD);
+    const response = await fetch(`${BASE_URL}/api/leaderboard`);
+    if (!response.ok) {
+      throw new Error('Falha ao buscar o ranking.');
+    }
+    return response.json();
   },
 
   async getTeamsByGroup(groupLetter: string): Promise<Team[]> {
-    const teams = GROUP_DEFINITIONS[groupLetter] || [];
-    return simulateNetwork(teams);
+    const response = await fetch(`${BASE_URL}/api/teams?group=${groupLetter}`);
+    if (!response.ok) {
+      throw new Error(`Falha ao buscar times para o grupo ${groupLetter}.`);
+    }
+    return response.json();
   },
 
   async savePrediction(matchId: string, homeScore: string, awayScore: string): Promise<boolean> {
@@ -34,7 +41,8 @@ export const ApiService = {
     const predictions = JSON.parse(saved);
     predictions[matchId] = { home: homeScore, away: awayScore };
     localStorage.setItem('copaPixelPredictions', JSON.stringify(predictions));
-    return simulateNetwork(true);
+    // Não há necessidade de simular rede para operações de localStorage
+    return true;
   },
 
   async getSavedPredictions(): Promise<Record<string, { home: string, away: string }>> {
@@ -43,19 +51,20 @@ export const ApiService = {
     
     // Se estiver vazio, vamos injetar alguns palpites para os jogos que já passaram (10/06 e 11/06)
     // Isso permite que o usuário veja os pontos logo de cara.
-    if (Object.keys(data).length === 0) {
-      MOCK_MATCHES.forEach(m => {
-        if (m.date.startsWith('10/06') || m.date.startsWith('11/06')) {
-          // Palpites simulados: alguns acertos em cheio, outros parciais
-          data[m.id] = { 
-            home: m.id.endsWith('1') ? "2" : "1", 
-            away: m.id.endsWith('1') ? "0" : "2" 
-          };
-        }
-      });
-      localStorage.setItem('copaPixelPredictions', JSON.stringify(data));
-    }
+    // A lógica de injeção de dados simulados é removida, pois as partidas virão do backend.
+    // Se não houver previsões salvas, retorna um objeto vazio.
+    return data;
+  },
 
-    return simulateNetwork(data);
+  async getGroupDefinitions(): Promise<any[]> {
+    const letters = ['A','B','C','D','E','F','G','H','I','J','K','L'];
+    return letters.map(letter => ({
+      groupLetter: letter,
+      teams: []
+    }));
+  },
+
+  async getSimulatedDate(): Promise<string> {
+    return "2026-06-11"; // Mock
   }
 };
