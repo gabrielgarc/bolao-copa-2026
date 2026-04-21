@@ -8,6 +8,9 @@ namespace Bolao.Copa2026.API.Models
         [BsonId]
         public Guid Id { get; set; } = new Guid();
 
+        [BsonElement("apiId")]
+        public int ApiId { get; set; }
+
         [BsonElement("homeTeamId")]
         public Guid HomeTeamId { get; set; } = new Guid();
         
@@ -37,6 +40,9 @@ namespace Bolao.Copa2026.API.Models
         
         [BsonElement("isLocked")]
         public bool IsLocked { get; set; }
+
+        [BsonElement("status")]
+        public string Status { get; set; } = string.Empty;
         
         [BsonElement("placeholderLabel")]
         public string? PlaceholderLabel { get; set; }
@@ -44,5 +50,6 @@ namespace Bolao.Copa2026.API.Models
         public string? HomeTeamName { get; internal set; }
         [BsonElement("awayTeamName")]
         public string? AwayTeamName { get; internal set; }
+        public bool IsGroupStage => Stage == "GROUP_STAGE";
     }
 }

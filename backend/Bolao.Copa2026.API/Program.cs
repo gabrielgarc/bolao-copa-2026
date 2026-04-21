@@ -14,12 +14,20 @@ var builder = WebApplication.CreateBuilder(args);
 // Adicionar serviços ao contêiner.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.CustomSchemaIds(type => type.FullName);
+});
 
 // --- NOVO: Configuração da API de Futebol ---
 // Pega a seção "FootballApi" do appsettings.json e injeta em FootballApiSettings
 builder.Services.Configure<FootballApiSettings>(
     builder.Configuration.GetSection("FootballApi"));
+
+builder.Services.Configure<MatchPollingConfig>(
+    builder.Configuration.GetSection("MatchPolling"));
+
+builder.Services.AddHostedService<MatchSyncBackgroundService>();
 
 builder.Services.AddHttpClient<TeamsModule>();
 builder.Services.AddScoped<TeamsModule>();
@@ -47,6 +55,8 @@ builder.Services.AddScoped<IRepository<User>>(sp =>
     new MongoRepository<User>(sp.GetRequiredService<IMongoDatabase>(), "users"));
 builder.Services.AddScoped<IRepository<Prediction>>(sp => 
     new MongoRepository<Prediction>(sp.GetRequiredService<IMongoDatabase>(), "predictions"));
+builder.Services.AddScoped<IRepository<UserRanking>>(sp => 
+    new MongoRepository<UserRanking>(sp.GetRequiredService<IMongoDatabase>(), "user_rankings"));
 
 // --- Injeção de Dependência dos Serviços ---
 builder.Services.AddScoped<IMatchService, MatchService>();

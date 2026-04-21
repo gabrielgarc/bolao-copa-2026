@@ -100,4 +100,3 @@ C:\Users\ggarc\source\repos\bolao-copa-2026\backend\Bolao.Copa2026.API\obj\Debug
 C:\Users\ggarc\source\repos\bolao-copa-2026\backend\Bolao.Copa2026.API\obj\Debug\net8.0\Bolao.Copa2026.API.genruntimeconfig.cache
 C:\Users\ggarc\source\repos\bolao-copa-2026\backend\Bolao.Copa2026.API\obj\Debug\net8.0\ref\Bolao.Copa2026.API.dll
 C:\Users\ggarc\source\repos\bolao-copa-2026\backend\Bolao.Copa2026.API\bin\Debug\net8.0\BCrypt.Net-Next.dll
-C:\Users\ggarc\source\repos\bolao-copa-2026\backend\Bolao.Copa2026.API\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

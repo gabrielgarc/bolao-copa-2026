@@ -26,6 +26,23 @@ namespace Bolao.Copa2026.API.Controllers
             return Ok(result);
         }
 
+        [HttpGet("standings")]
+        public async Task<ActionResult<StandingsResponseDto>> GetSimulatedStandings([FromQuery] bool official = false)
+        {
+            Guid? userId = null;
+
+            if (!official) 
+            {
+                var userIdStr = Request.Headers["X-User-Id"].FirstOrDefault();
+                if (string.IsNullOrEmpty(userIdStr) || !Guid.TryParse(userIdStr, out Guid parsedId))
+                    return Unauthorized();
+                userId = parsedId;
+            }
+
+            var result = await _service.GetSimulatedStandingsAsync(userId);
+            return Ok(result);
+        }
+
         [HttpPost]
         public async Task<IActionResult> SavePrediction([FromBody] CreatePredictionDto dto)
         {
@@ -33,12 +50,13 @@ namespace Bolao.Copa2026.API.Controllers
             if (string.IsNullOrEmpty(userIdStr) || !Guid.TryParse(userIdStr, out Guid userId))
                 return Unauthorized();
 
-            var (success, message) = await _service.SavePredictionAsync(userId, dto);
+            var (success, message, updatedStandings) = await _service.SavePredictionAsync(userId, dto);
             if (!success)
             {
                 return BadRequest(message);
             }
-            return Ok();
+            return Ok(updatedStandings);
         }
     }
 }
+

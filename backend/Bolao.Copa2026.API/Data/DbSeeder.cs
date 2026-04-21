@@ -33,9 +33,27 @@ namespace Bolao.Copa2026.API.Data
             {
                 await CreateTeams();
             }
+            else
+            {
+                await SyncTeamTranslations();
+            }
+
             if (!await _matchRepo.AnyAsync())
             {
                 await CreateMatches();
+            }
+        }
+
+        private async Task SyncTeamTranslations()
+        {
+            var teams = await _teamRepo.GetAllAsync();
+            foreach (var team in teams)
+            {
+                if (string.IsNullOrEmpty(team.NamePt))
+                {
+                    team.NamePt = Bolao.Copa2026.API.Helpers.TeamTranslator.Translate(team.Name);
+                    await _teamRepo.UpdateAsync(team.Id, team);
+                }
             }
         }
 
@@ -53,9 +71,11 @@ namespace Bolao.Copa2026.API.Data
 
         private Team CreateTeam(FootballData.Intergration.Data.Team apiTeam)
         {
+            var name = apiTeam.Name ?? "Unknown";
             return new Team
             {
-                Name = apiTeam.Name ?? "Unknown",
+                Name = name,
+                NamePt = Bolao.Copa2026.API.Helpers.TeamTranslator.Translate(name),
                 Code = apiTeam.Tla ?? "TBD",
                 Id = Guid.NewGuid(),
                 ApiId = apiTeam.Id ?? 0,
@@ -80,9 +100,11 @@ namespace Bolao.Copa2026.API.Data
             var homeTeam = await _teamRepo.FindOneAsync(t => t.ApiId == apiMatch.HomeTeam.Id);
             if (homeTeam == null && apiMatch.HomeTeam?.Id != null)
             {
+                var name = apiMatch.HomeTeam.Name ?? apiMatch.HomeTeam.ShortName ?? "TBD";
                 homeTeam = new Team
                 {
-                    Name = apiMatch.HomeTeam.Name ?? apiMatch.HomeTeam.ShortName ?? "TBD",
+                    Name = name,
+                    NamePt = Bolao.Copa2026.API.Helpers.TeamTranslator.Translate(name),
                     Code = apiMatch.HomeTeam.Tla ?? "TBD",
                     Id = Guid.NewGuid(),
                     ApiId = apiMatch.HomeTeam.Id.Value,
@@ -94,9 +116,11 @@ namespace Bolao.Copa2026.API.Data
             var awayTeam = await _teamRepo.FindOneAsync(t => t.ApiId == apiMatch.AwayTeam.Id);
             if (awayTeam == null && apiMatch.AwayTeam?.Id != null)
             {
+                var name = apiMatch.AwayTeam.Name ?? apiMatch.AwayTeam.ShortName ?? "TBD";
                 awayTeam = new Team
                 {
-                    Name = apiMatch.AwayTeam.Name ?? apiMatch.AwayTeam.ShortName ?? "TBD",
+                    Name = name,
+                    NamePt = Bolao.Copa2026.API.Helpers.TeamTranslator.Translate(name),
                     Code = apiMatch.AwayTeam.Tla ?? "TBD",
                     Id = Guid.NewGuid(),
                     ApiId = apiMatch.AwayTeam.Id.Value,
@@ -107,6 +131,7 @@ namespace Bolao.Copa2026.API.Data
 
             return new Match
             {
+                ApiId = apiMatch.Id ?? 0,
                 AwayTeamId = awayTeam?.Id ?? Guid.Empty,
                 AwayTeamName = awayTeam?.Name,
                 HomeTeamId = homeTeam?.Id ?? Guid.Empty,

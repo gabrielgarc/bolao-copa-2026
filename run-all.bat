@@ -7,4 +7,13 @@ echo Iniciando o Frontend...
 start cmd /k "npm run dev"
 
 echo.
-echo Ambos os servicos foram iniciados em novas janelas!
+echo Aguardando os servicos iniciarem...
+timeout /t 4 /nobreak > NUL
+
+echo Abrindo o navegador no localhost certo...
+start http://localhost:3000
+
+echo Abrindo o Swagger...
+start http://localhost:5000/swagger
+
+echo Ambos os servicos foram iniciados!

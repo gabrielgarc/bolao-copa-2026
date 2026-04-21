@@ -1,13 +1,24 @@
+import { StandingsResponse } from '../types';
 import apiClient from './apiClient';
 
 export const PredictionService = {
-  async save(matchId: string, home: string, away: string): Promise<boolean> {
+  async save(matchId: string, home: string, away: string): Promise<StandingsResponse | null> {
     try {
-      await apiClient.post('/predictions', { matchId, homeScore: home, awayScore: away });
-      return true;
+      const resp = await apiClient.post<StandingsResponse>('/predictions', { matchId, homeScore: home, awayScore: away });
+      return resp.data;
     } catch (error) {
       console.error("Error saving prediction", error);
       throw error;
+    }
+  },
+
+  async getStandings(official: boolean = false): Promise<StandingsResponse> {
+    try {
+      const response = await apiClient.get<StandingsResponse>(`/predictions/standings?official=${official}`);
+      return response.data;
+    } catch (error) {
+      console.error("Error getting standings", error);
+      return { groups: {}, overallThirds: [] };
     }
   },
 

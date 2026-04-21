@@ -24,7 +24,7 @@ export const MatchCard: React.FC<MatchCardProps> = ({ match, prediction, onPredi
     }
   }, [prediction]);
 
-  const isLocked = match.isLocked || match.realHomeScore !== undefined || match.realAwayScore !== undefined;
+  const isLocked = match.isLocked || match.realHomeScore !== undefined || match.realAwayScore !== undefined || match.homeTeam.name === 'Unknown' || match.awayTeam.name === 'Unknown';
 
   const triggerSave = (home: string, away: string) => {
     if (debounceTimer.current) clearTimeout(debounceTimer.current);
@@ -114,7 +114,7 @@ export const MatchCard: React.FC<MatchCardProps> = ({ match, prediction, onPredi
           </div>
           <div className="order-2 md:order-1 w-full overflow-hidden">
             <span className="block text-[8px] md:text-sm font-bold leading-tight text-black truncate uppercase">
-                {match.homeTeam.name}
+                {match.homeTeam.namePt || match.homeTeam.name}
             </span>
           </div>
         </div>
@@ -152,7 +152,7 @@ export const MatchCard: React.FC<MatchCardProps> = ({ match, prediction, onPredi
             </div>
             <div className="order-2 md:order-2 w-full overflow-hidden">
                 <span className="block text-[8px] md:text-sm font-bold leading-tight text-black truncate uppercase">
-                    {match.awayTeam.name}
+                    {match.awayTeam.namePt || match.awayTeam.name}
                 </span>
             </div>
         </div>

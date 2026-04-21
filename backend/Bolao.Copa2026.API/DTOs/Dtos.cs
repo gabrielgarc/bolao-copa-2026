@@ -4,6 +4,7 @@ namespace Bolao.Copa2026.API.DTOs
     public record TeamDto(
         Guid Id, 
         string Name, 
+        string NamePt,
         string Code, 
         string FlagType, 
         List<string> Colors, 
@@ -46,7 +47,11 @@ namespace Bolao.Copa2026.API.DTOs
         Guid Id,
         string Name,
         int Points,
-        string Avatar
+        string Avatar,
+        int FullMatches,
+        int QualifiedTeamsCount,
+        int HalfMatches,
+        int OutcomeMatches
     );
 
     // DTO Usuário Atual

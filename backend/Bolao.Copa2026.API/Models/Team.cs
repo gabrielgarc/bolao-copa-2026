@@ -10,5 +10,7 @@ namespace Bolao.Copa2026.API.Models
         public List<string> Colors { get; set; } = new List<string>();
         public string TextColor { get; set; } = "text-black";
         public string CrestUrl { get; set; } = string.Empty;
+        public string NamePt { get; set; } = string.Empty;
+        public int TiebreakerScore { get; set; } = 0;
     }
 }

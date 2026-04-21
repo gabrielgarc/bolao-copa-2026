@@ -1,4 +1,3 @@
-
 import { Match, UserRanking, Team, MatchStage } from '../types';
 
 const BASE_URL = 'http://localhost:5000';

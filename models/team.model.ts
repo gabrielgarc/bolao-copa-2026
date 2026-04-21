@@ -5,6 +5,7 @@ import { Team } from '../types';
 export class TeamModel implements Team {
   id: string;
   name: string;
+  namePt?: string;
   code: string;
   flagType: Team['flagType'];
   colors: string[];
@@ -14,6 +15,7 @@ export class TeamModel implements Team {
   constructor(dto: TeamDTO) {
     this.id = dto.id;
     this.name = dto.name;
+    this.namePt = dto.namePt;
     this.code = dto.code;
     this.flagType = dto.flagType as Team['flagType'];
     this.colors = dto.colors;

@@ -121,7 +121,7 @@ export const PixelFlag: React.FC<{ team: Team, className?: string }> = ({ team, 
   return (
     <div 
       className={`border border-black inline-flex items-center justify-center bg-white shadow-[1px_1px_0px_0px_rgba(0,0,0,0.2)] overflow-hidden ${className}`}
-      title={team.name}
+      title={team.namePt || team.name}
     >
       {team.crestUrl ? (
         <img 

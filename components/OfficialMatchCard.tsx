@@ -27,7 +27,7 @@ export const OfficialMatchCard: React.FC<OfficialMatchCardProps> = ({ match }) =
       <div className="flex items-center justify-between gap-1 md:gap-2">
         <div className="flex flex-col items-center gap-1 w-[35%] overflow-hidden">
           <PixelFlag team={match.homeTeam} className="w-8 h-5 md:w-12 md:h-8" />
-          <span className="text-[8px] md:text-xs font-bold text-black text-center uppercase truncate w-full">{match.homeTeam.name}</span>
+          <span className="text-[8px] md:text-xs font-bold text-black text-center uppercase truncate w-full">{match.homeTeam.namePt || match.homeTeam.name}</span>
         </div>
 
         <div className="flex flex-col items-center justify-center w-[30%] min-w-fit shrink-0">
@@ -44,7 +44,7 @@ export const OfficialMatchCard: React.FC<OfficialMatchCardProps> = ({ match }) =
 
         <div className="flex flex-col items-center gap-1 w-[35%] overflow-hidden">
           <PixelFlag team={match.awayTeam} className="w-8 h-5 md:w-12 md:h-8" />
-          <span className="text-[8px] md:text-xs font-bold text-black text-center uppercase truncate w-full">{match.awayTeam.name}</span>
+          <span className="text-[8px] md:text-xs font-bold text-black text-center uppercase truncate w-full">{match.awayTeam.namePt || match.awayTeam.name}</span>
         </div>
       </div>
     </PixelCard>

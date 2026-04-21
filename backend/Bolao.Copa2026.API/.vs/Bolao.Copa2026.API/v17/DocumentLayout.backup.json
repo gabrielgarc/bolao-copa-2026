@@ -3,44 +3,85 @@
   "WorkspaceRootPath": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|c:\\users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\bolao.copa2026.api\\models\\prediction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|solutionrelative:models\\prediction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|c:\\users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\bolao.copa2026.api\\services\\matchsyncbackgroundservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|solutionrelative:services\\matchsyncbackgroundservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|c:\\users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\bolao.copa2026.api\\data\\dbseeder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|solutionrelative:data\\dbseeder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|c:\\users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\bolao.copa2026.api\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|solutionrelative:controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|c:\\users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\bolao.copa2026.api\\models\\match.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|solutionrelative:models\\match.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|c:\\users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\bolao.copa2026.api\\services\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|solutionrelative:services\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|c:\\users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\bolao.copa2026.api\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|solutionrelative:controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|c:\\users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\bolao.copa2026.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|c:\\users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\bolao.copa2026.api\\services\\rankingservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|solutionrelative:services\\rankingservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|c:\\users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\bolao.copa2026.api\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|solutionrelative:models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|c:\\users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\bolao.copa2026.api\\services\\teamsservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|solutionrelative:services\\teamsservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{6760D186-06E4-409A-A94E-3582146B099A}|..\\FootballData.Intergration\\FootballData.Intergration.csproj|c:\\users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\footballdata.intergration\\core\\footballbasemodule.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6760D186-06E4-409A-A94E-3582146B099A}|..\\FootballData.Intergration\\FootballData.Intergration.csproj|c:\\users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\footballdata.intergration\\modules\\matchesmodule.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|c:\\users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\bolao.copa2026.api\\services\\predictionservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|solutionrelative:services\\predictionservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|c:\\users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\bolao.copa2026.api\\services\\matchservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|solutionrelative:services\\matchservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|c:\\users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\bolao.copa2026.api\\services\\predictionservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|solutionrelative:services\\predictionservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|c:\\users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\bolao.copa2026.api\\controllers\\matchescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|solutionrelative:controllers\\matchescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6760D186-06E4-409A-A94E-3582146B099A}|..\\FootballData.Intergration\\FootballData.Intergration.csproj|c:\\users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\footballdata.intergration\\modules\\teamsmodule.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|c:\\users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\bolao.copa2026.api\\appsettings.json||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|solutionrelative:appsettings.json||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|c:\\users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\bolao.copa2026.api\\properties\\launchsettings.json||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|solutionrelative:properties\\launchsettings.json||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|c:\\users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\bolao.copa2026.api\\controllers\\predictionscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|solutionrelative:controllers\\predictionscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|c:\\users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\bolao.copa2026.api\\models\\team.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|solutionrelative:models\\team.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|c:\\users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\bolao.copa2026.api\\models\\match.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|solutionrelative:models\\match.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|c:\\users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\bolao.copa2026.api\\data\\dbseeder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|solutionrelative:data\\dbseeder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|c:\\users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\bolao.copa2026.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|c:\\users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\bolao.copa2026.api\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|solutionrelative:controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|c:\\users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\bolao.copa2026.api\\models\\prediction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|solutionrelative:models\\prediction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|c:\\users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\bolao.copa2026.api\\services\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|solutionrelative:services\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|c:\\users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\bolao.copa2026.api\\services\\teamsservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|solutionrelative:services\\teamsservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|c:\\users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\bolao.copa2026.api\\models\\entities.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -55,31 +96,11 @@
       "RelativeMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|solutionrelative:controllers\\teamscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|c:\\users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\bolao.copa2026.api\\models\\team.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|solutionrelative:models\\team.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|c:\\users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\bolao.copa2026.api\\controllers\\predictionscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|solutionrelative:controllers\\predictionscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|c:\\users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\bolao.copa2026.api\\appsettings.json||{3B902123-F8A7-4915-9F01-361F908088D0}",
-      "RelativeMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|solutionrelative:appsettings.json||{3B902123-F8A7-4915-9F01-361F908088D0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|c:\\users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\bolao.copa2026.api\\controllers\\matchescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|solutionrelative:controllers\\matchescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Fanatee\\AppData\\Local\\Temp\\.vsdbgsrc\\0637c6ad9c08d73b8d492b08d044dca14edcce15edf3422ec1e0a7a9eae3bd9f\\ThrowHelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|c:\\users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\bolao.copa2026.api\\repositories\\irepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|solutionrelative:repositories\\irepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|c:\\users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\bolao.copa2026.api\\services\\rankingservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|solutionrelative:services\\rankingservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{E8A06AF0-280F-4835-ABEE-5CFD6BD7468E}|Bolao.Copa2026.API.csproj|c:\\users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\bolao.copa2026.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
@@ -119,11 +140,280 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 9,
+          "SelectedChildIndex": 6,
           "Children": [
             {
               "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "AdminController.cs",
+              "DocumentMoniker": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Controllers\\AdminController.cs",
+              "RelativeDocumentMoniker": "Controllers\\AdminController.cs",
+              "ToolTip": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Controllers\\AdminController.cs",
+              "RelativeToolTip": "Controllers\\AdminController.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAC0AAAATAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-16T20:50:37.819Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "DbSeeder.cs",
+              "DocumentMoniker": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Data\\DbSeeder.cs",
+              "RelativeDocumentMoniker": "Data\\DbSeeder.cs",
+              "ToolTip": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Data\\DbSeeder.cs",
+              "RelativeToolTip": "Data\\DbSeeder.cs",
+              "ViewState": "AgIAAFMAAAAAAAAAAAAIwAwAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-23T17:52:45.511Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "PredictionsController.cs",
+              "DocumentMoniker": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Controllers\\PredictionsController.cs",
+              "RelativeDocumentMoniker": "Controllers\\PredictionsController.cs",
+              "ToolTip": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Controllers\\PredictionsController.cs",
+              "RelativeToolTip": "Controllers\\PredictionsController.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAAA2wCkAAABCAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-27T00:09:36.73Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "PredictionService.cs",
+              "DocumentMoniker": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Services\\PredictionService.cs",
+              "RelativeDocumentMoniker": "Services\\PredictionService.cs",
+              "ToolTip": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Services\\PredictionService.cs",
+              "RelativeToolTip": "Services\\PredictionService.cs",
+              "ViewState": "AgIAAA4AAAAAAAAAAAAQwGkAAAA7AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-23T17:24:56.004Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\appsettings.json",
+              "RelativeDocumentMoniker": "appsettings.json",
+              "ToolTip": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\appsettings.json",
+              "RelativeToolTip": "appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-03-27T00:16:46.804Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "RankingService.cs",
+              "DocumentMoniker": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Services\\RankingService.cs",
+              "RelativeDocumentMoniker": "Services\\RankingService.cs",
+              "ToolTip": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Services\\RankingService.cs",
+              "RelativeToolTip": "Services\\RankingService.cs",
+              "ViewState": "AgIAADAAAAAAAAAAAAAqwEMAAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-23T17:26:24.378Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "MatchSyncBackgroundService.cs",
+              "DocumentMoniker": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Services\\MatchSyncBackgroundService.cs",
+              "RelativeDocumentMoniker": "Services\\MatchSyncBackgroundService.cs",
+              "ToolTip": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Services\\MatchSyncBackgroundService.cs",
+              "RelativeToolTip": "Services\\MatchSyncBackgroundService.cs",
+              "ViewState": "AgIAACQAAAAAAAAAAAAiwDAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-15T19:28:57.889Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "TeamsModule.cs",
+              "DocumentMoniker": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\FootballData.Intergration\\Modules\\TeamsModule.cs",
+              "RelativeDocumentMoniker": "..\\FootballData.Intergration\\Modules\\TeamsModule.cs",
+              "ToolTip": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\FootballData.Intergration\\Modules\\TeamsModule.cs",
+              "RelativeToolTip": "..\\FootballData.Intergration\\Modules\\TeamsModule.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-14T18:59:57.366Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "MatchesController.cs",
+              "DocumentMoniker": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Controllers\\MatchesController.cs",
+              "RelativeDocumentMoniker": "Controllers\\MatchesController.cs",
+              "ToolTip": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Controllers\\MatchesController.cs",
+              "RelativeToolTip": "Controllers\\MatchesController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAA7AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-22T21:29:20.825Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 4,
+              "Title": "FootballBaseModule.cs",
+              "DocumentMoniker": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\FootballData.Intergration\\Core\\FootballBaseModule.cs",
+              "RelativeDocumentMoniker": "..\\FootballData.Intergration\\Core\\FootballBaseModule.cs",
+              "ToolTip": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\FootballData.Intergration\\Core\\FootballBaseModule.cs",
+              "RelativeToolTip": "..\\FootballData.Intergration\\Core\\FootballBaseModule.cs",
+              "ViewState": "AgIAAAsAAAAAAAAAAAASwCEAAAAPAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-14T18:54:13.233Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "MatchesModule.cs",
+              "DocumentMoniker": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\FootballData.Intergration\\Modules\\MatchesModule.cs",
+              "RelativeDocumentMoniker": "..\\FootballData.Intergration\\Modules\\MatchesModule.cs",
+              "ToolTip": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\FootballData.Intergration\\Modules\\MatchesModule.cs",
+              "RelativeToolTip": "..\\FootballData.Intergration\\Modules\\MatchesModule.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAqwA8AAAAhAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-14T18:54:04.9Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "User.cs",
+              "DocumentMoniker": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Models\\User.cs",
+              "RelativeDocumentMoniker": "Models\\User.cs",
+              "ToolTip": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Models\\User.cs",
+              "RelativeToolTip": "Models\\User.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-23T19:11:46.623Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAAEgAAAAAAAAAAIAwwF8AAABCAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-22T21:06:37.466Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "launchSettings.json",
+              "DocumentMoniker": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Properties\\launchSettings.json",
+              "RelativeDocumentMoniker": "Properties\\launchSettings.json",
+              "ToolTip": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Properties\\launchSettings.json",
+              "RelativeToolTip": "Properties\\launchSettings.json",
+              "ViewState": "AgIAABUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-04-15T18:40:29.42Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "MatchService.cs",
+              "DocumentMoniker": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Services\\MatchService.cs",
+              "RelativeDocumentMoniker": "Services\\MatchService.cs",
+              "ToolTip": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Services\\MatchService.cs",
+              "RelativeToolTip": "Services\\MatchService.cs",
+              "ViewState": "AgIAABAAAAAAAAAAAAAgwCsAAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-23T19:14:33.676Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "UserService.cs",
+              "DocumentMoniker": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Services\\UserService.cs",
+              "RelativeDocumentMoniker": "Services\\UserService.cs",
+              "ToolTip": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Services\\UserService.cs",
+              "RelativeToolTip": "Services\\UserService.cs",
+              "ViewState": "AgIAABcAAAAAAAAAAAAUwDUAAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-23T19:15:01.927Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "Prediction.cs",
+              "DocumentMoniker": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Models\\Prediction.cs",
+              "RelativeDocumentMoniker": "Models\\Prediction.cs",
+              "ToolTip": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Models\\Prediction.cs",
+              "RelativeToolTip": "Models\\Prediction.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAqwA8AAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-23T19:12:27.445Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "Entities.cs",
+              "DocumentMoniker": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Models\\Entities.cs",
+              "RelativeDocumentMoniker": "Models\\Entities.cs",
+              "ToolTip": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Models\\Entities.cs",
+              "RelativeToolTip": "Models\\Entities.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-23T19:31:24.198Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "Match.cs",
+              "DocumentMoniker": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Models\\Match.cs",
+              "RelativeDocumentMoniker": "Models\\Match.cs",
+              "ToolTip": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Models\\Match.cs",
+              "RelativeToolTip": "Models\\Match.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAZAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-23T19:11:13.118Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "Team.cs",
+              "DocumentMoniker": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Models\\Team.cs",
+              "RelativeDocumentMoniker": "Models\\Team.cs",
+              "ToolTip": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Models\\Team.cs",
+              "RelativeToolTip": "Models\\Team.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAiAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-14T20:21:08.674Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "TeamsController.cs",
+              "DocumentMoniker": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Controllers\\TeamsController.cs",
+              "RelativeDocumentMoniker": "Controllers\\TeamsController.cs",
+              "ToolTip": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Controllers\\TeamsController.cs",
+              "RelativeToolTip": "Controllers\\TeamsController.cs",
+              "ViewState": "AgIAAAIAAAAAAAAAAAAiwBAAAAAfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-22T21:29:27.611Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
               "Title": "UserController.cs",
               "DocumentMoniker": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Controllers\\UserController.cs",
               "RelativeDocumentMoniker": "Controllers\\UserController.cs",
@@ -136,147 +426,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "DbSeeder.cs",
-              "DocumentMoniker": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Data\\DbSeeder.cs",
-              "RelativeDocumentMoniker": "Data\\DbSeeder.cs",
-              "ToolTip": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Data\\DbSeeder.cs",
-              "RelativeToolTip": "Data\\DbSeeder.cs",
-              "ViewState": "AgIAAF4AAAAAAAAAAAAhwHEAAAAQAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-23T17:52:45.511Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 16,
-              "Title": "MatchesController.cs",
-              "DocumentMoniker": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Controllers\\MatchesController.cs",
-              "RelativeDocumentMoniker": "Controllers\\MatchesController.cs",
-              "ToolTip": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Controllers\\MatchesController.cs",
-              "RelativeToolTip": "Controllers\\MatchesController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAyAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-22T21:29:20.825Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "MatchService.cs",
-              "DocumentMoniker": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Services\\MatchService.cs",
-              "RelativeDocumentMoniker": "Services\\MatchService.cs",
-              "ToolTip": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Services\\MatchService.cs",
-              "RelativeToolTip": "Services\\MatchService.cs",
-              "ViewState": "AgIAAA0AAAAAAAAAAAAgwBsAAAAMAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-23T19:14:33.676Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 13,
-              "Title": "Team.cs",
-              "DocumentMoniker": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Models\\Team.cs",
-              "RelativeDocumentMoniker": "Models\\Team.cs",
-              "ToolTip": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Models\\Team.cs",
-              "RelativeToolTip": "Models\\Team.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAARAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-23T19:11:34.67Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "TeamsController.cs",
-              "DocumentMoniker": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Controllers\\TeamsController.cs",
-              "RelativeDocumentMoniker": "Controllers\\TeamsController.cs",
-              "ToolTip": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Controllers\\TeamsController.cs",
-              "RelativeToolTip": "Controllers\\TeamsController.cs",
-              "ViewState": "AgIAAAIAAAAAAAAAAAAiwBAAAAAfAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-22T21:29:27.611Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Match.cs",
-              "DocumentMoniker": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Models\\Match.cs",
-              "RelativeDocumentMoniker": "Models\\Match.cs",
-              "ToolTip": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Models\\Match.cs",
-              "RelativeToolTip": "Models\\Match.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAMwBEAAAAZAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-23T19:11:13.118Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "User.cs",
-              "DocumentMoniker": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Models\\User.cs",
-              "RelativeDocumentMoniker": "Models\\User.cs",
-              "ToolTip": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Models\\User.cs",
-              "RelativeToolTip": "Models\\User.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAeAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-23T19:11:46.623Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "Entities.cs",
-              "DocumentMoniker": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Models\\Entities.cs",
-              "RelativeDocumentMoniker": "Models\\Entities.cs",
-              "ToolTip": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Models\\Entities.cs",
-              "RelativeToolTip": "Models\\Entities.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-23T19:31:24.198Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Prediction.cs",
-              "DocumentMoniker": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Models\\Prediction.cs",
-              "RelativeDocumentMoniker": "Models\\Prediction.cs",
-              "ToolTip": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Models\\Prediction.cs",
-              "RelativeToolTip": "Models\\Prediction.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAqwA8AAAAUAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-23T19:12:27.445Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "UserService.cs",
-              "DocumentMoniker": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Services\\UserService.cs",
-              "RelativeDocumentMoniker": "Services\\UserService.cs",
-              "ToolTip": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Services\\UserService.cs",
-              "RelativeToolTip": "Services\\UserService.cs",
-              "ViewState": "AgIAABcAAAAAAAAAAAAUwDUAAAAMAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-23T19:15:01.927Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Program.cs",
-              "RelativeDocumentMoniker": "Program.cs",
-              "ToolTip": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Program.cs",
-              "RelativeToolTip": "Program.cs",
-              "ViewState": "AgIAABcAAAAAAAAAAAAiwCoAAAAEAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-22T21:06:37.466Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 26,
+              "DocumentIndex": 32,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\Fanatee\\Desktop\\desktopster\\desktopster\\per\\estudos\\bolao-copa-2026\\backend\\FootballData.Intergration\\Program.cs",
               "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\..\\Fanatee\\Desktop\\desktopster\\desktopster\\per\\estudos\\bolao-copa-2026\\backend\\FootballData.Intergration\\Program.cs",
@@ -288,7 +438,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 20,
               "Title": "TeamsService.cs",
               "DocumentMoniker": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Services\\TeamsService.cs",
               "RelativeDocumentMoniker": "Services\\TeamsService.cs",
@@ -296,12 +446,11 @@
               "RelativeToolTip": "Services\\TeamsService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-31T23:38:44.805Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-31T23:38:44.805Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 25,
               "Title": "IRepository.cs",
               "DocumentMoniker": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Repositories\\IRepository.cs",
               "RelativeDocumentMoniker": "Repositories\\IRepository.cs",
@@ -313,20 +462,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "PredictionService.cs",
-              "DocumentMoniker": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Services\\PredictionService.cs",
-              "RelativeDocumentMoniker": "Services\\PredictionService.cs",
-              "ToolTip": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Services\\PredictionService.cs",
-              "RelativeToolTip": "Services\\PredictionService.cs",
-              "ViewState": "AgIAABIAAAAAAAAAAAAAACYAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-23T17:24:56.004Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 22,
               "Title": "MongoRepository.cs",
               "DocumentMoniker": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Repositories\\MongoRepository.cs",
               "RelativeDocumentMoniker": "Repositories\\MongoRepository.cs",
@@ -338,7 +474,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 25,
+              "DocumentIndex": 31,
               "Title": "Models.cs",
               "DocumentMoniker": "C:\\Users\\Fanatee\\Desktop\\desktopster\\desktopster\\per\\estudos\\bolao-copa-2026\\backend\\FootballData.Intergration\\Data\\Models.cs",
               "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\..\\Fanatee\\Desktop\\desktopster\\desktopster\\per\\estudos\\bolao-copa-2026\\backend\\FootballData.Intergration\\Data\\Models.cs",
@@ -350,7 +486,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 24,
+              "DocumentIndex": 30,
               "Title": "FootballBaseModule.cs",
               "DocumentMoniker": "C:\\Users\\Fanatee\\Desktop\\desktopster\\desktopster\\per\\estudos\\bolao-copa-2026\\backend\\FootballData.Intergration\\Core\\FootballBaseModule.cs",
               "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\..\\Fanatee\\Desktop\\desktopster\\desktopster\\per\\estudos\\bolao-copa-2026\\backend\\FootballData.Intergration\\Core\\FootballBaseModule.cs",
@@ -362,30 +498,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
-              "Title": "PredictionsController.cs",
-              "DocumentMoniker": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Controllers\\PredictionsController.cs",
-              "RelativeDocumentMoniker": "Controllers\\PredictionsController.cs",
-              "ToolTip": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Controllers\\PredictionsController.cs",
-              "RelativeToolTip": "Controllers\\PredictionsController.cs",
-              "ViewState": "AgIAAAsAAAAAAAAAAAAQwAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-27T00:09:36.73Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 15,
-              "Title": "appsettings.json",
-              "DocumentMoniker": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\appsettings.json",
-              "RelativeDocumentMoniker": "appsettings.json",
-              "ToolTip": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\appsettings.json",
-              "RelativeToolTip": "appsettings.json",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2026-03-27T00:16:46.804Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 23,
+              "DocumentIndex": 29,
               "Title": "MatchesModule.cs",
               "DocumentMoniker": "C:\\Users\\Fanatee\\Desktop\\desktopster\\desktopster\\per\\estudos\\bolao-copa-2026\\backend\\FootballData.Intergration\\Modules\\MatchesModule.cs",
               "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\..\\Fanatee\\Desktop\\desktopster\\desktopster\\per\\estudos\\bolao-copa-2026\\backend\\FootballData.Intergration\\Modules\\MatchesModule.cs",
@@ -397,7 +510,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 27,
+              "DocumentIndex": 33,
               "Title": "TeamsModule.cs",
               "DocumentMoniker": "C:\\Users\\Fanatee\\Desktop\\desktopster\\desktopster\\per\\estudos\\bolao-copa-2026\\backend\\FootballData.Intergration\\Modules\\TeamsModule.cs",
               "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\..\\Fanatee\\Desktop\\desktopster\\desktopster\\per\\estudos\\bolao-copa-2026\\backend\\FootballData.Intergration\\Modules\\TeamsModule.cs",
@@ -409,7 +522,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 24,
               "Title": "ThrowHelper.cs",
               "DocumentMoniker": "C:\\Users\\Fanatee\\AppData\\Local\\Temp\\.vsdbgsrc\\0637c6ad9c08d73b8d492b08d044dca14edcce15edf3422ec1e0a7a9eae3bd9f\\ThrowHelper.cs",
               "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\..\\Fanatee\\AppData\\Local\\Temp\\.vsdbgsrc\\0637c6ad9c08d73b8d492b08d044dca14edcce15edf3422ec1e0a7a9eae3bd9f\\ThrowHelper.cs",
@@ -422,19 +535,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
-              "Title": "RankingService.cs",
-              "DocumentMoniker": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Services\\RankingService.cs",
-              "RelativeDocumentMoniker": "Services\\RankingService.cs",
-              "ToolTip": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Services\\RankingService.cs",
-              "RelativeToolTip": "Services\\RankingService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAABBAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-23T17:26:24.378Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 20,
+              "DocumentIndex": 26,
               "Title": "appsettings.json",
               "DocumentMoniker": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\appsettings.json",
               "RelativeDocumentMoniker": "appsettings.json",
@@ -445,7 +546,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 21,
+              "DocumentIndex": 27,
               "Title": "RankingController.cs",
               "DocumentMoniker": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Controllers\\RankingController.cs",
               "RelativeDocumentMoniker": "Controllers\\RankingController.cs",
@@ -457,7 +558,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 28,
+              "DocumentIndex": 34,
               "Title": "Settings.cs",
               "DocumentMoniker": "C:\\Users\\Fanatee\\Desktop\\desktopster\\desktopster\\per\\estudos\\bolao-copa-2026\\backend\\FootballData.Intergration\\Core\\Settings.cs",
               "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\..\\Fanatee\\Desktop\\desktopster\\desktopster\\per\\estudos\\bolao-copa-2026\\backend\\FootballData.Intergration\\Core\\Settings.cs",
@@ -469,7 +570,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 22,
+              "DocumentIndex": 28,
               "Title": "worldCupSchema.json",
               "DocumentMoniker": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Resources\\worldCupSchema.json",
               "RelativeDocumentMoniker": "Resources\\worldCupSchema.json",

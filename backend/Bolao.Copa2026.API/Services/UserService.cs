@@ -7,10 +7,12 @@ namespace Bolao.Copa2026.API.Services
     public class UserService : IUserService
     {
         private readonly IRepository<User> _userRepo;
+        private readonly IRepository<UserRanking> _userRankingRepo;
 
-        public UserService(IRepository<User> userRepo)
+        public UserService(IRepository<User> userRepo, IRepository<UserRanking> userRankingRepo)
         {
             _userRepo = userRepo;
+            _userRankingRepo = userRankingRepo;
         }
 
         public async Task<UserDto> GetCurrentUserAsync()
@@ -30,8 +32,11 @@ namespace Bolao.Copa2026.API.Services
                 return null;
             }
 
-            var rank = allUsers.Count(u => u.TotalPoints > user.TotalPoints) + 1;
-            return new UserDto(user.Id, user.UserName, rank, user.TotalPoints);
+            var allRankings = await _userRankingRepo.GetAllAsync();
+            var userRanking = allRankings.FirstOrDefault(r => r.UserId == user.Id);
+            int totalPoints = userRanking?.TotalPoints ?? 0;
+            var rank = allRankings.Count(r => r.TotalPoints > totalPoints) + 1;
+            return new UserDto(user.Id, user.UserName, rank, totalPoints);
         }
 
         public async Task<UserDto> CreateUserAsync(string userName, string password)
@@ -47,16 +52,16 @@ namespace Bolao.Copa2026.API.Services
                 Id = Guid.NewGuid(), 
                 UserName = userName, 
                 Password = BCrypt.Net.BCrypt.HashPassword(password),
-                Avatar = "user-ronaldo", 
-                TotalPoints = 0 
+                Avatar = "user-ronaldo"
             };
             
             await _userRepo.CreateAsync(newUser);
 
-            allUsers = await _userRepo.GetAllAsync();
-            var rank = allUsers.Count(u => u.TotalPoints > newUser.TotalPoints) + 1;
+            // New user has 0 points — rank = last place + 1
+            var allRankings = await _userRankingRepo.GetAllAsync();
+            var rank = allRankings.Count + 1;
 
-            return new UserDto(newUser.Id, newUser.UserName, rank, newUser.TotalPoints);
+            return new UserDto(newUser.Id, newUser.UserName, rank, 0);
         }
     }
 }

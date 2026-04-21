@@ -1,6 +1,7 @@
 using Bolao.Copa2026.API.DTOs;
 using Bolao.Copa2026.API.Models;
 using Bolao.Copa2026.API.Repositories;
+using Bolao.Copa2026.API.Helpers;
 
 namespace Bolao.Copa2026.API.Services
 {
@@ -33,8 +34,8 @@ namespace Bolao.Copa2026.API.Services
 
                 dtos.Add(new MatchDto(
                     m.Id,
-                    new TeamDto(homeTeam.Id, homeTeam.Name, homeTeam.Code, homeTeam.FlagType, homeTeam.Colors, homeTeam.TextColor, homeTeam.CrestUrl ?? ""),
-                    new TeamDto(awayTeam.Id, awayTeam.Name, awayTeam.Code, awayTeam.FlagType, awayTeam.Colors, awayTeam.TextColor, awayTeam.CrestUrl ?? ""),
+                    new TeamDto(homeTeam.Id, homeTeam.Name, !string.IsNullOrEmpty(homeTeam.NamePt) ? homeTeam.NamePt : TeamTranslator.Translate(homeTeam.Name), homeTeam.Code, homeTeam.FlagType, homeTeam.Colors, homeTeam.TextColor, homeTeam.CrestUrl ?? ""),
+                    new TeamDto(awayTeam.Id, awayTeam.Name, !string.IsNullOrEmpty(awayTeam.NamePt) ? awayTeam.NamePt : TeamTranslator.Translate(awayTeam.Name), awayTeam.Code, awayTeam.FlagType, awayTeam.Colors, awayTeam.TextColor, awayTeam.CrestUrl ?? ""),
                     m.Date,
                     m.Time,
                     m.Group,

@@ -2,6 +2,7 @@
 export interface Team {
   id: string;
   name: string;
+  namePt?: string;
   code: string;
   flagType: 'v-tri' | 'h-tri' | 'v-bi' | 'h-bi' | 'solid' | 'cross' | 'circle' | 'usa' | 'bra';
   colors: string[]; // Hex codes or standard CSS colors
@@ -50,12 +51,17 @@ export interface TeamStats {
   goalDiff: number;
   goalsFor: number;
   goalsAgainst: number;
+  isQualified?: boolean;
+}
+
+export interface StandingsResponse {
+  groups: Record<string, TeamStats[]>;
+  overallThirds: TeamStats[];
 }
 
 export enum AppView {
   MATCHES = 'MATCHES',
   LEADERBOARD = 'LEADERBOARD',
-  USER_SCORE = 'USER_SCORE',
   OFFICIAL_RESULTS = 'OFFICIAL_RESULTS',
   SPREADSHEET = 'SPREADSHEET'
 }
