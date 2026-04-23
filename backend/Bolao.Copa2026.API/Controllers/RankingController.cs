@@ -35,7 +35,17 @@ namespace Bolao.Copa2026.API.Controllers
 
             var ranking = await _userRankingRepo.FindOneAsync(r => r.UserId == userId);
             if (ranking == null)
-                return Ok(new { pointsByMatch = new Dictionary<string, int>(), totalPoints = 0, qualifiedTeamsCount = 0 });
+                return Ok(new { 
+                    pointsByMatch = new Dictionary<string, int>(), 
+                    pointsByStage = new Dictionary<string, int>(), 
+                    totalPoints = 0, 
+                    qualifiedTeamsCount = 0,
+                    fullMatches = 0,
+                    halfMatches = 0,
+                    outcomeMatches = 0,
+                    partialMatches = 0,
+                    correctQualifiedTeamIds = new List<Guid>()
+                });
 
             return Ok(new
             {

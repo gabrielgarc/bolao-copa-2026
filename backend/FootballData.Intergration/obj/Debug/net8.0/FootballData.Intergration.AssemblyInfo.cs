@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("FootballData.Intergration")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e21033cca35b44362bc228153f812bc0daa94564")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7dfcecb3261dba1132416771ce924d6204dc4ed0")]
 [assembly: System.Reflection.AssemblyProductAttribute("FootballData.Intergration")]
 [assembly: System.Reflection.AssemblyTitleAttribute("FootballData.Intergration")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

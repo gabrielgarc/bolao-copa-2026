@@ -152,8 +152,7 @@
               "RelativeToolTip": "Controllers\\AdminController.cs",
               "ViewState": "AgIAAAMAAAAAAAAAAAAAAC0AAAATAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-16T20:50:37.819Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-16T20:50:37.819Z"
             },
             {
               "$type": "Document",
@@ -165,8 +164,7 @@
               "RelativeToolTip": "Data\\DbSeeder.cs",
               "ViewState": "AgIAAFMAAAAAAAAAAAAIwAwAAAARAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-23T17:52:45.511Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-23T17:52:45.511Z"
             },
             {
               "$type": "Document",
@@ -178,8 +176,7 @@
               "RelativeToolTip": "Controllers\\PredictionsController.cs",
               "ViewState": "AgIAAAwAAAAAAAAAAAA2wCkAAABCAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-27T00:09:36.73Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-27T00:09:36.73Z"
             },
             {
               "$type": "Document",
@@ -191,8 +188,7 @@
               "RelativeToolTip": "Services\\PredictionService.cs",
               "ViewState": "AgIAAA4AAAAAAAAAAAAQwGkAAAA7AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-23T17:24:56.004Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-23T17:24:56.004Z"
             },
             {
               "$type": "Document",
@@ -202,10 +198,9 @@
               "RelativeDocumentMoniker": "appsettings.json",
               "ToolTip": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\appsettings.json",
               "RelativeToolTip": "appsettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAABAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2026-03-27T00:16:46.804Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-27T00:16:46.804Z"
             },
             {
               "$type": "Document",
@@ -217,8 +212,7 @@
               "RelativeToolTip": "Services\\RankingService.cs",
               "ViewState": "AgIAADAAAAAAAAAAAAAqwEMAAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-23T17:26:24.378Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-23T17:26:24.378Z"
             },
             {
               "$type": "Document",
@@ -228,7 +222,7 @@
               "RelativeDocumentMoniker": "Services\\MatchSyncBackgroundService.cs",
               "ToolTip": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\Bolao.Copa2026.API\\Services\\MatchSyncBackgroundService.cs",
               "RelativeToolTip": "Services\\MatchSyncBackgroundService.cs",
-              "ViewState": "AgIAACQAAAAAAAAAAAAiwDAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAACYAAAAAAAAAAAAiwDUAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-04-15T19:28:57.889Z",
               "EditorCaption": ""
@@ -243,8 +237,7 @@
               "RelativeToolTip": "..\\FootballData.Intergration\\Modules\\TeamsModule.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-14T18:59:57.366Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-14T18:59:57.366Z"
             },
             {
               "$type": "Document",
@@ -256,8 +249,7 @@
               "RelativeToolTip": "Controllers\\MatchesController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAA7AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-22T21:29:20.825Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-22T21:29:20.825Z"
             },
             {
               "$type": "Document",
@@ -269,8 +261,7 @@
               "RelativeToolTip": "..\\FootballData.Intergration\\Core\\FootballBaseModule.cs",
               "ViewState": "AgIAAAsAAAAAAAAAAAASwCEAAAAPAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-14T18:54:13.233Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-14T18:54:13.233Z"
             },
             {
               "$type": "Document",
@@ -282,8 +273,7 @@
               "RelativeToolTip": "..\\FootballData.Intergration\\Modules\\MatchesModule.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAqwA8AAAAhAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-14T18:54:04.9Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-14T18:54:04.9Z"
             },
             {
               "$type": "Document",
@@ -295,8 +285,7 @@
               "RelativeToolTip": "Models\\User.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAeAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-23T19:11:46.623Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-23T19:11:46.623Z"
             },
             {
               "$type": "Document",
@@ -308,8 +297,7 @@
               "RelativeToolTip": "Program.cs",
               "ViewState": "AgIAAEgAAAAAAAAAAIAwwF8AAABCAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-22T21:06:37.466Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-22T21:06:37.466Z"
             },
             {
               "$type": "Document",
@@ -321,8 +309,7 @@
               "RelativeToolTip": "Properties\\launchSettings.json",
               "ViewState": "AgIAABUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2026-04-15T18:40:29.42Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-15T18:40:29.42Z"
             },
             {
               "$type": "Document",
@@ -334,8 +321,7 @@
               "RelativeToolTip": "Services\\MatchService.cs",
               "ViewState": "AgIAABAAAAAAAAAAAAAgwCsAAAAjAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-23T19:14:33.676Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-23T19:14:33.676Z"
             },
             {
               "$type": "Document",
@@ -383,8 +369,7 @@
               "RelativeToolTip": "Models\\Match.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAZAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-23T19:11:13.118Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-23T19:11:13.118Z"
             },
             {
               "$type": "Document",
@@ -396,8 +381,7 @@
               "RelativeToolTip": "Models\\Team.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-14T20:21:08.674Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-14T20:21:08.674Z"
             },
             {
               "$type": "Document",
@@ -421,8 +405,7 @@
               "RelativeToolTip": "Controllers\\UserController.cs",
               "ViewState": "AgIAAAsAAAAAAAAAAAAQwCEAAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-31T23:41:55.085Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-31T23:41:55.085Z"
             },
             {
               "$type": "Document",

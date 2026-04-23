@@ -22,3 +22,18 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+backend/Bolao.Copa2026.API/bin/Debug/net8.0/appsettings.json
+backend/Bolao.Copa2026.API/appsettings.json
+backend/Bolao.Copa2026.API/bin/Debug/net8.0/appsettings.json
+
+# .NET Core
+[Bb]in/
+[Oo]bj/
+/backend/Bolao.Copa2026.API/.vs
+/backend/Bolao.Copa2026.API/bin
+/backend/Bolao.Copa2026.API/bin
+/backend/Bolao.Copa2026.API/.vs
+/backend/FootballData.Intergration/obj
+/backend/FootballData.Intergration/obj
+/backend/Bolao.Copa2026.API/obj
+/backend/FootballData.Intergration/obj

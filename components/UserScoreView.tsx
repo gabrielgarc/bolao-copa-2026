@@ -22,7 +22,7 @@ export const UserScoreView: React.FC<UserScoreViewProps> = ({ matches, predictio
     // Match points
     matches.forEach(match => {
       if (match.stage === 'GROUPS') {
-        const pts = myRanking.pointsByMatch[match.id] || 0;
+        const pts = (myRanking.pointsByMatch || {})[match.id] || 0;
         const letter = match.group.replace('Grupo ', '');
         if (data[letter]) data[letter].matches += pts;
       }
@@ -109,7 +109,7 @@ export const UserScoreView: React.FC<UserScoreViewProps> = ({ matches, predictio
         </h3>
         <div className="space-y-2">
           {Object.keys(stageLabels).map(stageKey => {
-            const pts = myRanking.pointsByStage[stageKey] || 0;
+            const pts = (myRanking.pointsByStage || {})[stageKey] || 0;
             return (
               <div key={stageKey} className="flex justify-between items-center bg-white border-2 border-gray-300 p-3 hover:border-gray-900 transition-colors">
                 <span className="text-[9px] md:text-xs font-bold uppercase">{stageLabels[stageKey]}</span>

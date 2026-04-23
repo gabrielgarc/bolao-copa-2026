@@ -1,9 +1,14 @@
 
 import axios from 'axios';
 
-// Instância base que poderia apontar para um real backend
+// Em desenvolvimento usa URL relativa (proxy do Vite → localhost:5000)
+// Em produção usa a URL absoluta do CloudFront
+const baseURL = import.meta.env.DEV
+  ? '/api'
+  : 'https://d1lojjl65isqhs.cloudfront.net/api';
+
 const apiClient = axios.create({
-  baseURL: 'https://d1lojjl65isqhs.cloudfront.net/api',
+  baseURL,
   headers: {
     'Content-Type': 'application/json',
   },

@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\buildMultiTargeting\Bolao.Copa2026.API.props" />
-</Project>

@@ -1,15 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "5oL977tq8qs=",
+  "dgSpecHash": "bIspJlFWEks=",
   "success": true,
   "projectFilePath": "C:\\Users\\ggarc\\source\\repos\\bolao-copa-2026\\backend\\FootballData.Intergration\\FootballData.Intergration.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ggarc\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\10.0.1\\microsoft.extensions.dependencyinjection.abstractions.10.0.1.nupkg.sha512",
     "C:\\Users\\ggarc\\.nuget\\packages\\microsoft.extensions.options\\10.0.1\\microsoft.extensions.options.10.0.1.nupkg.sha512",
-    "C:\\Users\\ggarc\\.nuget\\packages\\microsoft.extensions.primitives\\10.0.1\\microsoft.extensions.primitives.10.0.1.nupkg.sha512",
-    "C:\\Users\\ggarc\\.nuget\\packages\\microsoft.netcore.app.runtime.linux-x64\\8.0.21\\microsoft.netcore.app.runtime.linux-x64.8.0.21.nupkg.sha512",
-    "C:\\Users\\ggarc\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.linux-x64\\8.0.21\\microsoft.aspnetcore.app.runtime.linux-x64.8.0.21.nupkg.sha512",
-    "C:\\Users\\ggarc\\.nuget\\packages\\microsoft.netcore.app.host.linux-x64\\8.0.21\\microsoft.netcore.app.host.linux-x64.8.0.21.nupkg.sha512"
+    "C:\\Users\\ggarc\\.nuget\\packages\\microsoft.extensions.primitives\\10.0.1\\microsoft.extensions.primitives.10.0.1.nupkg.sha512"
   ],
   "logs": []
 }

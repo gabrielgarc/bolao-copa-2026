@@ -29,14 +29,27 @@ namespace Bolao.Copa2026.API.Services
         public async Task<List<RankingDto>> GetLeaderboardAsync()
         {
             var userRankings = await _userRankingRepo.GetAllAsync();
+            var users = await _userRepo.GetAllAsync();
 
-            return userRankings
-                .OrderByDescending(u => u.TotalPoints)
+            var leaderboard = userRankings
+                .Select(u => new RankingDto(u.UserId, u.UserName, u.TotalPoints, u.Avatar, u.FullMatches, u.QualifiedTeamsCount, u.HalfMatches, u.OutcomeMatches))
+                .ToList();
+
+            // Add users that are registered but don't have a ranking entry yet
+            foreach (var user in users)
+            {
+                if (!leaderboard.Any(r => r.Id == user.Id))
+                {
+                    leaderboard.Add(new RankingDto(user.Id, user.UserName, 0, user.Avatar, 0, 0, 0, 0));
+                }
+            }
+
+            return leaderboard
+                .OrderByDescending(u => u.Points)
                 .ThenByDescending(u => u.FullMatches)
                 .ThenByDescending(u => u.QualifiedTeamsCount)
                 .ThenByDescending(u => u.HalfMatches)
                 .ThenByDescending(u => u.OutcomeMatches)
-                .Select(u => new RankingDto(u.UserId, u.UserName, u.TotalPoints, u.Avatar, u.FullMatches, u.QualifiedTeamsCount, u.HalfMatches, u.OutcomeMatches))
                 .ToList();
         }
 
