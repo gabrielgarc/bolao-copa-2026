@@ -70,6 +70,7 @@ namespace Bolao.Copa2026.API.DTOs
 
     public record CreateUserRequestDto(
         string UserName,
-        string Password
+        string Password,
+        string AvatarConfig
     );
 }

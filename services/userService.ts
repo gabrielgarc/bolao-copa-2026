@@ -17,10 +17,10 @@ export const UserService = {
     return user;
   },
 
-  async create(userName: string, password: string):Promise<UserModel> {
-    const response = await apiClient.post<any>('/user/create', { userName, password });
+  async create(userName: string, password: string, avatarConfig: string): Promise<UserModel> {
+    const response = await apiClient.post<any>('/user/create', { userName, password, avatarConfig });
     const user = new UserModel(response.data);
-    localStorage.setItem('bolao_user', JSON.stringify(response.data));
+    localStorage.setItem('bolao_user', JSON.stringify(user));
     return user;
   },
 

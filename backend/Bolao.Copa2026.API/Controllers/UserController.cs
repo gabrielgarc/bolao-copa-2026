@@ -31,7 +31,7 @@ namespace Bolao.Copa2026.API.Controllers
         {
             try
             {
-                var user = await _service.CreateUserAsync(request.UserName, request.Password);
+                var user = await _service.CreateUserAsync(request.UserName, request.Password, request.AvatarConfig);
                 return Ok(user);
             }
             catch (Exception ex)

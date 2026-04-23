@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { PixelCard, PixelButton } from './PixelComponents';
 import { UserService } from '../services/userService';
 import { UserModel } from '../models/user.model';
+import { AvatarEditor } from './AvatarEditor';
 
 interface LoginScreenProps {
     onLoginSuccess: (user: UserModel) => void;
@@ -14,6 +15,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess }) => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [avatarConfig, setAvatarConfig] = useState('');
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -35,7 +37,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess }) => {
             if (isLogin) {
                 user = await UserService.login(userName, password);
             } else {
-                user = await UserService.create(userName, password);
+                user = await UserService.create(userName, password, avatarConfig || "user-ronaldo");
             }
             onLoginSuccess(user);
         } catch (err: any) {
@@ -110,15 +112,18 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess }) => {
                     </div>
 
                     {!isLogin && (
-                        <div className="flex flex-col gap-1">
-                            <label className="text-[10px] md:text-xs font-bold uppercase text-black">Repita a Senha:</label>
-                            <input
-                                type="password"
-                                className="bg-white border-4 border-black p-2 text-sm md:text-base font-bold outline-none focus:bg-yellow-100 text-black"
-                                value={confirmPassword}
-                                onChange={(e) => setConfirmPassword(e.target.value)}
-                            />
-                        </div>
+                        <>
+                            <div className="flex flex-col gap-1">
+                                <label className="text-[10px] md:text-xs font-bold uppercase text-black">Repita a Senha:</label>
+                                <input
+                                    type="password"
+                                    className="bg-white border-4 border-black p-2 text-sm md:text-base font-bold outline-none focus:bg-yellow-100 text-black"
+                                    value={confirmPassword}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                />
+                            </div>
+                            <AvatarEditor onChange={setAvatarConfig} />
+                        </>
                     )}
 
                     <div className="mt-4 flex justify-center">

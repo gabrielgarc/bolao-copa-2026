@@ -22,6 +22,7 @@ import { MatchModel } from './models/match.model';
 import { RankingModel } from './models/ranking.model';
 import { UserModel } from './models/user.model';
 import { LoginScreen } from './components/LoginScreen';
+import { AvatarViewer } from './components/AvatarViewer';
 
 type MatchesSubView = 'TABLE' | 'DATE' | 'TODAY';
 
@@ -364,7 +365,7 @@ const App: React.FC = () => {
                                                 <div key={user.id} className={`flex items-center justify-between border-b-2 border-gray-300 pb-2 last:border-0 ${currentUser && user.name === currentUser.name ? 'bg-yellow-200 -mx-4 px-4 py-2' : ''}`}>
                                                     <div className="flex items-center gap-4">
                                                         <div className="text-lg md:text-2xl w-6 md:w-8 text-gray-400 font-bold">#{index + 1}</div>
-                                                        <img src={`https://picsum.photos/seed/${user.avatar}/50/50`} alt="avatar" className="w-8 h-8 md:w-10 md:h-10 border-2 border-black" />
+                                                        <AvatarViewer configStr={user.avatar} size={40} className="md:w-10 md:h-10 border-2 border-black bg-gray-200" />
                                                         <span className={`text-gray-900 text-[10px] md:text-base font-bold ${currentUser && user.name === currentUser.name ? 'text-red-600' : ''}`}>
                                                             {user.name} {currentUser && user.name === currentUser.name && '(VOCÊ)'}
                                                         </span>

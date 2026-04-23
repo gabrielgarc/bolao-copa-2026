@@ -39,7 +39,7 @@ namespace Bolao.Copa2026.API.Services
             return new UserDto(user.Id, user.UserName, rank, totalPoints);
         }
 
-        public async Task<UserDto> CreateUserAsync(string userName, string password)
+        public async Task<UserDto> CreateUserAsync(string userName, string password, string avatarConfig)
         {
             var allUsers = await _userRepo.GetAllAsync();
             if (allUsers.Any(u => u.UserName.Equals(userName, StringComparison.OrdinalIgnoreCase)))
@@ -52,7 +52,7 @@ namespace Bolao.Copa2026.API.Services
                 Id = Guid.NewGuid(), 
                 UserName = userName, 
                 Password = BCrypt.Net.BCrypt.HashPassword(password),
-                Avatar = "user-ronaldo"
+                Avatar = string.IsNullOrWhiteSpace(avatarConfig) ? "user-ronaldo" : avatarConfig
             };
             
             await _userRepo.CreateAsync(newUser);
