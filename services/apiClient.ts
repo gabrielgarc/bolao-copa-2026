@@ -3,7 +3,7 @@ import axios from 'axios';
 
 // Instância base que poderia apontar para um real backend
 const apiClient = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: 'http://bolao-2026.eba-84zczwn3.us-east-1.elasticbeanstalk.com/api',
   headers: {
     'Content-Type': 'application/json',
   },

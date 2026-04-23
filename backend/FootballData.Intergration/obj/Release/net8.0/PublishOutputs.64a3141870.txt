@@ -1,0 +1,8 @@
+C:\Users\ggarc\source\repos\bolao-copa-2026\backend\Bolao.Copa2026.API\publish\FootballData.Intergration.exe
+C:\Users\ggarc\source\repos\bolao-copa-2026\backend\Bolao.Copa2026.API\publish\FootballData.Intergration.dll
+C:\Users\ggarc\source\repos\bolao-copa-2026\backend\Bolao.Copa2026.API\publish\FootballData.Intergration.deps.json
+C:\Users\ggarc\source\repos\bolao-copa-2026\backend\Bolao.Copa2026.API\publish\FootballData.Intergration.runtimeconfig.json
+C:\Users\ggarc\source\repos\bolao-copa-2026\backend\Bolao.Copa2026.API\publish\FootballData.Intergration.pdb
+C:\Users\ggarc\source\repos\bolao-copa-2026\backend\Bolao.Copa2026.API\publish\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+C:\Users\ggarc\source\repos\bolao-copa-2026\backend\Bolao.Copa2026.API\publish\Microsoft.Extensions.Options.dll
+C:\Users\ggarc\source\repos\bolao-copa-2026\backend\Bolao.Copa2026.API\publish\Microsoft.Extensions.Primitives.dll
