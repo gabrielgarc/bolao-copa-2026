@@ -1,6 +1,6 @@
 import { Match, UserRanking, Team, MatchStage } from '../types';
 
-const BASE_URL = 'http://bolao-2026.eba-84zczwn3.us-east-1.elasticbeanstalk.com';
+const BASE_URL = 'https://d1lojjl65isqhs.cloudfront.net';
 
 export const ApiService = {
   async getMatches(): Promise<Match[]> {

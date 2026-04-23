@@ -71,7 +71,10 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowReactApp",
         policy =>
         {
-            policy.WithOrigins("http://localhost:3000", "http://localhost:5173")
+            policy.SetIsOriginAllowed(origin => 
+                  origin.Contains("localhost") || 
+                  origin.Contains("amplifyapp.com") ||
+                  origin.Contains("cloudfront.net"))
                   .AllowAnyHeader()
                   .AllowAnyMethod();
         });
@@ -79,11 +82,9 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+// Swagger habilitado em todos os ambientes
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseCors("AllowReactApp");
 app.UseAuthorization();
