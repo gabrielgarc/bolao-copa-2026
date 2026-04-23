@@ -38,9 +38,8 @@ builder.Services.AddScoped<MatchesModule>();
 
 
 // --- Configuração MongoDB ---
-// Em produção, isso viria de appsettings.json. Aqui hardcoded para facilidade.
-var mongoConnectionString = "mongodb://localhost:27017";
-var mongoDatabaseName = "BolaoCopa2026Db";
+var mongoConnectionString = builder.Configuration["MongoDb:ConnectionString"] ?? "mongodb://localhost:27017";
+var mongoDatabaseName = builder.Configuration["MongoDb:DatabaseName"] ?? "BolaoCopa2026Db";
 
 builder.Services.AddSingleton<IMongoClient>(sp => new MongoClient(mongoConnectionString));
 builder.Services.AddScoped<IMongoDatabase>(sp => 

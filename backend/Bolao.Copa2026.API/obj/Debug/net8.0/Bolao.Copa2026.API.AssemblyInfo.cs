@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Bolao.Copa2026.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+85c742d4fe2b5d6c6083483663eb6c6d6ca5c85d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a3897476fc976c07c9af8f346b5cd5c686843f46")]
 [assembly: System.Reflection.AssemblyProductAttribute("Bolao.Copa2026.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Bolao.Copa2026.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
