@@ -71,10 +71,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowReactApp",
         policy =>
         {
-            policy.SetIsOriginAllowed(origin => 
-                  origin.Contains("localhost") || 
-                  origin.Contains("amplifyapp.com") ||
-                  origin.Contains("cloudfront.net"))
+            policy.AllowAnyOrigin()
                   .AllowAnyHeader()
                   .AllowAnyMethod();
         });
