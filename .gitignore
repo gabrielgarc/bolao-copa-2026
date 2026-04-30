@@ -13,34 +13,26 @@ dist-ssr
 *.local
 
 # Editor directories and files
-.vscode/*
+.vscode/
 !.vscode/extensions.json
-.idea
+.idea/
 .DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
-backend/Bolao.Copa2026.API/bin/Debug/net8.0/appsettings.json
-backend/Bolao.Copa2026.API/appsettings.json
-backend/Bolao.Copa2026.API/bin/Debug/net8.0/appsettings.json
+*.user
+*.userosscache
+*.sln.doccache
 
 # .NET Core
 [Bb]in/
 [Oo]bj/
-/backend/Bolao.Copa2026.API/.vs
-/backend/Bolao.Copa2026.API/bin
-/backend/Bolao.Copa2026.API/bin
-/backend/Bolao.Copa2026.API/.vs
-/backend/FootballData.Intergration/obj
-/backend/FootballData.Intergration/obj
-/backend/Bolao.Copa2026.API/obj
-/backend/FootballData.Intergration/obj
+.vs/
+publish/
+publish-selfcontained/
+
+# Specific project ignores
 backend/Bolao.Copa2026.API/appsettings.json
-/backend/Bolao.Copa2026.API/publish-selfcontained
-/backend/Bolao.Copa2026.API/publish-selfcontained
-/backend/Bolao.Copa2026.API
-/backend/FootballData.Intergration/obj
-/backend/FootballData.Intergration/obj
-/backend/Bolao.Copa2026.API/.vs
+backend/deploy.zip

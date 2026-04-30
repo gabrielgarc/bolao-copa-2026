@@ -112,8 +112,12 @@ namespace Bolao.Copa2026.API.Services
             await Task.WhenAll(matchesTask, predictionsTask, teamsTask);
 
             var matches = matchesTask.Result.Where(m => m.IsGroupStage).ToList();
-            var predictions = predictionsTask.Result.ToDictionary(p => p.MatchId);
-            var teams = teamsTask.Result.ToDictionary(t => t.Id);
+            var predictions = predictionsTask.Result
+                .GroupBy(p => p.MatchId)
+                .ToDictionary(g => g.Key, g => g.First());
+            var teams = teamsTask.Result
+                .GroupBy(t => t.Id)
+                .ToDictionary(g => g.Key, g => g.First());
 
             var response = new StandingsResponseDto();
 

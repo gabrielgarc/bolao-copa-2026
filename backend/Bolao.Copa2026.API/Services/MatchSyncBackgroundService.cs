@@ -65,7 +65,7 @@ namespace Bolao.Copa2026.API.Services
                 if (apiMatchesResponse?.Matches != null)
                 {
                     var dbMatchesList = await matchRepo.GetAllAsync();
-                    var dbMatches = dbMatchesList.Where(m => m.ApiId != 0).ToDictionary(m => m.ApiId);
+                    var dbMatches = dbMatchesList.Where(m => m.ApiId != 0).GroupBy(m => m.ApiId).ToDictionary(m => m.Key, m => m.First());
 
                     foreach (var apiMatch in apiMatchesResponse.Matches)
                     {

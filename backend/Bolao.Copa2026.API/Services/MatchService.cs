@@ -22,7 +22,7 @@ namespace Bolao.Copa2026.API.Services
             var teams = await _teamRepo.GetAllAsync();
             
             // Map manual para simular o "Include" do EF
-            var teamMap = teams.ToDictionary(t => t.Id);
+            var teamMap = teams.GroupBy(t => t.Id).ToDictionary(g => g.Key, g => g.First());
 
             var dtos = new List<MatchDto>();
 
