@@ -1,115 +1,203 @@
 import React, { useState, useEffect } from 'react';
-import { PixelButton } from './PixelComponents';
 import { AvatarViewer, AvatarConfig } from './AvatarViewer';
+import {
+    faces,
+    expressions,
+    hairs,
+    shirts,
+    accessories,
+    defaultColors,
+    skinPresets,
+    hairPresets,
+    eyePresets
+} from './avatarParts';
 
 interface AvatarEditorProps {
     onChange: (config: string) => void;
 }
 
+type TabName = 'Cabeça' | 'Cabelo' | 'Rosto' | 'Roupa' | 'Extras';
+
+const CategorySelector = ({ label, items, selectedIndex, onSelect }: { label: string, items: any[], selectedIndex: number, onSelect: (idx: number) => void }) => (
+    <div className="mb-4">
+        <label className="text-[11px] font-bold uppercase mb-2 block text-gray-700">{label}:</label>
+        <div className="flex flex-wrap gap-2">
+            {items.map((item, idx) => (
+                <button
+                    type="button"
+                    key={idx}
+                    onClick={() => onSelect(idx)}
+                    className={`px-3 py-2 border-2 text-[10px] sm:text-[11px] font-bold uppercase rounded-lg transition-colors ${idx === selectedIndex ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-gray-200 bg-white text-gray-600 hover:bg-gray-50 hover:border-gray-300'}`}
+                >
+                    {item.name}
+                </button>
+            ))}
+        </div>
+    </div>
+);
+
+const ColorSelector = ({ label, value, onChange, presets }: { label: string, value: string, onChange: (v: string) => void, presets?: string[] }) => (
+    <div className="mb-4">
+        <label className="text-[11px] font-bold uppercase mb-2 block text-gray-700">{label}:</label>
+        <div className="flex items-center gap-3">
+            {/* Color Picker Box */}
+            <div className="relative group shrink-0">
+                <input
+                    type="color"
+                    value={value}
+                    onChange={(e) => onChange(e.target.value)}
+                    className="w-10 h-10 rounded-lg cursor-pointer absolute opacity-0 z-10"
+                    title="Escolher cor personalizada"
+                />
+                <div 
+                    className="w-10 h-10 border-2 border-gray-200 rounded-lg pointer-events-none shadow-sm flex items-center justify-center bg-white group-hover:border-gray-300 transition-colors"
+                >
+                    <div className="w-6 h-6 rounded-md" style={{ backgroundColor: value }}></div>
+                </div>
+            </div>
+            
+            {/* Presets Grid */}
+            {presets && (
+                <div className="flex flex-wrap gap-2">
+                    {presets.map(p => (
+                        <button
+                            type="button"
+                            key={p}
+                            onClick={() => onChange(p)}
+                            className={`w-8 h-8 rounded-lg border-2 transition-all ${p === value ? 'border-blue-500 scale-110 shadow-md ring-2 ring-blue-200' : 'border-gray-200 hover:scale-105'}`}
+                            style={{ backgroundColor: p }}
+                            title={p}
+                        />
+                    ))}
+                </div>
+            )}
+        </div>
+    </div>
+);
+
 export const AvatarEditor: React.FC<AvatarEditorProps> = ({ onChange }) => {
+    const [activeTab, setActiveTab] = useState<TabName>('Cabeça');
     const [config, setConfig] = useState<AvatarConfig>({
-        head: 0,
+        face: 0,
+        expression: 0,
         hair: 1,
-        skinColor: '#f1c27d', // Pele clara
-        hairColor: '#4a3000', // Cabelo castanho escuro
-        eyeColor: '#000000',
-        bgColor: '#3b82f6' // Fundo azul
+        shirt: 0,
+        accessory: 0,
+        colors: { ...defaultColors }
     });
 
     useEffect(() => {
         onChange(JSON.stringify(config));
     }, [config, onChange]);
 
-    const updateConfig = (key: keyof AvatarConfig, value: any) => {
+    const updateConfig = (key: keyof Omit<AvatarConfig, 'colors'>, value: number) => {
         setConfig(prev => ({ ...prev, [key]: value }));
     };
 
-    const skinColors = ['#fce2c4', '#f1c27d', '#e0ac69', '#8d5524', '#3d220f'];
-    const hairColors = ['#000000', '#4a3000', '#a52a2a', '#e8b923', '#717171', '#ff00ff', '#00ff00'];
-    const eyeColors = ['#000000', '#3b82f6', '#22c55e', '#a855f7', '#ef4444'];
-    const bgColors = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#64748b'];
+    const handleColorChange = (key: keyof AvatarConfig['colors'], value: string) => {
+        setConfig(prev => ({
+            ...prev,
+            colors: { ...prev.colors, [key]: value }
+        }));
+    };
+
+    const tabs: TabName[] = ['Cabeça', 'Cabelo', 'Rosto', 'Roupa', 'Extras'];
 
     return (
-        <div className="bg-white border-4 border-black p-4 mt-2">
-            <h3 className="text-center font-bold text-xs mb-4 uppercase">Monte seu Avatar</h3>
-            
-            <div className="flex flex-col md:flex-row gap-4 items-center mb-4">
-                <div className="flex-shrink-0">
-                    <AvatarViewer configStr={JSON.stringify(config)} size={80} />
+        <div className="bg-white border-2 border-gray-200 rounded-xl p-3 sm:p-5 shadow-sm mt-2 w-full max-w-full overflow-hidden">
+            <div className="flex flex-col gap-4">
+                
+                {/* Preview Area */}
+                <div className="flex justify-center w-full">
+                    <div className="border-4 border-gray-100 rounded-2xl p-3 bg-gray-50 flex justify-center items-center shadow-inner">
+                        <AvatarViewer configStr={JSON.stringify(config)} size={160} />
+                    </div>
                 </div>
                 
-                <div className="flex-grow w-full space-y-3">
-                    {/* Controles de Forma */}
-                    <div className="flex flex-col gap-2">
-                        <div className="flex-1">
-                            <label className="text-[10px] font-bold uppercase mb-1 block">Rosto:</label>
-                            <div className="flex flex-wrap gap-1">
-                                {[0, 1, 2, 3, 4].map(h => (
-                                    <button 
-                                        type="button"
-                                        key={h}
-                                        onClick={() => updateConfig('head', h)}
-                                        className={`w-6 h-6 border-2 flex items-center justify-center text-[10px] font-bold ${config.head === h ? 'border-red-500 bg-red-100' : 'border-gray-400 bg-gray-100 hover:bg-gray-200'}`}
-                                    >
-                                        {h+1}
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-                        <div className="flex-1">
-                            <label className="text-[10px] font-bold uppercase mb-1 block">Cabelo:</label>
-                            <div className="flex flex-wrap gap-1">
-                                {[0, 1, 2, 3, 4].map(h => (
-                                    <button 
-                                        type="button"
-                                        key={h}
-                                        onClick={() => updateConfig('hair', h)}
-                                        className={`w-6 h-6 border-2 flex items-center justify-center text-[10px] font-bold ${config.hair === h ? 'border-red-500 bg-red-100' : 'border-gray-400 bg-gray-100 hover:bg-gray-200'}`}
-                                    >
-                                        {h+1}
-                                    </button>
-                                ))}
-                            </div>
+                {/* Editor Area */}
+                <div className="flex flex-col w-full">
+                    {/* Tabs Navigation */}
+                    <div className="flex overflow-x-auto pb-1 mb-4 border-b-2 border-gray-100 hide-scrollbar w-full">
+                        <div className="flex gap-1 px-1">
+                            {tabs.map(tab => (
+                                <button
+                                    key={tab}
+                                    type="button"
+                                    onClick={() => setActiveTab(tab)}
+                                    className={`whitespace-nowrap px-3 py-2 font-bold uppercase text-[10px] sm:text-xs rounded-t-lg transition-all ${
+                                        activeTab === tab 
+                                        ? 'border-b-4 border-blue-500 text-blue-700 bg-blue-50/50 -mb-[2px]' 
+                                        : 'border-b-4 border-transparent text-gray-500 hover:text-gray-800 hover:bg-gray-50 -mb-[2px]'
+                                    }`}
+                                >
+                                    {tab}
+                                </button>
+                            ))}
                         </div>
                     </div>
-                </div>
-            </div>
 
-            {/* Controles de Cor */}
-            <div className="space-y-2">
-                <div className="flex gap-2 items-center">
-                    <label className="text-[10px] font-bold uppercase w-12 shrink-0">Pele:</label>
-                    <div className="flex flex-wrap gap-1">
-                        {skinColors.map(c => (
-                            <button type="button" key={c} onClick={() => updateConfig('skinColor', c)} className={`w-5 h-5 border-2 ${config.skinColor === c ? 'border-red-500 scale-110' : 'border-black'}`} style={{ backgroundColor: c }} />
-                        ))}
-                    </div>
-                </div>
-                <div className="flex gap-2 items-center">
-                    <label className="text-[10px] font-bold uppercase w-12 shrink-0">Cabelo:</label>
-                    <div className="flex flex-wrap gap-1">
-                        {hairColors.map(c => (
-                            <button type="button" key={c} onClick={() => updateConfig('hairColor', c)} className={`w-5 h-5 border-2 ${config.hairColor === c ? 'border-red-500 scale-110' : 'border-black'}`} style={{ backgroundColor: c }} />
-                        ))}
-                    </div>
-                </div>
-                <div className="flex gap-2 items-center">
-                    <label className="text-[10px] font-bold uppercase w-12 shrink-0">Olho:</label>
-                    <div className="flex flex-wrap gap-1">
-                        {eyeColors.map(c => (
-                            <button type="button" key={c} onClick={() => updateConfig('eyeColor', c)} className={`w-5 h-5 border-2 ${config.eyeColor === c ? 'border-red-500 scale-110' : 'border-black'}`} style={{ backgroundColor: c }} />
-                        ))}
-                    </div>
-                </div>
-                <div className="flex gap-2 items-center">
-                    <label className="text-[10px] font-bold uppercase w-12 shrink-0">Fundo:</label>
-                    <div className="flex flex-wrap gap-1">
-                        {bgColors.map(c => (
-                            <button type="button" key={c} onClick={() => updateConfig('bgColor', c)} className={`w-5 h-5 border-2 ${config.bgColor === c ? 'border-red-500 scale-110' : 'border-black'}`} style={{ backgroundColor: c }} />
-                        ))}
+                    {/* Tab Content */}
+                    <div className="flex-1 bg-white px-1">
+                        {activeTab === 'Cabeça' && (
+                            <div className="animate-fadeIn">
+                                <CategorySelector label="Formato do Rosto" items={faces} selectedIndex={config.face} onSelect={(i) => updateConfig('face', i)} />
+                                <ColorSelector label="Cor da Pele" value={config.colors.skin} onChange={(v) => handleColorChange('skin', v)} presets={skinPresets} />
+                            </div>
+                        )}
+
+                        {activeTab === 'Cabelo' && (
+                            <div className="animate-fadeIn">
+                                <CategorySelector label="Estilo do Cabelo" items={hairs} selectedIndex={config.hair} onSelect={(i) => updateConfig('hair', i)} />
+                                <ColorSelector label="Cor do Cabelo" value={config.colors.hair} onChange={(v) => handleColorChange('hair', v)} presets={hairPresets} />
+                            </div>
+                        )}
+
+                        {activeTab === 'Rosto' && (
+                            <div className="animate-fadeIn">
+                                <CategorySelector label="Expressão Facial" items={expressions} selectedIndex={config.expression} onSelect={(i) => updateConfig('expression', i)} />
+                                <ColorSelector label="Cor dos Olhos" value={config.colors.eyes} onChange={(v) => handleColorChange('eyes', v)} presets={eyePresets} />
+                            </div>
+                        )}
+
+                        {activeTab === 'Roupa' && (
+                            <div className="animate-fadeIn">
+                                <CategorySelector label="Modelo da Camisa" items={shirts} selectedIndex={config.shirt} onSelect={(i) => updateConfig('shirt', i)} />
+                                <div className="grid grid-cols-2 gap-2 sm:gap-4">
+                                    <ColorSelector label="Cor Principal" value={config.colors.shirtC1} onChange={(v) => handleColorChange('shirtC1', v)} />
+                                    <ColorSelector label="Cor Secundária" value={config.colors.shirtC2} onChange={(v) => handleColorChange('shirtC2', v)} />
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab === 'Extras' && (
+                            <div className="animate-fadeIn">
+                                <CategorySelector label="Acessório" items={accessories} selectedIndex={config.accessory} onSelect={(i) => updateConfig('accessory', i)} />
+                                <div className="grid grid-cols-2 gap-2 sm:gap-4">
+                                    <ColorSelector label="Cor do Acessório" value={config.colors.accessory} onChange={(v) => handleColorChange('accessory', v)} />
+                                    <ColorSelector label="Cor de Fundo" value={config.colors.background} onChange={(v) => handleColorChange('background', v)} />
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
+            
+            <style>{`
+                .hide-scrollbar::-webkit-scrollbar {
+                    display: none;
+                }
+                .hide-scrollbar {
+                    -ms-overflow-style: none;
+                    scrollbar-width: none;
+                }
+                .animate-fadeIn {
+                    animation: fadeIn 0.2s ease-out forwards;
+                }
+                @keyframes fadeIn {
+                    from { opacity: 0; transform: translateY(4px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+            `}</style>
         </div>
     );
 };

@@ -51,7 +51,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess }) => {
 
     return (
         <div className="flex flex-col items-center justify-center min-h-[80vh]">
-            <PixelCard className="w-full max-w-sm">
+            <PixelCard className={`w-full transition-all duration-300 ${!isLogin ? 'max-w-4xl' : 'max-w-sm'}`}>
                 <div className="flex flex-col items-center justify-center mb-6">
                     <h2 
                         className="text-2xl md:text-4xl text-center uppercase text-yellow-400 drop-shadow-[5px_5px_0_rgba(0,0,0,1)] tracking-tighter leading-relaxed"
@@ -66,7 +66,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess }) => {
                     {isLogin ? 'Acesse o Bolão' : 'Inscreva-se Agora'}
                 </h1>
 
-                <div className="flex mb-6 border-b-4 border-black">
+                <div className="flex mb-6 border-b-4 border-black max-w-sm mx-auto">
                     <button
                         type="button"
                         className={`flex-1 py-2 font-bold uppercase text-xs transition duration-200 ${isLogin ? 'bg-yellow-400 border-x-4 border-black border-t-4 translate-y-[4px] text-black' : 'bg-gray-400 border-x-4 border-transparent border-t-4 text-gray-700 hover:text-black'}`}
@@ -83,36 +83,38 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess }) => {
                     </button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                    {error && (
-                        <div className="bg-red-500 text-white p-2 border-2 text-xs border-black text-center font-bold">
-                            {error}
+                <form onSubmit={handleSubmit} className={`flex flex-col ${!isLogin ? 'md:flex-row md:gap-8' : ''}`}>
+                    
+                    {/* Left Column (or full width if login) */}
+                    <div className="flex-1 flex flex-col gap-4 max-w-sm mx-auto w-full">
+                        {error && (
+                            <div className="bg-red-500 text-white p-2 border-2 text-xs border-black text-center font-bold">
+                                {error}
+                            </div>
+                        )}
+
+                        <div className="flex flex-col gap-1">
+                            <label className="text-[10px] md:text-xs font-bold uppercase text-black">Usuário:</label>
+                            <input
+                                type="text"
+                                className="bg-white border-4 border-black p-2 text-sm md:text-base font-bold outline-none focus:bg-yellow-100 text-black"
+                                value={userName}
+                                onChange={(e) => setUserName(e.target.value)}
+                                maxLength={20}
+                            />
                         </div>
-                    )}
 
-                    <div className="flex flex-col gap-1">
-                        <label className="text-[10px] md:text-xs font-bold uppercase text-black">Usuário:</label>
-                        <input
-                            type="text"
-                            className="bg-white border-4 border-black p-2 text-sm md:text-base font-bold outline-none focus:bg-yellow-100 text-black"
-                            value={userName}
-                            onChange={(e) => setUserName(e.target.value)}
-                            maxLength={20}
-                        />
-                    </div>
+                        <div className="flex flex-col gap-1">
+                            <label className="text-[10px] md:text-xs font-bold uppercase text-black">Senha:</label>
+                            <input
+                                type="password"
+                                className="bg-white border-4 border-black p-2 text-sm md:text-base font-bold outline-none focus:bg-yellow-100 text-black"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
+                        </div>
 
-                    <div className="flex flex-col gap-1">
-                        <label className="text-[10px] md:text-xs font-bold uppercase text-black">Senha:</label>
-                        <input
-                            type="password"
-                            className="bg-white border-4 border-black p-2 text-sm md:text-base font-bold outline-none focus:bg-yellow-100 text-black"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
-                    </div>
-
-                    {!isLogin && (
-                        <>
+                        {!isLogin && (
                             <div className="flex flex-col gap-1">
                                 <label className="text-[10px] md:text-xs font-bold uppercase text-black">Repita a Senha:</label>
                                 <input
@@ -122,15 +124,21 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess }) => {
                                     onChange={(e) => setConfirmPassword(e.target.value)}
                                 />
                             </div>
-                            <AvatarEditor onChange={setAvatarConfig} />
-                        </>
-                    )}
+                        )}
 
-                    <div className="mt-4 flex justify-center">
-                        <PixelButton variant="action" className="w-full text-center flex justify-center text-sm" disabled={isLoading} onClick={(e: any) => null}>
-                            {isLoading ? 'Wait...' : (isLogin ? 'Entrar' : 'Criar Conta')}
-                        </PixelButton>
+                        <div className={`flex justify-center ${isLogin ? 'mt-4' : 'mt-2 mb-4 md:mt-4'}`}>
+                            <PixelButton variant="action" className="w-full text-center flex justify-center text-sm" disabled={isLoading} onClick={(e: any) => null}>
+                                {isLoading ? 'Wait...' : (isLogin ? 'Entrar' : 'Criar Conta')}
+                            </PixelButton>
+                        </div>
                     </div>
+
+                    {/* Right Column (Avatar Editor) */}
+                    {!isLogin && (
+                        <div className="flex-[1.5] w-full">
+                            <AvatarEditor onChange={setAvatarConfig} />
+                        </div>
+                    )}
                 </form>
             </PixelCard>
 
