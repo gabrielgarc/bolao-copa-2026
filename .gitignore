@@ -42,3 +42,5 @@ backend/Bolao.Copa2026.API/appsettings.json
 /backend/Bolao.Copa2026.API/publish-selfcontained
 /backend/Bolao.Copa2026.API
 /backend/FootballData.Intergration/obj
+/backend/FootballData.Intergration/obj
+/backend/Bolao.Copa2026.API/.vs
