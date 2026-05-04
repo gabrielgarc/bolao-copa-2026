@@ -24,21 +24,27 @@ namespace Bolao.Copa2026.API.Controllers
     {
         private readonly IRepository<Match> _matchRepo;
         private readonly IRepository<UserRanking> _userRankingRepo;
+        private readonly IRepository<User> _userRepo;
         private readonly IRankingService _rankingService;
         private readonly IPredictionService _predictionService;
         private readonly MockMatchDataProvider? _mockProvider;
+        private readonly IConfiguration _config;
 
         public AdminController(
             IRepository<Match> matchRepo,
             IRepository<UserRanking> userRankingRepo,
+            IRepository<User> userRepo,
             IRankingService rankingService,
             IPredictionService predictionService,
+            IConfiguration config,
             MockMatchDataProvider? mockProvider = null)
         {
             _matchRepo = matchRepo;
             _userRankingRepo = userRankingRepo;
+            _userRepo = userRepo;
             _rankingService = rankingService;
             _predictionService = predictionService;
+            _config = config;
             _mockProvider = mockProvider;
         }
 
@@ -317,6 +323,42 @@ namespace Bolao.Copa2026.API.Controllers
             return m.HomeTeamName;
         }
 
+        // ==================== ADMIN AUTH & USERS ====================
+
+        [HttpPost("login")]
+        public ActionResult Login([FromBody] AdminLoginRequest request)
+        {
+            var adminUser = _config["Admin:Username"];
+            var adminPass = _config["Admin:Password"];
+
+            if (request.Username == adminUser && request.Password == adminPass)
+            {
+                return Ok(new { token = "admin-secret-token" });
+            }
+
+            return Unauthorized("Credenciais de administrador inválidas.");
+        }
+
+        [HttpGet("users")]
+        public async Task<ActionResult> GetUsers()
+        {
+            var users = await _userRepo.GetAllAsync();
+            var rankings = await _userRankingRepo.GetAllAsync();
+
+            var usersData = users.Select(u => {
+                var ranking = rankings.FirstOrDefault(r => r.UserId == u.Id);
+                return new
+                {
+                    id = u.Id,
+                    username = u.UserName,
+                    avatar = u.Avatar,
+                    points = ranking?.TotalPoints ?? 0
+                };
+            }).OrderByDescending(u => u.points).ToList();
+
+            return Ok(usersData);
+        }
+
         // ==================== MOCK API ENDPOINTS ====================
 
         /// <summary>
@@ -406,5 +448,11 @@ namespace Bolao.Copa2026.API.Controllers
         public int HomeScore { get; set; }
         public int AwayScore { get; set; }
         public string? Status { get; set; } = "FINISHED";
+    }
+
+    public class AdminLoginRequest
+    {
+        public string Username { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
     }
 }

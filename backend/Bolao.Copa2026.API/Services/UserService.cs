@@ -36,7 +36,7 @@ namespace Bolao.Copa2026.API.Services
             var userRanking = allRankings.FirstOrDefault(r => r.UserId == user.Id);
             int totalPoints = userRanking?.TotalPoints ?? 0;
             var rank = allRankings.Count(r => r.TotalPoints > totalPoints) + 1;
-            return new UserDto(user.Id, user.UserName, rank, totalPoints);
+            return new UserDto(user.Id, user.UserName, rank, totalPoints, user.Avatar);
         }
 
         public async Task<UserDto> CreateUserAsync(string userName, string password, string avatarConfig)
@@ -61,7 +61,7 @@ namespace Bolao.Copa2026.API.Services
             var allRankings = await _userRankingRepo.GetAllAsync();
             var rank = allRankings.Count + 1;
 
-            return new UserDto(newUser.Id, newUser.UserName, rank, 0);
+            return new UserDto(newUser.Id, newUser.UserName, rank, 0, newUser.Avatar);
         }
     }
 }

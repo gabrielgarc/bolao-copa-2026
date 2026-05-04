@@ -299,6 +299,9 @@ const App: React.FC = () => {
         );
     }
 
+    const currentUserRanking = leaderboard.find(u => u.name === currentUser?.name);
+    const userAvatar = currentUser?.avatar || currentUserRanking?.avatar;
+
     return (
         <div className={`min-h-screen pb-20 transition-colors duration-500 ${currentView === AppView.OFFICIAL_RESULTS ? 'bg-red-900' : 'bg-green-800'} bg-[url('https://www.transparenttextures.com/patterns/pixel-weave.png')]`}>
             <Header
@@ -306,6 +309,8 @@ const App: React.FC = () => {
                 onViewChange={setCurrentView}
                 userName={currentUser?.name || "Carregando..."}
                 userRank={userRank}
+                userAvatar={userAvatar}
+                userPoints={userPoints}
             />
 
             <main className="p-3 md:p-8">

@@ -3,6 +3,7 @@ using Bolao.Copa2026.API.Repositories;
 using Bolao.Copa2026.API.Services;
 using FootballData.Intergration.Modules;
 using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,18 +18,22 @@ namespace Bolao.Copa2026.API.Data
         private readonly IRepository<User> _userRepo;
         private readonly MatchesModule _matchesModule;
         private readonly TeamsModule _teamsModule;
+        private readonly IMongoDatabase _database;
 
-        public DbSeeder(IRepository<Team> teamRepo, IRepository<Match> matchRepo, IRepository<User> userRepo, MatchesModule matchesModule, TeamsModule teamsModule)
+        public DbSeeder(IRepository<Team> teamRepo, IRepository<Match> matchRepo, IRepository<User> userRepo, MatchesModule matchesModule, TeamsModule teamsModule, IMongoDatabase database)
         {
             _teamRepo = teamRepo;
             _matchRepo = matchRepo;
             _userRepo = userRepo;
             _teamsModule = teamsModule;
             _matchesModule = matchesModule;
+            _database = database;
         }
 
         public async Task SeedAsync()
         {
+            await EnsureIndexesAsync();
+
             if (!await _teamRepo.AnyAsync())
             {
                 await CreateTeams();
@@ -42,6 +47,57 @@ namespace Bolao.Copa2026.API.Data
             {
                 await CreateMatches();
             }
+        }
+
+        private async Task EnsureIndexesAsync()
+        {
+            // 1. Index em predictions: { userId: 1, matchId: 1 } único
+            var predictionsCol = _database.GetCollection<Prediction>("predictions");
+            var allPredictions = await predictionsCol.Find(_ => true).ToListAsync();
+            var duplicatePredictions = allPredictions.GroupBy(p => new { p.UserId, p.MatchId }).Where(g => g.Count() > 1).SelectMany(g => g.Skip(1)).Select(p => p.Id).ToList();
+            if (duplicatePredictions.Any())
+            {
+                await predictionsCol.DeleteManyAsync(Builders<Prediction>.Filter.In(p => p.Id, duplicatePredictions));
+            }
+            var predictionIndexKeys = Builders<Prediction>.IndexKeys.Ascending(p => p.UserId).Ascending(p => p.MatchId);
+            var predictionIndexOptions = new CreateIndexOptions { Unique = true };
+            await predictionsCol.Indexes.CreateOneAsync(new CreateIndexModel<Prediction>(predictionIndexKeys, predictionIndexOptions));
+
+            // 2. Index em user_rankings: { userId: 1 } único
+            var rankingsCol = _database.GetCollection<UserRanking>("user_rankings");
+            var allRankings = await rankingsCol.Find(_ => true).ToListAsync();
+            var duplicateRankings = allRankings.GroupBy(r => r.UserId).Where(g => g.Count() > 1).SelectMany(g => g.Skip(1)).Select(r => r.Id).ToList();
+            if (duplicateRankings.Any())
+            {
+                await rankingsCol.DeleteManyAsync(Builders<UserRanking>.Filter.In(r => r.Id, duplicateRankings));
+            }
+            var rankingsIndexKeys = Builders<UserRanking>.IndexKeys.Ascending(r => r.UserId);
+            var rankingsIndexOptions = new CreateIndexOptions { Unique = true };
+            await rankingsCol.Indexes.CreateOneAsync(new CreateIndexModel<UserRanking>(rankingsIndexKeys, rankingsIndexOptions));
+
+            // 3. Index em teams: { apiId: 1 } único
+            var teamsCol = _database.GetCollection<Team>("teams");
+            var allTeams = await teamsCol.Find(_ => true).ToListAsync();
+            var duplicateTeams = allTeams.GroupBy(t => t.ApiId).Where(g => g.Count() > 1).SelectMany(g => g.Skip(1)).Select(t => t.Id).ToList();
+            if (duplicateTeams.Any())
+            {
+                await teamsCol.DeleteManyAsync(Builders<Team>.Filter.In(t => t.Id, duplicateTeams));
+            }
+            var teamsIndexKeys = Builders<Team>.IndexKeys.Ascending(t => t.ApiId);
+            var teamsIndexOptions = new CreateIndexOptions { Unique = true };
+            await teamsCol.Indexes.CreateOneAsync(new CreateIndexModel<Team>(teamsIndexKeys, teamsIndexOptions));
+
+            // 4. Index em users: { userName: 1 } único
+            var usersCol = _database.GetCollection<User>("users");
+            var allUsers = await usersCol.Find(_ => true).ToListAsync();
+            var duplicateUsers = allUsers.GroupBy(u => u.UserName).Where(g => g.Count() > 1).SelectMany(g => g.Skip(1)).Select(u => u.Id).ToList();
+            if (duplicateUsers.Any())
+            {
+                await usersCol.DeleteManyAsync(Builders<User>.Filter.In(u => u.Id, duplicateUsers));
+            }
+            var usersIndexKeys = Builders<User>.IndexKeys.Ascending(u => u.UserName);
+            var usersIndexOptions = new CreateIndexOptions { Unique = true };
+            await usersCol.Indexes.CreateOneAsync(new CreateIndexModel<User>(usersIndexKeys, usersIndexOptions));
         }
 
         private async Task SyncTeamTranslations()

@@ -4,4 +4,5 @@ export interface UserDTO {
   name: string;
   rank: number;
   totalPoints: number;
+  avatar: string;
 }

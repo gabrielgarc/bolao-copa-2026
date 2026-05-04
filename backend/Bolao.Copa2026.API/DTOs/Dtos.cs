@@ -59,7 +59,8 @@ namespace Bolao.Copa2026.API.DTOs
         Guid Id,
         string Name,
         int Rank,
-        int TotalPoints
+        int TotalPoints,
+        string Avatar
     );
 
     // DTO para Login e Criar Usuario

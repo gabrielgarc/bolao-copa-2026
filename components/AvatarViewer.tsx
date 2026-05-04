@@ -126,8 +126,8 @@ export const AvatarViewer: React.FC<AvatarViewerProps> = ({ configStr, className
           key={`${r}-${c}`}
           x={c * PIXEL}
           y={r * PIXEL}
-          width={PIXEL}
-          height={PIXEL}
+          width={PIXEL + 0.1}
+          height={PIXEL + 0.1}
           fill={fill}
         />
       );
@@ -141,6 +141,7 @@ export const AvatarViewer: React.FC<AvatarViewerProps> = ({ configStr, className
       viewBox={`0 0 ${SVG_SIZE} ${SVG_SIZE}`} 
       className={`pixelated ${className}`} 
       style={{ imageRendering: 'pixelated', background: config.colors.background }}
+      shapeRendering="crispEdges"
     >
       {rects}
     </svg>

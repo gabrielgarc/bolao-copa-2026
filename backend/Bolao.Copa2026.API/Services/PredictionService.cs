@@ -10,7 +10,6 @@ namespace Bolao.Copa2026.API.Services
         private readonly IRepository<Match> _matchRepo;
         private readonly IRepository<User> _userRepo;
         private readonly IRepository<Team> _teamRepo;
-        private Guid CURRENT_USER_ID; 
 
         public PredictionService(IRepository<Prediction> predictionRepo, IRepository<Match> matchRepo, IRepository<User> userRepo, IRepository<Team> teamRepo)
         {
