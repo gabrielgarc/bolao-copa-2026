@@ -60,22 +60,57 @@ namespace Bolao.Copa2026.API.Services
                 .Where(m => m.RealHomeScore != null && m.RealAwayScore != null)
                 .ToList();
 
-            // Only award qualified-team bonus after ALL group stage matches are FINISHED
+            // Identify which individual groups are fully finished
             var groupStageMatches = matches.Where(m => m.Stage == "GROUP_STAGE").ToList();
+            var matchesByGroup = groupStageMatches.GroupBy(m => m.Group).ToDictionary(g => g.Key, g => g.ToList());
+            
+            var finishedGroups = new HashSet<string>();
+            foreach (var (groupName, groupMatches) in matchesByGroup)
+            {
+                if (groupMatches.All(m => m.Status == "FINISHED"))
+                    finishedGroups.Add(groupName);
+            }
+            
             bool allGroupStageFinished = groupStageMatches.Count > 0 &&
                 groupStageMatches.All(m => m.Status == "FINISHED");
 
-            var officialQualifiedTeams = new HashSet<Guid>();
+            // Get official standings (based on real results, userId=null)
+            var officialStandings = await _predictionService.GetSimulatedStandingsAsync(null);
+            
+            // Build official qualified teams per group (1st & 2nd) for finished groups
+            var officialQualifiedPerGroup = new Dictionary<string, HashSet<Guid>>();
+            
+            // Normalize finished group names to lowercase for comparison
+            var finishedGroupsLower = finishedGroups.Select(g => g.ToLowerInvariant()).ToHashSet();
+            
+            foreach (var (groupKey, teams) in officialStandings.Groups)
+            {
+                // Check all possible representations of this group name
+                var possibleNames = new[] { 
+                    groupKey, 
+                    groupKey.Replace("GROUP_", "Grupo "),
+                    groupKey.Replace("GROUP_", "Group "),
+                    groupKey.Replace("Grupo ", "GROUP_"),
+                    groupKey.Replace("Group ", "GROUP_"),
+                    groupKey.Replace("Grupo ", "Group "),
+                    groupKey.Replace("Group ", "Grupo ")
+                };
+                
+                bool groupFinished = possibleNames.Any(n => finishedGroupsLower.Contains(n.ToLowerInvariant()));
+                
+                if (groupFinished)
+                {
+                    var qualifiedIds = teams.Where(t => t.IsQualified).Select(t => t.TeamId).ToHashSet();
+                    officialQualifiedPerGroup[groupKey] = qualifiedIds;
+                }
+            }
+            
+            // 3rd place qualifiers only available when ALL groups finished
+            var officialThirdPlaceTeams = new HashSet<Guid>();
             if (allGroupStageFinished)
             {
-                var officialStandings = await _predictionService.GetSimulatedStandingsAsync(null);
-                foreach (var group in officialStandings.Groups.Values)
-                {
-                    foreach (var team in group.Where(t => t.IsQualified).Select(t => t.TeamId))
-                        officialQualifiedTeams.Add(team);
-                }
-                foreach (var team in officialStandings.OverallThirds.Where(t => t.IsQualified).Select(t => t.TeamId))
-                    officialQualifiedTeams.Add(team);
+                foreach (var team in officialStandings.OverallThirds.Where(t => t.IsQualified))
+                    officialThirdPlaceTeams.Add(team.TeamId);
             }
 
             var users = await _userRepo.GetAllAsync();
@@ -114,26 +149,92 @@ namespace Bolao.Copa2026.API.Services
                 var userStandings = await _predictionService.GetSimulatedStandingsAsync(user.Id);
                 int qualifiedTeamsCount = 0;
                 var correctQualifiedTeamIds = new List<Guid>();
+                var qualifiedTeamStatuses = new Dictionary<string, string>();
+                var qualificationBonusByGroup = new Dictionary<string, int>();
 
-                foreach (var group in userStandings.Groups.Values)
+                // Check 1st & 2nd place per finished group
+                foreach (var (groupKey, userGroupTeams) in userStandings.Groups)
                 {
-                    foreach (var team in group.Where(t => t.IsQualified))
+                    var groupLetter = ExtractGroupLetter(groupKey);
+                    int groupBonus = 0;
+
+                    // Find matching official group (flexible key matching)
+                    var officialKey = officialQualifiedPerGroup.Keys.FirstOrDefault(k => 
+                        k.Equals(groupKey, StringComparison.OrdinalIgnoreCase) ||
+                        ExtractGroupLetter(k) == groupLetter);
+                    
+                    // Check if this specific group is finished
+                    var possibleGroupNames = new[] { groupKey, $"GROUP_{groupLetter}", $"Group {groupLetter}", $"Grupo {groupLetter}" };
+                    bool thisGroupFinished = possibleGroupNames.Any(n => finishedGroupsLower.Contains(n.ToLowerInvariant()));
+
+                    foreach (var team in userGroupTeams.Where(t => t.IsQualified))
                     {
-                        if (officialQualifiedTeams.Contains(team.TeamId))
+                        var teamIdStr = team.TeamId.ToString();
+                        var pos = userGroupTeams.IndexOf(team);
+                        
+                        if (pos < 2)
                         {
-                            qualifiedTeamsCount++;
-                            correctQualifiedTeamIds.Add(team.TeamId);
+                            // 1st & 2nd: check against this group's official qualifiers
+                            if (!thisGroupFinished)
+                            {
+                                qualifiedTeamStatuses[teamIdStr] = "waiting";
+                            }
+                            else if (officialKey != null && officialQualifiedPerGroup[officialKey].Contains(team.TeamId))
+                            {
+                                qualifiedTeamStatuses[teamIdStr] = "correct";
+                                qualifiedTeamsCount++;
+                                correctQualifiedTeamIds.Add(team.TeamId);
+                                groupBonus += 100;
+                            }
+                            else
+                            {
+                                qualifiedTeamStatuses[teamIdStr] = "wrong";
+                            }
+                        }
+                        else
+                        {
+                            // 3rd place: check against overall thirds (only when all groups finished)
+                            if (!allGroupStageFinished)
+                            {
+                                qualifiedTeamStatuses[teamIdStr] = "waiting";
+                            }
+                            else if (officialThirdPlaceTeams.Contains(team.TeamId))
+                            {
+                                qualifiedTeamStatuses[teamIdStr] = "correct";
+                                qualifiedTeamsCount++;
+                                if (!correctQualifiedTeamIds.Contains(team.TeamId))
+                                    correctQualifiedTeamIds.Add(team.TeamId);
+                                groupBonus += 100;
+                            }
+                            else
+                            {
+                                qualifiedTeamStatuses[teamIdStr] = "wrong";
+                            }
                         }
                     }
+
+                    qualificationBonusByGroup[groupLetter] = groupBonus;
                 }
-                foreach (var team in userStandings.OverallThirds.Where(t => t.IsQualified))
+                
+                // Also check 3rd place from overallThirds
+                if (allGroupStageFinished)
                 {
-                    if (officialQualifiedTeams.Contains(team.TeamId))
+                    foreach (var team in userStandings.OverallThirds.Where(t => t.IsQualified))
                     {
-                        qualifiedTeamsCount++;
-                        if (!correctQualifiedTeamIds.Contains(team.TeamId))
+                        var teamIdStr = team.TeamId.ToString();
+                        if (!qualifiedTeamStatuses.ContainsKey(teamIdStr))
                         {
-                            correctQualifiedTeamIds.Add(team.TeamId);
+                            if (officialThirdPlaceTeams.Contains(team.TeamId))
+                            {
+                                qualifiedTeamStatuses[teamIdStr] = "correct";
+                                qualifiedTeamsCount++;
+                                if (!correctQualifiedTeamIds.Contains(team.TeamId))
+                                    correctQualifiedTeamIds.Add(team.TeamId);
+                            }
+                            else
+                            {
+                                qualifiedTeamStatuses[teamIdStr] = "wrong";
+                            }
                         }
                     }
                 }
@@ -156,7 +257,9 @@ namespace Bolao.Copa2026.API.Services
                         QualifiedTeamsCount = qualifiedTeamsCount,
                         PointsByMatch = pointsByMatch,
                         PointsByStage = pointsByStage,
-                        CorrectQualifiedTeamIds = correctQualifiedTeamIds
+                        CorrectQualifiedTeamIds = correctQualifiedTeamIds,
+                        QualifiedTeamStatuses = qualifiedTeamStatuses,
+                        QualificationBonusByGroup = qualificationBonusByGroup
                     });
                 }
                 else
@@ -172,6 +275,8 @@ namespace Bolao.Copa2026.API.Services
                     existing.PointsByMatch = pointsByMatch;
                     existing.PointsByStage = pointsByStage;
                     existing.CorrectQualifiedTeamIds = correctQualifiedTeamIds;
+                    existing.QualifiedTeamStatuses = qualifiedTeamStatuses;
+                    existing.QualificationBonusByGroup = qualificationBonusByGroup;
                     await _userRankingRepo.UpdateAsync(existing.Id, existing);
                 }
             }
@@ -217,6 +322,19 @@ namespace Bolao.Copa2026.API.Services
                 return (30 * weight, "PARTIAL");
 
             return (0, "NONE");
+        }
+
+        /// <summary>
+        /// Extracts the group letter from any format: "GROUP_A" -> "A", "Group A" -> "A", "Grupo A" -> "A"
+        /// </summary>
+        private static string ExtractGroupLetter(string groupName)
+        {
+            return groupName
+                .Replace("GROUP_", "", StringComparison.OrdinalIgnoreCase)
+                .Replace("Group ", "", StringComparison.OrdinalIgnoreCase)
+                .Replace("Grupo ", "", StringComparison.OrdinalIgnoreCase)
+                .Trim()
+                .ToUpperInvariant();
         }
     }
 }

@@ -82,6 +82,61 @@ namespace Bolao.Copa2026.API.Controllers
         }
 
         /// <summary>
+        /// Simula resultados aleatórios para todas as partidas de um grupo específico.
+        /// Exemplo de uso: /api/Admin/simulate/group/GROUP_A
+        /// </summary>
+        [HttpPost("simulate/group/{groupName}")]
+        public async Task<ActionResult> SimulateGroup(string groupName)
+        {
+            var allMatches = await _matchRepo.GetAllAsync();
+            var groupMatches = new List<Match>();
+            
+            if (groupName.Length == 1)
+            {
+                var letter = groupName.ToUpper();
+                groupMatches = allMatches.Where(m => m.Stage == "GROUP_STAGE" && 
+                    (m.Group.Equals($"Grupo {letter}", StringComparison.OrdinalIgnoreCase) ||
+                     m.Group.Equals($"Group {letter}", StringComparison.OrdinalIgnoreCase) ||
+                     m.Group.Equals($"GROUP_{letter}", StringComparison.OrdinalIgnoreCase))).ToList();
+            }
+            else
+            {
+                groupMatches = allMatches.Where(m => m.Stage == "GROUP_STAGE" && m.Group.Equals(groupName, StringComparison.OrdinalIgnoreCase)).ToList();
+                if (groupMatches.Count == 0)
+                {
+                    var alternativeGroupName = groupName.Replace("GROUP_", "Grupo ", StringComparison.OrdinalIgnoreCase)
+                                                        .Replace("GROUP_", "Group ", StringComparison.OrdinalIgnoreCase);
+                    groupMatches = allMatches.Where(m => m.Stage == "GROUP_STAGE" && m.Group.Equals(alternativeGroupName, StringComparison.OrdinalIgnoreCase)).ToList();
+                }
+            }
+
+            if (groupMatches.Count == 0)
+                return NotFound($"Nenhuma partida encontrada para o grupo '{groupName}'.");
+
+            var rng = new Random();
+            int count = 0;
+
+            foreach (var match in groupMatches)
+            {
+                match.RealHomeScore = rng.Next(0, 5);
+                match.RealAwayScore = rng.Next(0, 5);
+                match.Status = "FINISHED";
+                match.IsLocked = true;
+                await _matchRepo.UpdateAsync(match.Id, match);
+                count++;
+            }
+
+            // Recalcular ranking (sem repopular o mata-mata automaticamente, a não ser que a fase inteira termine)
+            await _rankingService.RecalculateAllPoints();
+
+            return Ok(new
+            {
+                message = $"Simulação concluída! {count} partidas do grupo '{groupName}' simuladas.",
+                count
+            });
+        }
+
+        /// <summary>
         /// Limpa todos os resultados, status e locks de todas as partidas. Remove todos os rankings.
         /// Reseta times do mata-mata para Guid.Empty.
         /// </summary>

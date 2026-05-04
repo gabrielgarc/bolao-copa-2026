@@ -5,13 +5,14 @@ import { PixelCard, PixelFlag } from './PixelComponents';
 
 interface StandingsTableProps {
   stats: TeamStats[];
+  className?: string;
 }
 
-export const StandingsTable: React.FC<StandingsTableProps> = ({ stats }) => {
+export const StandingsTable: React.FC<StandingsTableProps> = ({ stats, className = '' }) => {
   return (
-    <PixelCard className="mb-6 p-0 overflow-hidden" colorClass="bg-white">
-      <div className="w-full">
-        <table className="w-full text-center border-collapse table-fixed">
+    <PixelCard className={`p-0 overflow-hidden ${className}`} colorClass="bg-white">
+      <div className="w-full h-full">
+        <table className="w-full h-full text-center border-collapse table-fixed">
           <thead>
             <tr className="bg-gray-300 border-b-4 border-gray-900 text-[10px] md:text-sm font-bold text-black">
               <th className="p-1 w-[8%] border-r border-gray-500">#</th>

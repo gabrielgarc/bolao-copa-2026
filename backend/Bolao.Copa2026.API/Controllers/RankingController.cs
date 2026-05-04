@@ -44,7 +44,9 @@ namespace Bolao.Copa2026.API.Controllers
                     halfMatches = 0,
                     outcomeMatches = 0,
                     partialMatches = 0,
-                    correctQualifiedTeamIds = new List<Guid>()
+                    correctQualifiedTeamIds = new List<Guid>(),
+                    qualifiedTeamStatuses = new Dictionary<string, string>(),
+                    qualificationBonusByGroup = new Dictionary<string, int>()
                 });
 
             return Ok(new
@@ -57,7 +59,9 @@ namespace Bolao.Copa2026.API.Controllers
                 outcomeMatches = ranking.OutcomeMatches,
                 partialMatches = ranking.PartialMatches,
                 qualifiedTeamsCount = ranking.QualifiedTeamsCount,
-                correctQualifiedTeamIds = ranking.CorrectQualifiedTeamIds
+                correctQualifiedTeamIds = ranking.CorrectQualifiedTeamIds,
+                qualifiedTeamStatuses = ranking.QualifiedTeamStatuses,
+                qualificationBonusByGroup = ranking.QualificationBonusByGroup
             });
         }
     }

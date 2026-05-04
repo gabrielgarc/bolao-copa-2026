@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 namespace Bolao.Copa2026.API.Models
 {
+    [BsonIgnoreExtraElements]
     public class UserRanking
     {
         [BsonId]
@@ -47,5 +48,20 @@ namespace Bolao.Copa2026.API.Models
 
         [BsonElement("correctQualifiedTeamIds")]
         public List<Guid> CorrectQualifiedTeamIds { get; set; } = new List<Guid>();
+
+        /// <summary>
+        /// Status de cada time que o usuário previu como classificado.
+        /// Key: TeamId.ToString(), Value: "correct" | "wrong" | "waiting"
+        /// </summary>
+        [BsonElement("qualifiedTeamStatuses")]
+        [BsonDictionaryOptions(DictionaryRepresentation.Document)]
+        public Dictionary<string, string> QualifiedTeamStatuses { get; set; } = new Dictionary<string, string>();
+
+        /// <summary>
+        /// Bônus de classificados por grupo (letra do grupo → pontos).
+        /// </summary>
+        [BsonElement("qualificationBonusByGroup")]
+        [BsonDictionaryOptions(DictionaryRepresentation.Document)]
+        public Dictionary<string, int> QualificationBonusByGroup { get; set; } = new Dictionary<string, int>();
     }
 }

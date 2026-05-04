@@ -16,6 +16,8 @@ interface SpreadsheetViewProps {
   pointsByMatch?: Record<string, number>;
   qualifiedTeamsCount?: number;
   correctQualifiedTeamIds?: string[];
+  qualifiedTeamStatuses?: Record<string, string>;
+  qualificationBonusByGroup?: Record<string, number>;
 }
 
 export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
@@ -28,24 +30,28 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
   isOfficial = false,
   pointsByMatch = {},
   qualifiedTeamsCount = 0,
-  correctQualifiedTeamIds = []
+  correctQualifiedTeamIds = [],
+  qualifiedTeamStatuses = {},
+  qualificationBonusByGroup = {}
 }) => {
   const [localPredictions, setLocalPredictions] = useState<Record<string, { home: string; away: string }>>(predictions);
   const [saveStatus, setSaveStatus] = useState<Record<string, 'saving' | 'error' | 'saved'>>({});
   const [errorModalOpen, setErrorModalOpen] = useState(false);
   const [errorDetail, setErrorDetail] = useState('');
+  const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({});
 
   // Garante que se o App carregar os dados atrasado, a tela puxe!
   React.useEffect(() => {
     setLocalPredictions(predictions);
   }, [predictions]);
 
-  const stages: { id: MatchStage, label: string }[] = [
+  const stages: { id: string, label: string }[] = [
     { id: 'GROUPS', label: 'Grupos' },
     { id: 'R32', label: '2ª Fase' },
     { id: 'R16', label: 'Oitavas' },
     { id: 'QF', label: 'Quartas' },
     { id: 'SF', label: 'Semi' },
+    { id: 'THIRD_PLACE', label: '3º Lugar' },
     { id: 'FINAL', label: 'Final' },
   ];
 
@@ -131,7 +137,19 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
     }
   };
 
-  const filteredMatches = matches.filter(m => m.stage === currentStage);
+  const filteredMatches = useMemo(() => {
+    return matches.filter(m => {
+      const isThirdPlaceMatch = (m.group?.toLowerCase().includes('3') || m.group?.toLowerCase().includes('third') || m.group?.toLowerCase().includes('terceiro') || m.placeholderLabel?.toLowerCase().includes('3rd'));
+      
+      if (currentStage === ('THIRD_PLACE' as any)) {
+        return m.stage === 'FINAL' && isThirdPlaceMatch;
+      }
+      if (currentStage === 'FINAL') {
+        return m.stage === 'FINAL' && !isThirdPlaceMatch;
+      }
+      return m.stage === currentStage;
+    });
+  }, [matches, currentStage]);
 
   // --- LOGIC FOR DESKTOP (Grouped) ---
   const matchesByGroup = useMemo(() => {
@@ -154,9 +172,10 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
     const hasRealScore = match.realHomeScore !== undefined && match.realHomeScore !== null;
     const isLocked = match.isLocked || hasRealScore || started || match.homeTeam.name === 'Unknown' || match.awayTeam.name === 'Unknown';
     const status = saveStatus[match.id];
+    const isFinal = currentStage === 'FINAL';
 
     return (
-      <tr key={match.id} className={`border-b border-gray-200 hover:bg-blue-50 transition-colors ${isLocked ? 'bg-gray-50' : ''}`}>
+      <tr key={match.id} className={`border-b border-gray-200 hover:bg-blue-50 transition-colors ${isLocked ? 'bg-gray-50' : ''} ${isFinal ? 'bg-gradient-to-r from-yellow-50 to-amber-100 hover:from-yellow-100 hover:to-amber-200' : ''}`}>
         <td className="p-1 md:p-2 border-r border-gray-200 text-center leading-none">
           <div className="text-[10px] md:text-sm text-gray-800 font-semibold flex flex-col items-center">
             <span>{formatDisplayDate(match.date)}</span>
@@ -196,6 +215,14 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
                 <span className="text-green-500 font-bold drop-shadow-[1px_1px_0_rgba(0,0,0,0.5)]">✓</span>
               ) : status === 'error' ? (
                 <span className="text-red-500 font-bold drop-shadow-[1px_1px_0_rgba(0,0,0,0.5)]">!</span>
+              ) : isFinal ? (
+                <div className="flex flex-col items-center mx-1">
+                   <img 
+                    src="https://www.clipartmax.com/png/small/135-1350795_fifa-world-cup-trophy-vector-2014-fifa-world-cup-squads.png" 
+                    alt="Trophy" 
+                    className="w-6 h-8 md:w-8 md:h-12 object-contain drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] animate-pulse"
+                  />
+                </div>
               ) : (
                 "x"
               )}
@@ -256,21 +283,39 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
     );
   };
 
+  const findGroupStandings = (groupName: string, source: StandingsResponse | undefined) => {
+    if (!source) return [];
+    const letter = groupName.replace('Grupo ', '').replace('Group ', '').replace('GROUP_', '').trim().toUpperCase();
+    const possibleKeys = [`GROUP_${letter}`, `Group ${letter}`, `Grupo ${letter}`];
+    for (const key of possibleKeys) {
+      if (source.groups[key]?.length) return source.groups[key];
+    }
+    return [];
+  };
+
+  const extractGroupLetter = (groupName: string) => {
+    return groupName.replace('Grupo ', '').replace('Group ', '').replace('GROUP_', '').trim().toUpperCase();
+  };
+
+  const getGroupTotalScore = (groupName: string, groupMatches: Match[]) => {
+    if (isOfficial) return { groupMatchPts: 0, qualBonusPts: 0, groupTotal: 0, qualifiedTeams: [] as any[] };
+    
+    const groupStandings = findGroupStandings(groupName, standings);
+    const groupMatchIds = groupMatches.map(m => m.id);
+    const groupMatchPts = groupMatchIds.reduce((sum, id) => sum + (pointsByMatch[id] || 0), 0);
+    const qualifiedTeams = groupStandings.filter(t => t.isQualified);
+    
+    // Bônus vem direto do backend
+    const letter = extractGroupLetter(groupName);
+    const qualBonusPts = qualificationBonusByGroup[letter] || 0;
+
+    return { groupMatchPts, qualBonusPts, groupTotal: groupMatchPts + qualBonusPts, qualifiedTeams };
+  };
+
   const renderScoreSummary = (groupName: string, groupMatches: Match[]) => {
     if (isOfficial) return null;
     
-    const groupKey = groupName.replace('Grupo ', 'GROUP_');
-    const groupStandings = standings.groups[groupKey] || [];
-    const groupMatchIds = groupMatches.map(m => m.id);
-    const groupMatchPts = groupMatchIds.reduce((sum, id) => sum + (pointsByMatch[id] || 0), 0);
-    
-    const qualifiedTeams = groupStandings.filter(t => t.isQualified);
-    const groupQualifiedMatchedCount = qualifiedTeams
-      .filter(t => correctQualifiedTeamIds.includes(t.teamId))
-      .length;
-    
-    const qualBonusPts = groupQualifiedMatchedCount * 100;
-    const groupTotal = groupMatchPts + qualBonusPts;
+    const { groupMatchPts, qualBonusPts, groupTotal, qualifiedTeams } = getGroupTotalScore(groupName, groupMatches);
 
     return (
       <div className="mt-2 bg-black/40 border border-white/20 px-3 py-2 text-[10px] md:text-xs font-bold text-white">
@@ -282,19 +327,29 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
           <div className="mb-1">
             <div className="text-white/50 text-[8px] md:text-[10px] uppercase tracking-wider mb-1 mt-1">Classificados:</div>
             {qualifiedTeams.map(team => {
-              const isCorrect = correctQualifiedTeamIds.includes(team.teamId);
+              // Status vem direto do backend
+              const status = qualifiedTeamStatuses[team.teamId] || 'waiting';
               return (
                 <div key={team.teamId} className="flex justify-between items-center mb-0.5 pl-1">
                   <div className="flex items-center gap-1.5">
-                    <span className={isCorrect ? 'text-green-400' : 'text-red-400'}>{isCorrect ? '✓' : '✗'}</span>
+                    {status === 'waiting' && <span className="text-yellow-400 text-[10px] w-3 flex justify-center">⏳</span>}
+                    {status === 'correct' && <span className="text-green-400 w-3 flex justify-center">✓</span>}
+                    {status === 'wrong' && <span className="text-red-400 w-3 flex justify-center">✗</span>}
+                    
                     <PixelFlag team={team.team} className="w-4 h-3 md:w-5 md:h-3.5 border-black shrink-0" />
-                    <span className={`uppercase text-[9px] md:text-[11px] ${isCorrect ? 'text-green-300' : 'text-red-300'}`}>
+                    <span className={`uppercase text-[9px] md:text-[11px] ${
+                      status === 'waiting' ? 'text-gray-300' :
+                      status === 'correct' ? 'text-green-300' : 'text-red-300'
+                    }`}>
                       <span className="md:hidden">{team.team.code}</span>
                       <span className="hidden md:inline">{team.team.namePt || team.team.name}</span>
                     </span>
                   </div>
-                  <span className={`text-[9px] md:text-[11px] ${isCorrect ? 'text-green-400' : 'text-red-400/50'}`}>
-                    {isCorrect ? '+100' : '+0'}
+                  <span className={`text-[9px] md:text-[11px] ${
+                    status === 'waiting' ? 'text-gray-400' :
+                    status === 'correct' ? 'text-green-400' : 'text-red-400/50'
+                  }`}>
+                    {status === 'waiting' ? '?' : (status === 'correct' ? '+100' : '+0')}
                   </span>
                 </div>
               );
@@ -332,7 +387,7 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
           <PixelButton
             key={stage.id}
             variant={currentStage === stage.id ? (isOfficial ? 'danger' : 'action') : 'primary'}
-            onClick={() => onStageChange(stage.id)}
+            onClick={() => onStageChange(stage.id as MatchStage)}
             className="flex-grow md:flex-grow-0 min-w-[50px] text-[7px] md:text-xs text-center justify-center px-1 md:px-2 py-2"
           >
             {stage.label}
@@ -343,18 +398,29 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
       {/* ==================== DESKTOP VIEW (SPLIT TABLES) ==================== */}
       <div className="hidden md:block space-y-12">
         {sortedGroupEntries.map(([groupName, groupMatches]) => (
-          <div key={groupName} className="flex flex-col gap-4">
-            {groupName && (
-              <h2 className="text-yellow-400 text-xl font-bold uppercase drop-shadow-[2px_2px_0px_rgba(0,0,0,1)] px-2">
-                {groupName}
-              </h2>
-            )}
-
-            <div className="flex flex-row gap-6 items-start">
-              {/* Lado Esquerdo: Planilha de Jogos */}
+          <div key={groupName} className="flex flex-col gap-2 mb-8">
+            
+            {/* Headers alinhados horizontalmente */}
+            <div className="flex flex-row gap-6 items-end px-2">
               <div className={currentStage === 'GROUPS' ? "w-[58%]" : "w-full"}>
-                <PixelCard className="p-0 overflow-hidden bg-white shadow-[6px_6px_0px_0px_rgba(0,0,0,0.5)]" colorClass="bg-white">
-                  <table className="w-full text-left border-collapse table-fixed">
+                {groupName && (
+                  <h2 className="text-yellow-400 text-xl font-bold uppercase drop-shadow-[2px_2px_0px_rgba(0,0,0,1)] leading-none">
+                    {groupName}
+                  </h2>
+                )}
+              </div>
+              {currentStage === 'GROUPS' && (
+                <div className="w-[42%]">
+                  <div className="text-xs text-white/50 uppercase font-bold leading-none">Classificação Simulada</div>
+                </div>
+              )}
+            </div>
+
+            <div className="flex flex-row gap-6 items-stretch">
+              {/* Lado Esquerdo: Planilha de Jogos */}
+              <div className={currentStage === 'GROUPS' ? "w-[58%] flex flex-col" : "w-full flex flex-col"}>
+                <PixelCard className="p-0 overflow-hidden bg-white shadow-[6px_6px_0px_0px_rgba(0,0,0,0.5)] h-full" colorClass="bg-white">
+                  <table className="w-full h-full text-left border-collapse table-fixed">
                     <thead>
                       <tr className={`${isOfficial ? 'bg-red-600' : 'bg-blue-600'} text-white text-[10px] uppercase font-bold border-b-4 border-black`}>
                         <th className="p-1 border-r border-black/20 w-[15%] text-center">Data</th>
@@ -373,13 +439,32 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
               </div>
 
                   {currentStage === 'GROUPS' && (
-                    <div className="w-[42%]">
-                      <div className="mb-2 text-xs text-white/50 uppercase font-bold px-2">Classificação Simulada</div>
-                      <StandingsTable stats={standings.groups[groupName.replace('Grupo ', 'GROUP_')] || []} />
-                      {renderScoreSummary(groupName, groupMatches)}
+                    <div className="w-[42%] flex flex-col">
+                      <StandingsTable stats={findGroupStandings(groupName, standings)} className="h-full shadow-[6px_6px_0px_0px_rgba(0,0,0,0.5)]" />
                     </div>
                   )}
             </div>
+            
+            {/* Resumo de Pontuação (Embaixo das duas tabelas) */}
+            {currentStage === 'GROUPS' && !isOfficial && (
+              <div className="mt-2 w-full">
+                <button 
+                  onClick={() => setExpandedGroups(prev => ({ ...prev, [groupName]: !prev[groupName] }))}
+                  className="w-full text-[10px] md:text-xs bg-gray-800 hover:bg-gray-700 text-yellow-400 px-3 py-2 font-bold uppercase border-2 border-black shadow-[3px_3px_0_rgba(0,0,0,1)] flex justify-between items-center transition-all group"
+                >
+                  <span>Resumo de Pontuação ({getGroupTotalScore(groupName, groupMatches).groupTotal} PTS)</span>
+                  <span className="text-white group-hover:scale-125 transition-transform">
+                    {expandedGroups[groupName] ? '▲' : '▼'}
+                  </span>
+                </button>
+                
+                {expandedGroups[groupName] && (
+                  <div className="animate-fadeIn mt-2">
+                    {renderScoreSummary(groupName, groupMatches)}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         ))}
 
@@ -420,11 +505,24 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
 
                 groupMatches.forEach((match, idx) => {
                   if (match.group !== currentGroup) {
-                    if (currentGroup && currentStage === 'GROUPS') {
+                    if (currentGroup && currentStage === 'GROUPS' && !isOfficial) {
+                        const groupToSummarize = currentGroup;
+                        const matchesToSummarize = [...groupMatchList];
                         elements.push(
-                            <tr key={`${currentGroup}-summary`} className="bg-gray-100">
-                                <td colSpan={6} className="p-2 pt-0">
-                                    {renderScoreSummary(currentGroup, groupMatchList)}
+                            <tr key={`${groupToSummarize}-summary`} className="bg-gray-100">
+                                <td colSpan={6} className="p-2">
+                                  <button 
+                                    onClick={() => setExpandedGroups(prev => ({ ...prev, [groupToSummarize]: !prev[groupToSummarize] }))}
+                                    className="w-full text-[9px] bg-gray-800 text-yellow-400 px-2 py-1.5 font-bold uppercase border border-black flex justify-between items-center"
+                                  >
+                                    <span>Resumo de Pontos ({getGroupTotalScore(groupToSummarize, matchesToSummarize).groupTotal} PTS)</span>
+                                    <span className="text-white">{expandedGroups[groupToSummarize] ? '▲' : '▼'}</span>
+                                  </button>
+                                  {expandedGroups[groupToSummarize] && (
+                                    <div className="animate-fadeIn mt-1">
+                                      {renderScoreSummary(groupToSummarize, matchesToSummarize)}
+                                    </div>
+                                  )}
                                 </td>
                             </tr>
                         );
@@ -445,11 +543,24 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
                   elements.push(renderMatchRow(match, false));
 
                   // Last item summary
-                  if (idx === groupMatches.length - 1 && currentGroup && currentStage === 'GROUPS') {
+                  if (idx === groupMatches.length - 1 && currentGroup && currentStage === 'GROUPS' && !isOfficial) {
+                    const groupToSummarize = currentGroup;
+                    const matchesToSummarize = [...groupMatchList];
                     elements.push(
-                        <tr key={`${currentGroup}-summary-last`} className="bg-gray-100">
-                            <td colSpan={6} className="p-2 pt-0">
-                                {renderScoreSummary(currentGroup, groupMatchList)}
+                        <tr key={`${groupToSummarize}-summary-last`} className="bg-gray-100">
+                            <td colSpan={6} className="p-2">
+                              <button 
+                                onClick={() => setExpandedGroups(prev => ({ ...prev, [groupToSummarize]: !prev[groupToSummarize] }))}
+                                className="w-full text-[9px] bg-gray-800 text-yellow-400 px-2 py-1.5 font-bold uppercase border border-black flex justify-between items-center"
+                              >
+                                <span>Resumo de Pontos ({getGroupTotalScore(groupToSummarize, matchesToSummarize).groupTotal} PTS)</span>
+                                <span className="text-white">{expandedGroups[groupToSummarize] ? '▲' : '▼'}</span>
+                              </button>
+                              {expandedGroups[groupToSummarize] && (
+                                <div className="animate-fadeIn mt-1">
+                                  {renderScoreSummary(groupToSummarize, matchesToSummarize)}
+                                </div>
+                              )}
                             </td>
                         </tr>
                     );

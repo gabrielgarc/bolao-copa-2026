@@ -3,6 +3,7 @@ using System;
 
 namespace Bolao.Copa2026.API.Models
 {
+    [BsonIgnoreExtraElements]
     public class User
     {
         [BsonId]

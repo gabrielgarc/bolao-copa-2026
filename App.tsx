@@ -41,7 +41,7 @@ const App: React.FC = () => {
     const [groupDefinitions, setGroupDefinitions] = useState<Record<string, any[]>>({});
     const [simulatedToday, setSimulatedToday] = useState<string>('');
     const [isLoading, setIsLoading] = useState(true);
-    const [myRanking, setMyRanking] = useState<MyRankingData>({ pointsByMatch: {}, pointsByStage: {}, totalPoints: 0, qualifiedTeamsCount: 0, correctQualifiedTeamIds: [] });
+    const [myRanking, setMyRanking] = useState<MyRankingData>({ pointsByMatch: {}, pointsByStage: {}, totalPoints: 0, qualifiedTeamsCount: 0, correctQualifiedTeamIds: [], qualifiedTeamStatuses: {}, qualificationBonusByGroup: {} });
 
     // Carregamento inicial de dados usando os novos serviços
     useEffect(() => {
@@ -333,6 +333,8 @@ const App: React.FC = () => {
                         pointsByMatch={myRanking.pointsByMatch}
                         qualifiedTeamsCount={myRanking.qualifiedTeamsCount}
                         correctQualifiedTeamIds={myRanking.correctQualifiedTeamIds || []}
+                        qualifiedTeamStatuses={myRanking.qualifiedTeamStatuses || {}}
+                        qualificationBonusByGroup={myRanking.qualificationBonusByGroup || {}}
                     />
                 )}
 

@@ -7,6 +7,8 @@ export interface MyRankingData {
   totalPoints: number;
   qualifiedTeamsCount: number;
   correctQualifiedTeamIds: string[];
+  qualifiedTeamStatuses: Record<string, string>;
+  qualificationBonusByGroup: Record<string, number>;
 }
 
 export const RankingService = {
@@ -31,7 +33,9 @@ export const RankingService = {
         pointsByStage: {}, 
         totalPoints: 0, 
         qualifiedTeamsCount: 0,
-        correctQualifiedTeamIds: []
+        correctQualifiedTeamIds: [],
+        qualifiedTeamStatuses: {},
+        qualificationBonusByGroup: {}
       };
     }
   }

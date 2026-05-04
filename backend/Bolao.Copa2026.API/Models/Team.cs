@@ -1,5 +1,8 @@
+using MongoDB.Bson.Serialization.Attributes;
+
 namespace Bolao.Copa2026.API.Models
 {
+    [BsonIgnoreExtraElements]
     public class Team
     {
         public Guid Id { get; set; } = new Guid();
