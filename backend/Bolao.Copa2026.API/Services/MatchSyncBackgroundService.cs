@@ -58,10 +58,10 @@ namespace Bolao.Copa2026.API.Services
             {
                 _logger.LogInformation("Sincronizando partidas...");
 
-                var matchesModule = scope.ServiceProvider.GetRequiredService<MatchesModule>();
+                var dataProvider = scope.ServiceProvider.GetRequiredService<IMatchDataProvider>();
                 var matchRepo = scope.ServiceProvider.GetRequiredService<IRepository<Match>>();
 
-                var apiMatchesResponse = await matchesModule.GetWorldCupMatchesAsync();
+                var apiMatchesResponse = await dataProvider.GetMatchesAsync();
                 if (apiMatchesResponse?.Matches != null)
                 {
                     var dbMatchesList = await matchRepo.GetAllAsync();

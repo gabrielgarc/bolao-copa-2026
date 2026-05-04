@@ -26,17 +26,20 @@ namespace Bolao.Copa2026.API.Controllers
         private readonly IRepository<UserRanking> _userRankingRepo;
         private readonly IRankingService _rankingService;
         private readonly IPredictionService _predictionService;
+        private readonly MockMatchDataProvider? _mockProvider;
 
         public AdminController(
             IRepository<Match> matchRepo,
             IRepository<UserRanking> userRankingRepo,
             IRankingService rankingService,
-            IPredictionService predictionService)
+            IPredictionService predictionService,
+            MockMatchDataProvider? mockProvider = null)
         {
             _matchRepo = matchRepo;
             _userRankingRepo = userRankingRepo;
             _rankingService = rankingService;
             _predictionService = predictionService;
+            _mockProvider = mockProvider;
         }
 
         /// <summary>
@@ -313,5 +316,95 @@ namespace Bolao.Copa2026.API.Controllers
             if (m.RealAwayScore > m.RealHomeScore) return m.AwayTeamName;
             return m.HomeTeamName;
         }
+
+        // ==================== MOCK API ENDPOINTS ====================
+
+        /// <summary>
+        /// Seta placar e status de um jogo mockado pelo ApiId.
+        /// </summary>
+        [HttpPost("mock/match/{apiId}")]
+        public ActionResult MockMatch(int apiId, [FromBody] MockMatchRequest request)
+        {
+            if (_mockProvider == null)
+                return BadRequest("MockApi não está habilitado. Ative 'MatchPolling:MockApi' no appsettings.json.");
+
+            _mockProvider.SetMatchResult(apiId, request.HomeScore, request.AwayScore, request.Status ?? "FINISHED");
+            return Ok(new { message = $"Mock: Match {apiId} → {request.HomeScore}x{request.AwayScore} ({request.Status ?? "FINISHED"})" });
+        }
+
+        /// <summary>
+        /// Simula resultados aleatórios para um grupo inteiro via mock (não escreve no banco — o sync faz isso).
+        /// </summary>
+        [HttpPost("mock/group/{letter}")]
+        public async Task<ActionResult> MockGroup(string letter)
+        {
+            if (_mockProvider == null)
+                return BadRequest("MockApi não está habilitado.");
+
+            int count = await _mockProvider.SimulateGroupAsync(letter);
+            if (count == 0)
+                return NotFound($"Nenhuma partida encontrada para o grupo '{letter}'.");
+
+            return Ok(new { message = $"Mock: {count} jogos do grupo {letter.ToUpper()} simulados. Aguarde o sync (30s) para refletir no banco.", count });
+        }
+
+        /// <summary>
+        /// Coloca um jogo como IN_PLAY (simulando jogo ao vivo).
+        /// </summary>
+        [HttpPost("mock/start/{apiId}")]
+        public ActionResult MockStartMatch(int apiId)
+        {
+            if (_mockProvider == null)
+                return BadRequest("MockApi não está habilitado.");
+
+            _mockProvider.StartMatch(apiId);
+            return Ok(new { message = $"Mock: Match {apiId} → IN_PLAY" });
+        }
+
+        /// <summary>
+        /// Finaliza um jogo com o placar atual.
+        /// </summary>
+        [HttpPost("mock/finish/{apiId}")]
+        public ActionResult MockFinishMatch(int apiId)
+        {
+            if (_mockProvider == null)
+                return BadRequest("MockApi não está habilitado.");
+
+            _mockProvider.FinishMatch(apiId);
+            return Ok(new { message = $"Mock: Match {apiId} → FINISHED" });
+        }
+
+        /// <summary>
+        /// Mostra o estado atual de todos os mocks ativos.
+        /// </summary>
+        [HttpGet("mock/status")]
+        public ActionResult MockStatus()
+        {
+            if (_mockProvider == null)
+                return BadRequest("MockApi não está habilitado.");
+
+            var states = _mockProvider.GetAllMockStates();
+            return Ok(new { mockEnabled = true, count = states.Count, matches = states });
+        }
+
+        /// <summary>
+        /// Limpa todos os estados mock.
+        /// </summary>
+        [HttpDelete("mock/clear")]
+        public ActionResult MockClear()
+        {
+            if (_mockProvider == null)
+                return BadRequest("MockApi não está habilitado.");
+
+            _mockProvider.ClearAll();
+            return Ok(new { message = "Mock: Todos os estados limpos." });
+        }
+    }
+
+    public class MockMatchRequest
+    {
+        public int HomeScore { get; set; }
+        public int AwayScore { get; set; }
+        public string? Status { get; set; } = "FINISHED";
     }
 }

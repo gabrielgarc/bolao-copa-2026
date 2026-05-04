@@ -34,6 +34,18 @@ builder.Services.AddScoped<TeamsModule>();
 builder.Services.AddHttpClient<MatchesModule>();
 builder.Services.AddScoped<MatchesModule>();
 
+// --- IMatchDataProvider: Mock ou Real ---
+var mockApiEnabled = builder.Configuration.GetValue<bool>("MatchPolling:MockApi");
+if (mockApiEnabled)
+{
+    builder.Services.AddSingleton<MockMatchDataProvider>();
+    builder.Services.AddSingleton<IMatchDataProvider>(sp => sp.GetRequiredService<MockMatchDataProvider>());
+}
+else
+{
+    builder.Services.AddScoped<IMatchDataProvider, FootballApiMatchDataProvider>();
+}
+
 
 
 

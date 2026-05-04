@@ -4,5 +4,6 @@ namespace Bolao.Copa2026.API.Models
     {
         public int IntervalSeconds { get; set; } = 30;
         public bool SyncEnabled { get; set; } = true;
+        public bool MockApi { get; set; } = false;
     }
 }

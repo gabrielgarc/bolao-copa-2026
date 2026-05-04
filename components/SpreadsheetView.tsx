@@ -39,6 +39,7 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
   const [errorModalOpen, setErrorModalOpen] = useState(false);
   const [errorDetail, setErrorDetail] = useState('');
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({});
+  const [expandedStandings, setExpandedStandings] = useState<Record<string, boolean>>({});
 
   // Garante que se o App carregar os dados atrasado, a tela puxe!
   React.useEffect(() => {
@@ -370,6 +371,46 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
     );
   };
 
+  const renderMobileStandings = (groupName: string, groupMatchList: Match[] = []) => {
+    if (currentStage !== 'GROUPS') return null;
+    const groupStats = findGroupStandings(groupName, standings);
+    if (!groupStats.length) return null;
+
+    const key = `standings-${groupName}`;
+    const isExpanded = expandedStandings[key];
+    const isSaving = groupMatchList.some(m => saveStatus[m.id] === 'saving');
+
+    return (
+      <tr key={key} className="bg-gray-900/50">
+        <td colSpan={isOfficial ? 4 : 6} className="p-1.5">
+          <button
+            onClick={() => setExpandedStandings(prev => ({ ...prev, [key]: !prev[key] }))}
+            className={`w-full text-[9px] bg-indigo-900 hover:bg-indigo-800 text-white px-2 py-1.5 font-bold uppercase border border-indigo-500/50 flex justify-between items-center transition-all ${isSaving ? 'animate-pulse' : ''}`}
+          >
+            <span>
+              {isSaving ? '⏳' : '📊'} Classificação
+              {isSaving && <span className="ml-1 text-yellow-300 text-[8px]">atualizando...</span>}
+            </span>
+            <span>{isExpanded ? '▲' : '▼'}</span>
+          </button>
+          {isExpanded && (
+            <div className="animate-fadeIn mt-1 relative">
+              {isSaving && (
+                <div className="absolute inset-0 bg-white/50 z-10 flex items-center justify-center backdrop-blur-[1px]">
+                  <div className="flex items-center gap-1 bg-blue-600 text-white px-2 py-1 text-[9px] font-bold border border-black shadow-[2px_2px_0_rgba(0,0,0,1)]">
+                    <span className="inline-block w-2.5 h-2.5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                    Atualizando...
+                  </div>
+                </div>
+              )}
+              <StandingsTable stats={groupStats} className="shadow-none border border-white/10" />
+            </div>
+          )}
+        </td>
+      </tr>
+    );
+  };
+
   return (
     <div className="max-w-full mx-auto pb-20 px-0.5 md:px-4">
       {/* Titulo extra se for Resultados Oficiais */}
@@ -439,7 +480,15 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
               </div>
 
                   {currentStage === 'GROUPS' && (
-                    <div className="w-[42%] flex flex-col">
+                    <div className="w-[42%] flex flex-col relative">
+                      {groupMatches.some(m => saveStatus[m.id] === 'saving') && (
+                        <div className="absolute inset-0 bg-white/60 z-10 flex items-center justify-center backdrop-blur-[1px] transition-opacity">
+                          <div className="flex items-center gap-2 bg-blue-600 text-white px-3 py-1.5 text-xs font-bold border-2 border-black shadow-[3px_3px_0_rgba(0,0,0,1)] animate-pulse">
+                            <span className="inline-block w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                            Atualizando...
+                          </div>
+                        </div>
+                      )}
                       <StandingsTable stats={findGroupStandings(groupName, standings)} className="h-full shadow-[6px_6px_0px_0px_rgba(0,0,0,0.5)]" />
                     </div>
                   )}
@@ -505,27 +554,33 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
 
                 groupMatches.forEach((match, idx) => {
                   if (match.group !== currentGroup) {
-                    if (currentGroup && currentStage === 'GROUPS' && !isOfficial) {
-                        const groupToSummarize = currentGroup;
-                        const matchesToSummarize = [...groupMatchList];
-                        elements.push(
-                            <tr key={`${groupToSummarize}-summary`} className="bg-gray-100">
-                                <td colSpan={6} className="p-2">
-                                  <button 
-                                    onClick={() => setExpandedGroups(prev => ({ ...prev, [groupToSummarize]: !prev[groupToSummarize] }))}
-                                    className="w-full text-[9px] bg-gray-800 text-yellow-400 px-2 py-1.5 font-bold uppercase border border-black flex justify-between items-center"
-                                  >
-                                    <span>Resumo de Pontos ({getGroupTotalScore(groupToSummarize, matchesToSummarize).groupTotal} PTS)</span>
-                                    <span className="text-white">{expandedGroups[groupToSummarize] ? '▲' : '▼'}</span>
-                                  </button>
-                                  {expandedGroups[groupToSummarize] && (
-                                    <div className="animate-fadeIn mt-1">
-                                      {renderScoreSummary(groupToSummarize, matchesToSummarize)}
-                                    </div>
-                                  )}
-                                </td>
-                            </tr>
-                        );
+                    // Classificação + Resumo do grupo anterior
+                    if (currentGroup && currentStage === 'GROUPS') {
+                        const prevGroup = currentGroup;
+                        elements.push(renderMobileStandings(prevGroup, [...groupMatchList]));
+
+                        if (!isOfficial) {
+                          const groupToSummarize = prevGroup;
+                          const matchesToSummarize = [...groupMatchList];
+                          elements.push(
+                              <tr key={`${groupToSummarize}-summary`} className="bg-gray-100">
+                                  <td colSpan={6} className="p-2">
+                                    <button 
+                                      onClick={() => setExpandedGroups(prev => ({ ...prev, [groupToSummarize]: !prev[groupToSummarize] }))}
+                                      className="w-full text-[9px] bg-gray-800 text-yellow-400 px-2 py-1.5 font-bold uppercase border border-black flex justify-between items-center"
+                                    >
+                                      <span>Resumo de Pontos ({getGroupTotalScore(groupToSummarize, matchesToSummarize).groupTotal} PTS)</span>
+                                      <span className="text-white">{expandedGroups[groupToSummarize] ? '▲' : '▼'}</span>
+                                    </button>
+                                    {expandedGroups[groupToSummarize] && (
+                                      <div className="animate-fadeIn mt-1">
+                                        {renderScoreSummary(groupToSummarize, matchesToSummarize)}
+                                      </div>
+                                    )}
+                                  </td>
+                              </tr>
+                          );
+                        }
                     }
                     currentGroup = match.group;
                     groupMatchList = [];
@@ -542,28 +597,32 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
                   groupMatchList.push(match);
                   elements.push(renderMatchRow(match, false));
 
-                  // Last item summary
-                  if (idx === groupMatches.length - 1 && currentGroup && currentStage === 'GROUPS' && !isOfficial) {
-                    const groupToSummarize = currentGroup;
-                    const matchesToSummarize = [...groupMatchList];
-                    elements.push(
-                        <tr key={`${groupToSummarize}-summary-last`} className="bg-gray-100">
-                            <td colSpan={6} className="p-2">
-                              <button 
-                                onClick={() => setExpandedGroups(prev => ({ ...prev, [groupToSummarize]: !prev[groupToSummarize] }))}
-                                className="w-full text-[9px] bg-gray-800 text-yellow-400 px-2 py-1.5 font-bold uppercase border border-black flex justify-between items-center"
-                              >
-                                <span>Resumo de Pontos ({getGroupTotalScore(groupToSummarize, matchesToSummarize).groupTotal} PTS)</span>
-                                <span className="text-white">{expandedGroups[groupToSummarize] ? '▲' : '▼'}</span>
-                              </button>
-                              {expandedGroups[groupToSummarize] && (
-                                <div className="animate-fadeIn mt-1">
-                                  {renderScoreSummary(groupToSummarize, matchesToSummarize)}
-                                </div>
-                              )}
-                            </td>
-                        </tr>
-                    );
+                  // Last item: classificação + summary
+                  if (idx === groupMatches.length - 1 && currentGroup && currentStage === 'GROUPS') {
+                    elements.push(renderMobileStandings(currentGroup, [...groupMatchList]));
+
+                    if (!isOfficial) {
+                      const groupToSummarize = currentGroup;
+                      const matchesToSummarize = [...groupMatchList];
+                      elements.push(
+                          <tr key={`${groupToSummarize}-summary-last`} className="bg-gray-100">
+                              <td colSpan={6} className="p-2">
+                                <button 
+                                  onClick={() => setExpandedGroups(prev => ({ ...prev, [groupToSummarize]: !prev[groupToSummarize] }))}
+                                  className="w-full text-[9px] bg-gray-800 text-yellow-400 px-2 py-1.5 font-bold uppercase border border-black flex justify-between items-center"
+                                >
+                                  <span>Resumo de Pontos ({getGroupTotalScore(groupToSummarize, matchesToSummarize).groupTotal} PTS)</span>
+                                  <span className="text-white">{expandedGroups[groupToSummarize] ? '▲' : '▼'}</span>
+                                </button>
+                                {expandedGroups[groupToSummarize] && (
+                                  <div className="animate-fadeIn mt-1">
+                                    {renderScoreSummary(groupToSummarize, matchesToSummarize)}
+                                  </div>
+                                )}
+                              </td>
+                          </tr>
+                      );
+                    }
                   }
                 });
 

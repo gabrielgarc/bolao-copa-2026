@@ -14,7 +14,7 @@ export const StandingsTable: React.FC<StandingsTableProps> = ({ stats, className
       <div className="w-full h-full">
         <table className="w-full h-full text-center border-collapse table-fixed">
           <thead>
-            <tr className="bg-gray-300 border-b-4 border-gray-900 text-[10px] md:text-sm font-bold text-black">
+            <tr className="bg-gray-300 border-b-4 border-gray-900 text-[8px] md:text-sm font-bold text-black">
               <th className="p-1 w-[8%] border-r border-gray-500">#</th>
               <th className="p-1 w-[28%] border-r border-gray-500 text-left pl-2">TIME</th>
               <th className="p-1 w-[10%] border-r border-gray-500 bg-yellow-300">P</th>
@@ -26,13 +26,13 @@ export const StandingsTable: React.FC<StandingsTableProps> = ({ stats, className
               <th className="p-1 w-[9%]">GP</th>
             </tr>
           </thead>
-          <tbody className="text-xs md:text-base font-bold text-gray-950">
+          <tbody className="text-[9px] md:text-base font-bold text-gray-950">
             {stats.map((row, index) => {
               const isQualifying = row.isQualified ?? false;
               return (
                 <tr 
                   key={row.teamId} 
-                  className={`border-b-2 border-gray-300 h-12 md:h-14 ${isQualifying ? 'bg-green-100' : 'bg-white'}`}
+                  className={`border-b border-gray-300 h-7 md:h-14 ${isQualifying ? 'bg-green-100' : 'bg-white'}`}
                 >
                   <td className={`border-r border-gray-300 ${isQualifying ? 'text-green-800' : 'text-gray-700'}`}>
                     {index + 1}
@@ -41,7 +41,7 @@ export const StandingsTable: React.FC<StandingsTableProps> = ({ stats, className
                     <div className="flex items-center gap-1 md:gap-2 overflow-hidden">
                       <PixelFlag 
                         team={row.team} 
-                        className="w-6 h-4 md:w-8 md:h-5 shrink-0 border-black" 
+                        className="w-4 h-3 md:w-8 md:h-5 shrink-0 border-black" 
                       />
                       <span className="truncate text-black uppercase">
                         <span className="md:hidden">{row.team.code}</span>
