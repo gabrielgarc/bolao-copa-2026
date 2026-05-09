@@ -177,6 +177,34 @@ namespace Bolao.Copa2026.API.Services
             return count;
         }
 
+        /// <summary>
+        /// Simula resultados aleatórios para todos os jogos de uma fase eliminatória.
+        /// Stages válidos: LAST_32, LAST_16, QUARTER_FINALS, SEMI_FINALS, THIRD_PLACE, FINAL
+        /// </summary>
+        public async Task<int> SimulateStageAsync(string stage)
+        {
+            await EnsureInitializedAsync();
+
+            var rng = new Random();
+            int count = 0;
+
+            foreach (var match in _baseMatches.Where(m =>
+                m.Stage != null &&
+                m.Stage.Equals(stage, StringComparison.OrdinalIgnoreCase) &&
+                m.Id.HasValue))
+            {
+                var home = rng.Next(0, 4);
+                var away = rng.Next(0, 4);
+                // Avoid draws in knockout (re-roll once)
+                if (home == away) away = rng.Next(0, 4);
+                SetMatchResult(match.Id!.Value, home, away, "FINISHED");
+                count++;
+            }
+
+            _logger.LogInformation("Mock: Simulado stage {Stage} com {Count} jogos.", stage, count);
+            return count;
+        }
+
         public Dictionary<int, MockMatchState> GetAllMockStates() => new(_mockStates);
 
         public void ClearAll()

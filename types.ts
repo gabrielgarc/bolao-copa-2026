@@ -10,7 +10,7 @@ export interface Team {
   crestUrl?: string;
 }
 
-export type MatchStage = 'GROUPS' | 'R32' | 'R16' | 'QF' | 'SF' | 'FINAL';
+export type MatchStage = 'GROUPS' | 'R32' | 'R16' | 'QF' | 'SF' | 'THIRD_PLACE' | 'FINAL';
 
 export interface Match {
   id: string;

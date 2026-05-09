@@ -53,7 +53,7 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
     { id: 'QF', label: 'Quartas' },
     { id: 'SF', label: 'Semi' },
     { id: 'THIRD_PLACE', label: '3º Lugar' },
-    { id: 'FINAL', label: 'Final' },
+    { id: 'FINAL', label: '🏆 Final' },
   ];
 
   const handleInputChange = async (matchId: string, side: 'home' | 'away', value: string) => {
@@ -139,17 +139,7 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
   };
 
   const filteredMatches = useMemo(() => {
-    return matches.filter(m => {
-      const isThirdPlaceMatch = (m.group?.toLowerCase().includes('3') || m.group?.toLowerCase().includes('third') || m.group?.toLowerCase().includes('terceiro') || m.placeholderLabel?.toLowerCase().includes('3rd'));
-      
-      if (currentStage === ('THIRD_PLACE' as any)) {
-        return m.stage === 'FINAL' && isThirdPlaceMatch;
-      }
-      if (currentStage === 'FINAL') {
-        return m.stage === 'FINAL' && !isThirdPlaceMatch;
-      }
-      return m.stage === currentStage;
-    });
+    return matches.filter(m => m.stage === currentStage);
   }, [matches, currentStage]);
 
   // --- LOGIC FOR DESKTOP (Grouped) ---
@@ -218,9 +208,9 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
                 <span className="text-red-500 font-bold drop-shadow-[1px_1px_0_rgba(0,0,0,0.5)]">!</span>
               ) : isFinal ? (
                 <div className="flex flex-col items-center mx-1">
-                   <img 
-                    src="https://www.clipartmax.com/png/small/135-1350795_fifa-world-cup-trophy-vector-2014-fifa-world-cup-squads.png" 
-                    alt="Trophy" 
+                  <img
+                    src="https://www.clipartmax.com/png/small/135-1350795_fifa-world-cup-trophy-vector-2014-fifa-world-cup-squads.png"
+                    alt="Trophy"
                     className="w-6 h-8 md:w-8 md:h-12 object-contain drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] animate-pulse"
                   />
                 </div>
@@ -266,13 +256,12 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
         {!isOfficial && (
           <td className="p-0.5 md:p-1 text-center border-l border-gray-200">
             {hasRealScore && pointsByMatch[match.id] !== undefined ? (
-              <span className={`px-1.5 py-0.5 font-bold text-[9px] md:text-[10px] border ${
-                pointsByMatch[match.id] === 120 ? 'bg-green-100 text-green-700 border-green-400' :
+              <span className={`px-1.5 py-0.5 font-bold text-[9px] md:text-[10px] border ${pointsByMatch[match.id] === 120 ? 'bg-green-100 text-green-700 border-green-400' :
                 pointsByMatch[match.id] === 90 ? 'bg-pink-100 text-pink-700 border-pink-400' :
-                pointsByMatch[match.id] === 60 ? 'bg-cyan-100 text-cyan-700 border-cyan-400' :
-                pointsByMatch[match.id] === 30 ? 'bg-yellow-100 text-yellow-700 border-yellow-400' :
-                'bg-gray-100 text-gray-500 border-gray-300'
-              }`}>
+                  pointsByMatch[match.id] === 60 ? 'bg-cyan-100 text-cyan-700 border-cyan-400' :
+                    pointsByMatch[match.id] === 30 ? 'bg-yellow-100 text-yellow-700 border-yellow-400' :
+                      'bg-gray-100 text-gray-500 border-gray-300'
+                }`}>
                 {pointsByMatch[match.id]}
               </span>
             ) : (
@@ -300,12 +289,12 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
 
   const getGroupTotalScore = (groupName: string, groupMatches: Match[]) => {
     if (isOfficial) return { groupMatchPts: 0, qualBonusPts: 0, groupTotal: 0, qualifiedTeams: [] as any[] };
-    
+
     const groupStandings = findGroupStandings(groupName, standings);
     const groupMatchIds = groupMatches.map(m => m.id);
     const groupMatchPts = groupMatchIds.reduce((sum, id) => sum + (pointsByMatch[id] || 0), 0);
     const qualifiedTeams = groupStandings.filter(t => t.isQualified);
-    
+
     // Bônus vem direto do backend
     const letter = extractGroupLetter(groupName);
     const qualBonusPts = qualificationBonusByGroup[letter] || 0;
@@ -315,7 +304,7 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
 
   const renderScoreSummary = (groupName: string, groupMatches: Match[]) => {
     if (isOfficial) return null;
-    
+
     const { groupMatchPts, qualBonusPts, groupTotal, qualifiedTeams } = getGroupTotalScore(groupName, groupMatches);
 
     return (
@@ -336,20 +325,18 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
                     {status === 'waiting' && <span className="text-yellow-400 text-[10px] w-3 flex justify-center">⏳</span>}
                     {status === 'correct' && <span className="text-green-400 w-3 flex justify-center">✓</span>}
                     {status === 'wrong' && <span className="text-red-400 w-3 flex justify-center">✗</span>}
-                    
+
                     <PixelFlag team={team.team} className="w-4 h-3 md:w-5 md:h-3.5 border-black shrink-0" />
-                    <span className={`uppercase text-[9px] md:text-[11px] ${
-                      status === 'waiting' ? 'text-gray-300' :
+                    <span className={`uppercase text-[9px] md:text-[11px] ${status === 'waiting' ? 'text-gray-300' :
                       status === 'correct' ? 'text-green-300' : 'text-red-300'
-                    }`}>
+                      }`}>
                       <span className="md:hidden">{team.team.code}</span>
                       <span className="hidden md:inline">{team.team.namePt || team.team.name}</span>
                     </span>
                   </div>
-                  <span className={`text-[9px] md:text-[11px] ${
-                    status === 'waiting' ? 'text-gray-400' :
+                  <span className={`text-[9px] md:text-[11px] ${status === 'waiting' ? 'text-gray-400' :
                     status === 'correct' ? 'text-green-400' : 'text-red-400/50'
-                  }`}>
+                    }`}>
                     {status === 'waiting' ? '?' : (status === 'correct' ? '+100' : '+0')}
                   </span>
                 </div>
@@ -429,133 +416,276 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
             key={stage.id}
             variant={currentStage === stage.id ? (isOfficial ? 'danger' : 'action') : 'primary'}
             onClick={() => onStageChange(stage.id as MatchStage)}
-            className="flex-grow md:flex-grow-0 min-w-[50px] text-[7px] md:text-xs text-center justify-center px-1 md:px-2 py-2"
+            className={`flex-grow md:flex-grow-0 min-w-[50px] text-[7px] md:text-xs text-center justify-center px-1 md:px-2 py-2`}
           >
             {stage.label}
           </PixelButton>
         ))}
       </div>
 
-      {/* ==================== DESKTOP VIEW (SPLIT TABLES) ==================== */}
-      <div className="hidden md:block space-y-12">
-        {sortedGroupEntries.map(([groupName, groupMatches]) => (
-          <div key={groupName} className="flex flex-col gap-2 mb-8">
-            
-            {/* Headers alinhados horizontalmente */}
-            <div className="flex flex-row gap-6 items-end px-2">
-              <div className={currentStage === 'GROUPS' ? "w-[58%]" : "w-full"}>
-                {groupName && (
-                  <h2 className="text-yellow-400 text-xl font-bold uppercase drop-shadow-[2px_2px_0px_rgba(0,0,0,1)] leading-none">
-                    {groupName}
-                  </h2>
+      {/* ==================== EPIC FINAL VIEW ==================== */}
+      {currentStage === 'FINAL' && (() => {
+        const finalMatch = filteredMatches[0];
+        if (!finalMatch) return (
+          <div className="text-center text-white/40 py-20 text-lg uppercase font-bold">Final ainda não definida</div>
+        );
+        const pred = localPredictions[finalMatch.id] || { home: '', away: '' };
+        const hasRealScore = finalMatch.realHomeScore !== undefined && finalMatch.realHomeScore !== null;
+        const started = isMatchStarted(finalMatch);
+        const isLocked = finalMatch.isLocked || hasRealScore || started;
+        const status = saveStatus[finalMatch.id];
+        const pts = pointsByMatch[finalMatch.id];
+        const homeUnknown = finalMatch.homeTeam.name === 'Unknown';
+        const awayUnknown = finalMatch.awayTeam.name === 'Unknown';
+        return (
+          <div className="relative overflow-hidden rounded-none border-4 border-yellow-400 shadow-[0_0_60px_rgba(250,204,21,0.4)] bg-gradient-to-b from-gray-950 via-gray-900 to-gray-950 py-10 px-4 md:px-12 flex flex-col items-center gap-6">
+            {/* Glow background */}
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(250,204,21,0.08)_0%,transparent_70%)] pointer-events-none" />
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-yellow-400 to-transparent" />
+            <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-yellow-400 to-transparent" />
+
+            {/* Header */}
+            <div className="text-center z-10">
+              <p className="text-yellow-400 text-[10px] md:text-xs uppercase font-bold tracking-[0.4em] opacity-80 mb-1">Copa do Mundo 2026</p>
+              <h2 className="text-3xl md:text-6xl font-black text-white drop-shadow-[0_0_20px_rgba(250,204,21,0.8)] uppercase tracking-wider">GRANDE FINAL</h2>
+              <p className="text-yellow-400/60 text-[10px] md:text-xs uppercase tracking-widest mt-1">{finalMatch.date} · {finalMatch.time}</p>
+            </div>
+
+            {/* ── Teams + Score Row ── */}
+            {/* The names are positioned absolutely below the flags so they don't break the perfect vertical centering of flags vs trophy */}
+            <div className="z-10 w-full max-w-4xl flex items-center justify-between gap-4 md:gap-8 mb-10 md:mb-16">
+
+              {/* Home */}
+              <div className="flex-1 flex justify-end">
+                {!homeUnknown ? (
+                  <div className="relative flex flex-col items-center">
+                    <PixelFlag team={finalMatch.homeTeam} className="w-28 h-[4.67rem] md:w-48 md:h-32 border-4 border-yellow-400 shadow-[0_0_20px_rgba(250,204,21,0.5)]" />
+                    <div className="absolute top-full mt-3 w-[200%] text-center">
+                      <span className="text-white font-black text-sm md:text-2xl uppercase tracking-wide drop-shadow-[2px_2px_0_rgba(0,0,0,1)]">
+                        <span className="md:hidden">{finalMatch.homeTeam.code}</span>
+                        <span className="hidden md:block">{finalMatch.homeTeam.namePt || finalMatch.homeTeam.name}</span>
+                      </span>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-white/30 text-sm uppercase font-bold">A definir</div>
                 )}
               </div>
-              {currentStage === 'GROUPS' && (
-                <div className="w-[42%]">
-                  <div className="text-xs text-white/50 uppercase font-bold leading-none">Classificação Simulada</div>
-                </div>
-              )}
-            </div>
 
-            <div className="flex flex-row gap-6 items-stretch">
-              {/* Lado Esquerdo: Planilha de Jogos */}
-              <div className={currentStage === 'GROUPS' ? "w-[58%] flex flex-col" : "w-full flex flex-col"}>
-                <PixelCard className="p-0 overflow-hidden bg-white shadow-[6px_6px_0px_0px_rgba(0,0,0,0.5)] h-full" colorClass="bg-white">
-                  <table className="w-full h-full text-left border-collapse table-fixed">
-                    <thead>
-                      <tr className={`${isOfficial ? 'bg-red-600' : 'bg-blue-600'} text-white text-[10px] uppercase font-bold border-b-4 border-black`}>
-                        <th className="p-1 border-r border-black/20 w-[15%] text-center">Data</th>
-                        <th className="p-1 border-r border-black/20 w-[30%] text-right">Time A</th>
-                        <th className="p-1 border-r border-black/20 w-[18%] text-center">Placar</th>
-                        <th className="p-1 text-left w-[30%]">Time B</th>
-                        {!isOfficial && <th className="p-1 border-l border-black/20 w-[10%] text-center">Oficial</th>}
-                        {!isOfficial && <th className="p-1 border-l border-black/20 w-[7%] text-center">Pts</th>}
-                      </tr>
-                    </thead>
-                    <tbody className="text-xs font-bold">
-                      {groupMatches.map((match) => renderMatchRow(match, false))}
-                    </tbody>
-                  </table>
-                </PixelCard>
-              </div>
-
-                  {currentStage === 'GROUPS' && (
-                    <div className="w-[42%] flex flex-col relative">
-                      {groupMatches.some(m => saveStatus[m.id] === 'saving') && (
-                        <div className="absolute inset-0 bg-white/60 z-10 flex items-center justify-center backdrop-blur-[1px] transition-opacity">
-                          <div className="flex items-center gap-2 bg-blue-600 text-white px-3 py-1.5 text-xs font-bold border-2 border-black shadow-[3px_3px_0_rgba(0,0,0,1)] animate-pulse">
-                            <span className="inline-block w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                            Atualizando...
-                          </div>
-                        </div>
-                      )}
-                      <StandingsTable stats={findGroupStandings(groupName, standings)} className="h-full shadow-[6px_6px_0px_0px_rgba(0,0,0,0.5)]" />
+              {/* Score inputs + trophy */}
+              <div className="flex items-center gap-2 md:gap-4 shrink-0">
+                <PixelInput
+                  type="number"
+                  value={isOfficial ? (hasRealScore ? finalMatch.realHomeScore : '') : pred.home}
+                  onChange={(e) => !isOfficial && handleInputChange(finalMatch.id, 'home', e.target.value)}
+                  disabled={isLocked || isOfficial}
+                  className={`w-12 h-12 md:w-20 md:h-20 text-center p-0 font-black text-2xl md:text-4xl bg-gray-900 text-yellow-400 border-4 border-yellow-400 shadow-none
+                    ${(isLocked && !isOfficial) ? 'opacity-70 cursor-not-allowed' : ''}
+                    ${isOfficial ? 'text-blue-400 border-blue-400' : ''}
+                  `}
+                  placeholder="?"
+                />
+                
+                {/* Trophy with overlay */}
+                <div className="relative flex items-center justify-center shrink-0 mx-2 md:mx-6">
+                  <img src="/trophy-world-cup.svg" alt="Trophy"
+                    className="w-28 h-40 md:w-40 md:h-56 object-contain drop-shadow-[0_0_15px_rgba(250,204,21,0.9)] scale-110" />
+                  {status === 'saving' && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-xl">
+                      <div className="w-12 h-12 border-4 border-yellow-400 border-t-transparent animate-spin rounded-full" />
                     </div>
                   )}
-            </div>
-            
-            {/* Resumo de Pontuação (Embaixo das duas tabelas) */}
-            {currentStage === 'GROUPS' && !isOfficial && (
-              <div className="mt-2 w-full">
-                <button 
-                  onClick={() => setExpandedGroups(prev => ({ ...prev, [groupName]: !prev[groupName] }))}
-                  className="w-full text-[10px] md:text-xs bg-gray-800 hover:bg-gray-700 text-yellow-400 px-3 py-2 font-bold uppercase border-2 border-black shadow-[3px_3px_0_rgba(0,0,0,1)] flex justify-between items-center transition-all group"
-                >
-                  <span>Resumo de Pontuação ({getGroupTotalScore(groupName, groupMatches).groupTotal} PTS)</span>
-                  <span className="text-white group-hover:scale-125 transition-transform">
-                    {expandedGroups[groupName] ? '▲' : '▼'}
-                  </span>
-                </button>
-                
-                {expandedGroups[groupName] && (
-                  <div className="animate-fadeIn mt-2">
-                    {renderScoreSummary(groupName, groupMatches)}
+                  {status === 'saved' && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-xl">
+                      <span className="text-green-400 text-5xl font-black drop-shadow-[0_0_8px_rgba(0,255,0,0.8)]">✓</span>
+                    </div>
+                  )}
+                </div>
+
+                <PixelInput
+                  type="number"
+                  value={isOfficial ? (hasRealScore ? finalMatch.realAwayScore : '') : pred.away}
+                  onChange={(e) => !isOfficial && handleInputChange(finalMatch.id, 'away', e.target.value)}
+                  disabled={isLocked || isOfficial}
+                  className={`w-12 h-12 md:w-20 md:h-20 text-center p-0 font-black text-2xl md:text-4xl bg-gray-900 text-yellow-400 border-4 border-yellow-400 shadow-none
+                    ${(isLocked && !isOfficial) ? 'opacity-70 cursor-not-allowed' : ''}
+                    ${isOfficial ? 'text-blue-400 border-blue-400' : ''}
+                  `}
+                  placeholder="?"
+                />
+              </div>
+
+              {/* Away */}
+              <div className="flex-1 flex justify-start">
+                {!awayUnknown ? (
+                  <div className="relative flex flex-col items-center">
+                    <PixelFlag team={finalMatch.awayTeam} className="w-28 h-[4.67rem] md:w-48 md:h-32 border-4 border-yellow-400 shadow-[0_0_20px_rgba(250,204,21,0.5)]" />
+                    <div className="absolute top-full mt-3 w-[200%] text-center">
+                      <span className="text-white font-black text-sm md:text-2xl uppercase tracking-wide drop-shadow-[2px_2px_0_rgba(0,0,0,1)]">
+                        <span className="md:hidden">{finalMatch.awayTeam.code}</span>
+                        <span className="hidden md:block">{finalMatch.awayTeam.namePt || finalMatch.awayTeam.name}</span>
+                      </span>
+                    </div>
                   </div>
+                ) : (
+                  <div className="text-white/30 text-sm uppercase font-bold">A definir</div>
+                )}
+              </div>
+            </div>
+
+            {/* ── Real score + points + hint ── all centered below */}
+            {hasRealScore && (
+              <div className="z-10 flex flex-col items-center gap-1">
+                <p className="text-yellow-400/50 text-[9px] uppercase tracking-widest font-bold">Placar Real</p>
+                <span className="bg-gray-900 text-yellow-400 px-3 py-1 font-black border-2 border-yellow-400 text-base md:text-xl">
+                  {finalMatch.realHomeScore} – {finalMatch.realAwayScore}
+                </span>
+                {!isOfficial && pts !== undefined && (
+                  <span className={`px-3 py-1 font-black text-sm md:text-base border-2 border-black ${pts >= 840 ? 'bg-green-500 text-white' :
+                    pts >= 630 ? 'bg-pink-500 text-white' :
+                      pts >= 420 ? 'bg-cyan-500 text-white' :
+                        pts > 0 ? 'bg-yellow-500 text-black' :
+                          'bg-gray-700 text-gray-400'
+                    }`}>{pts} PTS</span>
                 )}
               </div>
             )}
-          </div>
-        ))}
+            {!isLocked && !isOfficial && (
+              <p className="z-10 text-yellow-400/50 text-[9px] uppercase tracking-widest font-bold animate-pulse">Digite seu palpite</p>
+            )}
 
-        {currentStage === 'GROUPS' && standings.overallThirds.length > 0 && (
-          <div className="flex flex-col gap-4 mt-8">
-            <h2 className="text-yellow-400 text-xl font-bold uppercase drop-shadow-[2px_2px_0px_rgba(0,0,0,1)] px-2">
-              Repescagem (Melhores 3º Colocados)
-            </h2>
-            <div className="w-full md:w-[60%] mx-auto">
-              <StandingsTable stats={standings.overallThirds} />
-              <p className="text-center text-xs text-white/70 mt-2">
-                Os 8 melhores terceiros colocados avançam para a 2ª Fase junto com os dois melhores de cada grupo.
-              </p>
+            {/* Footer sparkle */}
+            <div className="z-10 text-center">
+              <p className="text-yellow-400/40 text-[9px] md:text-[11px] uppercase tracking-[0.3em] font-bold">O jogo mais importante do mundo</p>
             </div>
+
           </div>
-        )}
-      </div>
+        );
+      })()}
 
-      <div className="block md:hidden">
-        <PixelCard className="p-0 overflow-hidden bg-white border-blue-600 !border-2 shadow-none" colorClass="bg-white">
-          <table className="w-full text-left border-collapse table-fixed">
-            <thead>
-              <tr className={`${isOfficial ? 'bg-red-600' : 'bg-blue-600'} text-white text-[8px] uppercase font-bold border-b-2 border-black`}>
-                <th className="p-1 border-r border-black/20 w-[21%] text-center">Data</th>
-                <th className="p-1 border-r border-black/20 w-[18%] text-right">Casa</th>
-                <th className="p-1 border-r border-black/20 w-[22%] text-center">Placar</th>
-                <th className="p-1 text-left w-[18%]">Fora</th>
-                {!isOfficial && <th className="p-1 border-l border-black/20 w-[11%] text-center">Real</th>}
-                {!isOfficial && <th className="p-1 border-l border-black/20 w-[10%] text-center">Pts</th>}
-              </tr>
-            </thead>
-            <tbody className="text-[9px] font-bold">
-              {(() => {
-                const groupMatches = [...filteredMatches].sort((a, b) => a.group.localeCompare(b.group) || a.date.localeCompare(b.date));
-                const elements: React.ReactNode[] = [];
-                let currentGroup = "";
-                let groupMatchList: Match[] = [];
+      {/* ==================== DESKTOP VIEW (SPLIT TABLES) ==================== */}
+      {currentStage !== 'FINAL' && (
+        <div className="hidden md:block space-y-12">
+          {sortedGroupEntries.map(([groupName, groupMatches]) => (
+            <div key={groupName} className="flex flex-col gap-2 mb-8">
 
-                groupMatches.forEach((match, idx) => {
-                  if (match.group !== currentGroup) {
-                    // Classificação + Resumo do grupo anterior
-                    if (currentGroup && currentStage === 'GROUPS') {
+              {/* Headers alinhados horizontalmente */}
+              <div className="flex flex-row gap-6 items-end px-2">
+                <div className={currentStage === 'GROUPS' ? "w-[58%]" : "w-full"}>
+                  {groupName && (
+                    <h2 className="text-yellow-400 text-xl font-bold uppercase drop-shadow-[2px_2px_0px_rgba(0,0,0,1)] leading-none">
+                      {groupName}
+                    </h2>
+                  )}
+                </div>
+                {currentStage === 'GROUPS' && (
+                  <div className="w-[42%]">
+                    <div className="text-xs text-white/50 uppercase font-bold leading-none">Classificação Simulada</div>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex flex-row gap-6 items-stretch">
+                {/* Lado Esquerdo: Planilha de Jogos */}
+                <div className={currentStage === 'GROUPS' ? "w-[58%] flex flex-col" : "w-full flex flex-col"}>
+                  <PixelCard className="p-0 overflow-hidden bg-white shadow-[6px_6px_0px_0px_rgba(0,0,0,0.5)] h-full" colorClass="bg-white">
+                    <table className="w-full h-full text-left border-collapse table-fixed">
+                      <thead>
+                        <tr className={`${isOfficial ? 'bg-red-600' : 'bg-blue-600'} text-white text-[10px] uppercase font-bold border-b-4 border-black`}>
+                          <th className="p-1 border-r border-black/20 w-[15%] text-center">Data</th>
+                          <th className="p-1 border-r border-black/20 w-[30%] text-right">Time A</th>
+                          <th className="p-1 border-r border-black/20 w-[18%] text-center">Placar</th>
+                          <th className="p-1 text-left w-[30%]">Time B</th>
+                          {!isOfficial && <th className="p-1 border-l border-black/20 w-[10%] text-center">Oficial</th>}
+                          {!isOfficial && <th className="p-1 border-l border-black/20 w-[7%] text-center">Pts</th>}
+                        </tr>
+                      </thead>
+                      <tbody className="text-xs font-bold">
+                        {groupMatches.map((match) => renderMatchRow(match, false))}
+                      </tbody>
+                    </table>
+                  </PixelCard>
+                </div>
+
+                {currentStage === 'GROUPS' && (
+                  <div className="w-[42%] flex flex-col relative">
+                    {groupMatches.some(m => saveStatus[m.id] === 'saving') && (
+                      <div className="absolute inset-0 bg-white/60 z-10 flex items-center justify-center backdrop-blur-[1px] transition-opacity">
+                        <div className="flex items-center gap-2 bg-blue-600 text-white px-3 py-1.5 text-xs font-bold border-2 border-black shadow-[3px_3px_0_rgba(0,0,0,1)] animate-pulse">
+                          <span className="inline-block w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                          Atualizando...
+                        </div>
+                      </div>
+                    )}
+                    <StandingsTable stats={findGroupStandings(groupName, standings)} className="h-full shadow-[6px_6px_0px_0px_rgba(0,0,0,0.5)]" />
+                  </div>
+                )}
+              </div>
+
+              {/* Resumo de Pontuação (Embaixo das duas tabelas) */}
+              {currentStage === 'GROUPS' && !isOfficial && (
+                <div className="mt-2 w-full">
+                  <button
+                    onClick={() => setExpandedGroups(prev => ({ ...prev, [groupName]: !prev[groupName] }))}
+                    className="w-full text-[10px] md:text-xs bg-gray-800 hover:bg-gray-700 text-yellow-400 px-3 py-2 font-bold uppercase border-2 border-black shadow-[3px_3px_0_rgba(0,0,0,1)] flex justify-between items-center transition-all group"
+                  >
+                    <span>Resumo de Pontuação ({getGroupTotalScore(groupName, groupMatches).groupTotal} PTS)</span>
+                    <span className="text-white group-hover:scale-125 transition-transform">
+                      {expandedGroups[groupName] ? '▲' : '▼'}
+                    </span>
+                  </button>
+
+                  {expandedGroups[groupName] && (
+                    <div className="animate-fadeIn mt-2">
+                      {renderScoreSummary(groupName, groupMatches)}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          ))}
+
+          {currentStage === 'GROUPS' && standings.overallThirds.length > 0 && (
+            <div className="flex flex-col gap-4 mt-8">
+              <h2 className="text-yellow-400 text-xl font-bold uppercase drop-shadow-[2px_2px_0px_rgba(0,0,0,1)] px-2">
+                Repescagem (Melhores 3º Colocados)
+              </h2>
+              <div className="w-full md:w-[60%] mx-auto">
+                <StandingsTable stats={standings.overallThirds} />
+                <p className="text-center text-xs text-white/70 mt-2">
+                  Os 8 melhores terceiros colocados avançam para a 2ª Fase junto com os dois melhores de cada grupo.
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {currentStage !== 'FINAL' && (
+        <div className="block md:hidden">
+          <PixelCard className="p-0 overflow-hidden bg-white border-blue-600 !border-2 shadow-none" colorClass="bg-white">
+            <table className="w-full text-left border-collapse table-fixed">
+              <thead>
+                <tr className={`${isOfficial ? 'bg-red-600' : 'bg-blue-600'} text-white text-[8px] uppercase font-bold border-b-2 border-black`}>
+                  <th className="p-1 border-r border-black/20 w-[21%] text-center">Data</th>
+                  <th className="p-1 border-r border-black/20 w-[18%] text-right">Casa</th>
+                  <th className="p-1 border-r border-black/20 w-[22%] text-center">Placar</th>
+                  <th className="p-1 text-left w-[18%]">Fora</th>
+                  {!isOfficial && <th className="p-1 border-l border-black/20 w-[11%] text-center">Real</th>}
+                  {!isOfficial && <th className="p-1 border-l border-black/20 w-[10%] text-center">Pts</th>}
+                </tr>
+              </thead>
+              <tbody className="text-[9px] font-bold">
+                {(() => {
+                  const groupMatches = [...filteredMatches].sort((a, b) => a.group.localeCompare(b.group) || a.date.localeCompare(b.date));
+                  const elements: React.ReactNode[] = [];
+                  let currentGroup = "";
+                  let groupMatchList: Match[] = [];
+
+                  groupMatches.forEach((match, idx) => {
+                    if (match.group !== currentGroup) {
+                      // Classificação + Resumo do grupo anterior
+                      if (currentGroup && currentStage === 'GROUPS') {
                         const prevGroup = currentGroup;
                         elements.push(renderMobileStandings(prevGroup, [...groupMatchList]));
 
@@ -563,51 +693,9 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
                           const groupToSummarize = prevGroup;
                           const matchesToSummarize = [...groupMatchList];
                           elements.push(
-                              <tr key={`${groupToSummarize}-summary`} className="bg-gray-100">
-                                  <td colSpan={6} className="p-2">
-                                    <button 
-                                      onClick={() => setExpandedGroups(prev => ({ ...prev, [groupToSummarize]: !prev[groupToSummarize] }))}
-                                      className="w-full text-[9px] bg-gray-800 text-yellow-400 px-2 py-1.5 font-bold uppercase border border-black flex justify-between items-center"
-                                    >
-                                      <span>Resumo de Pontos ({getGroupTotalScore(groupToSummarize, matchesToSummarize).groupTotal} PTS)</span>
-                                      <span className="text-white">{expandedGroups[groupToSummarize] ? '▲' : '▼'}</span>
-                                    </button>
-                                    {expandedGroups[groupToSummarize] && (
-                                      <div className="animate-fadeIn mt-1">
-                                        {renderScoreSummary(groupToSummarize, matchesToSummarize)}
-                                      </div>
-                                    )}
-                                  </td>
-                              </tr>
-                          );
-                        }
-                    }
-                    currentGroup = match.group;
-                    groupMatchList = [];
-                    if (currentStage === 'GROUPS') {
-                      elements.push(
-                        <tr key={`${currentGroup}-header`} className="bg-gray-800 text-yellow-400 border-b border-black">
-                          <td colSpan={isOfficial ? 4 : 6} className="p-1.5 text-[10px] font-bold text-center tracking-widest uppercase border-t border-black">
-                            {match.group}
-                          </td>
-                        </tr>
-                      );
-                    }
-                  }
-                  groupMatchList.push(match);
-                  elements.push(renderMatchRow(match, false));
-
-                  // Last item: classificação + summary
-                  if (idx === groupMatches.length - 1 && currentGroup && currentStage === 'GROUPS') {
-                    elements.push(renderMobileStandings(currentGroup, [...groupMatchList]));
-
-                    if (!isOfficial) {
-                      const groupToSummarize = currentGroup;
-                      const matchesToSummarize = [...groupMatchList];
-                      elements.push(
-                          <tr key={`${groupToSummarize}-summary-last`} className="bg-gray-100">
+                            <tr key={`${groupToSummarize}-summary`} className="bg-gray-100">
                               <td colSpan={6} className="p-2">
-                                <button 
+                                <button
                                   onClick={() => setExpandedGroups(prev => ({ ...prev, [groupToSummarize]: !prev[groupToSummarize] }))}
                                   className="w-full text-[9px] bg-gray-800 text-yellow-400 px-2 py-1.5 font-bold uppercase border border-black flex justify-between items-center"
                                 >
@@ -620,18 +708,61 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
                                   </div>
                                 )}
                               </td>
+                            </tr>
+                          );
+                        }
+                      }
+                      currentGroup = match.group;
+                      groupMatchList = [];
+                      if (currentStage === 'GROUPS') {
+                        elements.push(
+                          <tr key={`${currentGroup}-header`} className="bg-gray-800 text-yellow-400 border-b border-black">
+                            <td colSpan={isOfficial ? 4 : 6} className="p-1.5 text-[10px] font-bold text-center tracking-widest uppercase border-t border-black">
+                              {match.group}
+                            </td>
                           </tr>
-                      );
+                        );
+                      }
                     }
-                  }
-                });
+                    groupMatchList.push(match);
+                    elements.push(renderMatchRow(match, false));
 
-                return elements;
-              })()}
-            </tbody>
-          </table>
-        </PixelCard>
-      </div>
+                    // Last item: classificação + summary
+                    if (idx === groupMatches.length - 1 && currentGroup && currentStage === 'GROUPS') {
+                      elements.push(renderMobileStandings(currentGroup, [...groupMatchList]));
+
+                      if (!isOfficial) {
+                        const groupToSummarize = currentGroup;
+                        const matchesToSummarize = [...groupMatchList];
+                        elements.push(
+                          <tr key={`${groupToSummarize}-summary-last`} className="bg-gray-100">
+                            <td colSpan={6} className="p-2">
+                              <button
+                                onClick={() => setExpandedGroups(prev => ({ ...prev, [groupToSummarize]: !prev[groupToSummarize] }))}
+                                className="w-full text-[9px] bg-gray-800 text-yellow-400 px-2 py-1.5 font-bold uppercase border border-black flex justify-between items-center"
+                              >
+                                <span>Resumo de Pontos ({getGroupTotalScore(groupToSummarize, matchesToSummarize).groupTotal} PTS)</span>
+                                <span className="text-white">{expandedGroups[groupToSummarize] ? '▲' : '▼'}</span>
+                              </button>
+                              {expandedGroups[groupToSummarize] && (
+                                <div className="animate-fadeIn mt-1">
+                                  {renderScoreSummary(groupToSummarize, matchesToSummarize)}
+                                </div>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      }
+                    }
+                  });
+
+                  return elements;
+                })()}
+              </tbody>
+            </table>
+          </PixelCard>
+        </div>
+      )}
 
       <div className="mt-8 text-center text-white/50 text-[6px] md:text-[10px] uppercase font-bold bg-black/20 p-2 md:p-4 border border-white/10 mx-auto">
         💡 Seus palpites atualizam a classificação do grupo em tempo real no PC!

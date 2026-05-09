@@ -1,53 +1,17 @@
 
-import React, { useMemo } from 'react';
-import { Match } from '../types';
+import React from 'react';
 import { PixelCard } from './PixelComponents';
 import { MyRankingData } from '../services/rankingService';
 
 interface UserScoreViewProps {
-  matches: Match[];
-  predictions: Record<string, { home: string; away: string }>;
   userRank: number;
   myRanking: MyRankingData;
 }
 
-export const UserScoreView: React.FC<UserScoreViewProps> = ({ matches, predictions, userRank, myRanking }) => {
-  const groupLetters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
-  
-  // Compute per-group points
-  const groupData = useMemo(() => {
-    const data: Record<string, { matches: number, bonus: number }> = {};
-    groupLetters.forEach(letter => { data[letter] = { matches: 0, bonus: 0 }; });
+export const UserScoreView: React.FC<UserScoreViewProps> = ({ userRank, myRanking }) => {
 
-    // Match points
-    matches.forEach(match => {
-      if (match.stage === 'GROUPS') {
-        const pts = (myRanking.pointsByMatch || {})[match.id] || 0;
-        const letter = match.group.replace('Grupo ', '');
-        if (data[letter]) data[letter].matches += pts;
-      }
-    });
 
-    // Qualified bonus (requires knowing which team belongs to which group)
-    // We can infer the group from the matches prop
-    const teamToGroup: Record<string, string> = {};
-    matches.forEach(m => {
-        if (m.stage === 'GROUPS') {
-            const letter = m.group.replace('Grupo ', '');
-            teamToGroup[m.homeTeam.id] = letter;
-            teamToGroup[m.awayTeam.id] = letter;
-        }
-    });
 
-    (myRanking.correctQualifiedTeamIds || []).forEach(teamId => {
-        const letter = teamToGroup[teamId];
-        if (letter && data[letter]) {
-            data[letter].bonus += 100;
-        }
-    });
-
-    return data;
-  }, [matches, myRanking, groupLetters]);
 
   const stageLabels: Record<string, string> = {
     'GROUP_STAGE': 'Fase de Grupos',
@@ -80,43 +44,35 @@ export const UserScoreView: React.FC<UserScoreViewProps> = ({ matches, predictio
         </p>
       </PixelCard>
 
-      {/* Group Breakdown */}
-      <PixelCard className="bg-gray-800 text-white border-blue-500">
-        <h3 className="text-xs md:text-base font-bold uppercase mb-4 text-blue-400 flex items-center gap-2">
-            Pontos por Grupo (Jogos + Bônus)
-        </h3>
-        <div className="grid grid-cols-3 md:grid-cols-4 gap-2">
-          {groupLetters.map(letter => {
-            const { matches, bonus } = groupData[letter] || { matches: 0, bonus: 0 };
-            const total = matches + bonus;
-            return (
-              <div key={letter} className="bg-gray-900 border-2 border-gray-700 p-2 text-center relative overflow-hidden">
-                <div className="text-[10px] text-gray-400 mb-1">{letter}</div>
-                <div className={`text-sm md:text-lg font-bold ${total > 0 ? 'text-green-400' : 'text-gray-600'}`}>
-                  {total}
-                </div>
-                {bonus > 0 && <div className="text-[8px] text-green-300/50 mt-1">+{bonus} bônus</div>}
-              </div>
-            );
-          })}
-        </div>
-      </PixelCard>
-
       {/* Stage Breakdown */}
       <PixelCard className="bg-gray-100 text-gray-900 border-gray-900">
         <h3 className="text-xs md:text-base font-bold uppercase mb-4 flex items-center gap-2">
             Pontos por Fase
         </h3>
         <div className="space-y-2">
-          {Object.keys(stageLabels).map(stageKey => {
+          {Object.keys(stageLabels).map((stageKey, idx) => {
             const pts = (myRanking.pointsByStage || {})[stageKey] || 0;
             return (
-              <div key={stageKey} className="flex justify-between items-center bg-white border-2 border-gray-300 p-3 hover:border-gray-900 transition-colors">
-                <span className="text-[9px] md:text-xs font-bold uppercase">{stageLabels[stageKey]}</span>
-                <span className={`text-xs md:text-base font-bold ${getPointColor(pts)} px-3 py-1 border-2 border-black`}>
-                  {pts} pts
-                </span>
-              </div>
+              <React.Fragment key={stageKey}>
+                <div className="flex justify-between items-center bg-white border-2 border-gray-300 p-3 hover:border-gray-900 transition-colors">
+                  <span className="text-[9px] md:text-xs font-bold uppercase">{stageLabels[stageKey]}</span>
+                  <span className={`text-xs md:text-base font-bold ${getPointColor(pts)} px-3 py-1 border-2 border-black`}>
+                    {pts} pts
+                  </span>
+                </div>
+                {/* Insert qualified teams row right after Fase de Grupos (idx 0) */}
+                {idx === 0 && (
+                  <div className="flex justify-between items-center bg-white border-2 border-yellow-400 p-3 hover:border-gray-900 transition-colors">
+                    <span className="text-[9px] md:text-xs font-bold uppercase">
+                      🏆 Times Classificados
+                      <span className="ml-1 text-gray-400 font-normal normal-case">({myRanking.qualifiedTeamsCount}/32)</span>
+                    </span>
+                    <span className={`text-xs md:text-base font-bold ${getPointColor(myRanking.qualifiedTeamsCount * 100)} px-3 py-1 border-2 border-black`}>
+                      {myRanking.qualifiedTeamsCount * 100} pts
+                    </span>
+                  </div>
+                )}
+              </React.Fragment>
             );
           })}
         </div>

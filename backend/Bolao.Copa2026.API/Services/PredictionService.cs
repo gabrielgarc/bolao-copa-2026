@@ -137,6 +137,24 @@ namespace Bolao.Copa2026.API.Services
                         statsMap[match.AwayTeamId] = new TeamStatsDto { TeamId = match.AwayTeamId, Team = teams[match.AwayTeamId] };
                 }
 
+                // When scoring for a specific user, determine how many predictions they have in this group.
+                // - 0 predictions  → leave the group table zeroed (no scores processed)
+                // - ≥1 predictions → process only predicted games (no fallback to real scores)
+                // - userId == null → official standings, use real scores as fallback (original behaviour)
+                bool isUserMode = userId.HasValue;
+                int userPredsInGroup = isUserMode
+                    ? groupMatches.Count(m => predictions.ContainsKey(m.Id))
+                    : 0;
+
+                if (isUserMode && userPredsInGroup == 0)
+                {
+                    // No predictions in this group – skip score processing entirely
+                    response.Groups[groupMatches.Key] = statsMap.Values
+                        .OrderBy(t => t.Team.Name)
+                        .ToList();
+                    continue;
+                }
+
                 // Process simulations
                 foreach (var match in groupMatches)
                 {
@@ -148,11 +166,13 @@ namespace Bolao.Copa2026.API.Services
                         hScore = pred.HomeScore;
                         aScore = pred.AwayScore;
                     }
-                    else if (match.RealHomeScore.HasValue && match.RealAwayScore.HasValue)
+                    else if (!isUserMode && match.RealHomeScore.HasValue && match.RealAwayScore.HasValue)
                     {
+                        // Official standings only: fall back to real result
                         hScore = match.RealHomeScore;
                         aScore = match.RealAwayScore;
                     }
+                    // isUserMode with no prediction for this match → hScore/aScore remain null → game skipped
 
                     if (hScore.HasValue && aScore.HasValue)
                     {
@@ -213,8 +233,9 @@ namespace Bolao.Copa2026.API.Services
                             hScore = p.HomeScore;
                             aScore = p.AwayScore;
                         }
-                        else if (directMatch.RealHomeScore.HasValue)
+                        else if (!isUserMode && directMatch.RealHomeScore.HasValue)
                         {
+                            // Official standings only: fall back to real result for H2H
                             hScore = directMatch.RealHomeScore;
                             aScore = directMatch.RealAwayScore;
                         }

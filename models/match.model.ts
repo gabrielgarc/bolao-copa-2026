@@ -32,7 +32,7 @@ export class MatchModel implements Match {
       case 'LAST_16': this.stage = 'R16'; break;
       case 'QUARTER_FINALS': this.stage = 'QF'; break;
       case 'SEMI_FINALS': this.stage = 'SF'; break;
-      case 'THIRD_PLACE': 
+      case 'THIRD_PLACE': this.stage = 'THIRD_PLACE'; break;
       case 'FINAL': this.stage = 'FINAL'; break;
       case 'GROUP_STAGE':
       default: this.stage = 'GROUPS'; break;

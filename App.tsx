@@ -365,19 +365,19 @@ const App: React.FC = () => {
                             <div className="w-full md:w-[45%]">
                                 <PixelCard className="bg-yellow-100">
                                     <h2 className="text-lg md:text-xl text-center text-gray-900 mb-6 uppercase border-b-4 border-gray-900 pb-2 font-bold">Top Palpiteiros</h2>
-                                    <div className="space-y-4">
+                                    <div className="flex flex-col">
                                         {[...leaderboard]
                                             .sort((a, b) => b.points - a.points)
                                             .map((user, index) => (
-                                                <div key={user.id} className={`flex items-center justify-between border-b-2 border-gray-300 pb-2 last:border-0 ${currentUser && user.name === currentUser.name ? 'bg-yellow-200 -mx-4 px-4 py-2' : ''}`}>
-                                                    <div className="flex items-center gap-4">
-                                                        <div className="text-lg md:text-2xl w-6 md:w-8 text-gray-400 font-bold">#{index + 1}</div>
-                                                        <AvatarViewer configStr={user.avatar} size={40} className="md:w-10 md:h-10 border-2 border-black bg-gray-200" />
-                                                        <span className={`text-gray-900 text-[10px] md:text-base font-bold ${currentUser && user.name === currentUser.name ? 'text-red-600' : ''}`}>
+                                                <div key={user.id} className={`flex items-center justify-between border-b-2 border-gray-300 py-3 last:border-0 ${currentUser && user.name === currentUser.name ? 'bg-yellow-200 -mx-4 px-4' : ''}`}>
+                                                    <div className="flex items-center gap-2 md:gap-4">
+                                                        <div className="text-sm md:text-xl w-6 md:w-8 text-gray-400 font-bold shrink-0">#{index + 1}</div>
+                                                        <AvatarViewer configStr={user.avatar} size={64} className="w-12 h-12 md:w-16 md:h-16 border-2 border-black bg-gray-200 shrink-0" />
+                                                        <span className={`text-gray-900 text-[10px] sm:text-xs md:text-base font-bold ${currentUser && user.name === currentUser.name ? 'text-red-600' : ''} truncate max-w-[90px] sm:max-w-[150px] md:max-w-[200px]`}>
                                                             {user.name} {currentUser && user.name === currentUser.name && '(VOCÊ)'}
                                                         </span>
                                                     </div>
-                                                    <div className="text-green-700 font-bold text-xs md:text-base">{currentUser && user.name === currentUser.name ? userPoints : user.points} PTS</div>
+                                                    <div className="text-green-700 font-bold text-xs md:text-base whitespace-nowrap">{currentUser && user.name === currentUser.name ? userPoints : user.points} PTS</div>
                                                 </div>
                                             ))}
                                     </div>
@@ -387,8 +387,6 @@ const App: React.FC = () => {
                             {/* Right Column: User Score Breakdown */}
                             <div className="w-full md:w-[55%]">
                                 <UserScoreView
-                                    matches={allMatches}
-                                    predictions={predictions}
                                     userRank={userRank}
                                     myRanking={myRanking}
                                 />

@@ -152,14 +152,33 @@ namespace Bolao.Copa2026.API.Services
                 var qualifiedTeamStatuses = new Dictionary<string, string>();
                 var qualificationBonusByGroup = new Dictionary<string, int>();
 
+                // Build a set of group names where the user has at least 1 prediction.
+                // This is used to prevent awarding qualified-team points for groups with no predictions.
+                var userPredMatchIds = new HashSet<Guid>(userPreds.Select(p => p.MatchId));
+                var groupsWithPredictions = new HashSet<string>(
+                    groupStageMatches
+                        .Where(m => userPredMatchIds.Contains(m.Id))
+                        .Select(m => m.Group),
+                    StringComparer.OrdinalIgnoreCase);
+
                 // Check 1st & 2nd place per finished group
                 foreach (var (groupKey, userGroupTeams) in userStandings.Groups)
                 {
                     var groupLetter = ExtractGroupLetter(groupKey);
                     int groupBonus = 0;
 
+                    // If the user made no predictions in this group, they earn 0 qualified-team points.
+                    bool hasPredictionInGroup = groupsWithPredictions.Any(g =>
+                        ExtractGroupLetter(g) == groupLetter);
+
+                    if (!hasPredictionInGroup)
+                    {
+                        qualificationBonusByGroup[groupLetter] = 0;
+                        continue;
+                    }
+
                     // Find matching official group (flexible key matching)
-                    var officialKey = officialQualifiedPerGroup.Keys.FirstOrDefault(k => 
+                    var officialKey = officialQualifiedPerGroup.Keys.FirstOrDefault(k =>
                         k.Equals(groupKey, StringComparison.OrdinalIgnoreCase) ||
                         ExtractGroupLetter(k) == groupLetter);
                     

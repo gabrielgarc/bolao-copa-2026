@@ -7,8 +7,9 @@ using System.Text.Json.Serialization;
 namespace Bolao.Copa2026.API.Controllers
 {
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public enum SimulateStage
+    public enum SimulationStage
     {
+        ALL,
         GROUP_STAGE,
         LAST_32,
         LAST_16,
@@ -49,46 +50,17 @@ namespace Bolao.Copa2026.API.Controllers
         }
 
         /// <summary>
-        /// Simula resultados aleatórios para todas as partidas de uma fase.
-        /// Após simular a fase de grupos, popula automaticamente os confrontos do mata-mata.
+        /// Recalcula os pontos de todos os usuários sem simular nenhuma partida.
+        /// Útil para aplicar mudanças nas regras de pontuação.
         /// </summary>
-        [HttpPost("simulate/{stage}")]
-        public async Task<ActionResult> SimulateStage(SimulateStage stage)
+        [HttpPost("recalculate")]
+        public async Task<ActionResult> RecalculatePoints()
         {
-            var stageName = stage.ToString();
-
-            var allMatches = await _matchRepo.GetAllAsync();
-            var stageMatches = allMatches.Where(m => m.Stage == stageName).ToList();
-
-            if (stageMatches.Count == 0)
-                return NotFound($"Nenhuma partida encontrada para a fase '{stageName}'.");
-
-            var rng = new Random();
-            int count = 0;
-
-            foreach (var match in stageMatches)
-            {
-                match.RealHomeScore = rng.Next(0, 5);
-                match.RealAwayScore = rng.Next(0, 5);
-                match.Status = "FINISHED";
-                match.IsLocked = true;
-                await _matchRepo.UpdateAsync(match.Id, match);
-                count++;
-            }
-
-            // After simulating, populate the next knockout round with qualified teams
-            int bracketUpdates = await PopulateNextRound(stageName);
-
-            // Recalcular ranking
             await _rankingService.RecalculateAllPoints();
-
-            return Ok(new
-            {
-                message = $"Simulação concluída! {count} partidas da fase '{stageName}' simuladas. {bracketUpdates} confrontos do mata-mata atualizados.",
-                count,
-                bracketUpdates
-            });
+            return Ok(new { message = "Pontuação de todos os usuários recalculada com sucesso." });
         }
+
+
 
         /// <summary>
         /// Simula resultados aleatórios para todas as partidas de um grupo específico.
@@ -144,6 +116,103 @@ namespace Bolao.Copa2026.API.Controllers
                 count
             });
         }
+
+        /// <summary>
+        /// Simula resultados aleatórios para uma fase ou TODAS as fases em sequência.
+        /// Selecione ALL para simular do grupos até a final automaticamente.
+        /// </summary>
+        [HttpPost("simulate/stage/{stage}")]
+        public async Task<ActionResult> SimulateStage(SimulationStage stage)
+        {
+            if (stage == SimulationStage.ALL)
+            {
+                return await SimulateAllStages();
+            }
+
+            var stageName = stage.ToString();
+            var count = await SimulateOneStage(stageName);
+
+            if (count < 0)
+                return NotFound($"Nenhuma partida encontrada para '{stageName}'. Verifique se o chaveamento está populado.");
+
+            int bracketUpdates = await PopulateNextRound(stageName);
+            await _rankingService.RecalculateAllPoints();
+
+            return Ok(new
+            {
+                message = $"Simulação concluída! {count} partidas da fase '{stageName}' simuladas. {bracketUpdates} confrontos do próximo round atualizados.",
+                count,
+                bracketUpdates
+            });
+        }
+
+        private async Task<ActionResult> SimulateAllStages()
+        {
+            var stagesInOrder = new[]
+            {
+                "GROUP_STAGE",
+                "LAST_32",
+                "LAST_16",
+                "QUARTER_FINALS",
+                "SEMI_FINALS",
+                "THIRD_PLACE",
+                "FINAL"
+            };
+
+            var results = new List<object>();
+            int totalCount = 0;
+            int totalBracket = 0;
+
+            foreach (var stageName in stagesInOrder)
+            {
+                var count = await SimulateOneStage(stageName);
+                if (count <= 0) continue; // pula fases sem jogos
+
+                int bracketUpdates = await PopulateNextRound(stageName);
+                totalCount += count;
+                totalBracket += bracketUpdates;
+                results.Add(new { stage = stageName, count, bracketUpdates });
+            }
+
+            await _rankingService.RecalculateAllPoints();
+
+            return Ok(new
+            {
+                message = $"Simulação completa! {totalCount} partidas simuladas em {results.Count} fases. {totalBracket} chaveamentos atualizados.",
+                totalCount,
+                totalBracket,
+                details = results
+            });
+        }
+
+        private async Task<int> SimulateOneStage(string stageName)
+        {
+            var allMatches = await _matchRepo.GetAllAsync();
+            var stageMatches = allMatches
+                .Where(m => m.Stage.Equals(stageName, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            if (stageMatches.Count == 0) return -1;
+
+            var rng = new Random();
+            int count = 0;
+
+            foreach (var match in stageMatches)
+            {
+                int home = rng.Next(0, 4);
+                int away = rng.Next(0, 4);
+                if (stageName != "GROUP_STAGE" && home == away) away = rng.Next(0, 4); // evita empate no mata-mata
+                match.RealHomeScore = home;
+                match.RealAwayScore = away;
+                match.Status = "FINISHED";
+                match.IsLocked = true;
+                await _matchRepo.UpdateAsync(match.Id, match);
+                count++;
+            }
+
+            return count;
+        }
+
 
         /// <summary>
         /// Limpa todos os resultados, status e locks de todas as partidas. Remove todos os rankings.
