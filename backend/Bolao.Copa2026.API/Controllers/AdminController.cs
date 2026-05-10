@@ -460,6 +460,32 @@ namespace Bolao.Copa2026.API.Controllers
         }
 
         /// <summary>
+        /// Simula resultados aleatórios para uma fase inteira ou todas as fases via mock.
+        /// </summary>
+        [HttpPost("mock/stage")]
+        public async Task<ActionResult> MockStage([FromQuery] MockStageOption stage)
+        {
+            if (_mockProvider == null)
+                return BadRequest("MockApi não está habilitado.");
+
+            int count = 0;
+            if (stage == MockStageOption.ALL)
+            {
+                var stages = Enum.GetNames(typeof(MockStageOption)).Where(s => s != "ALL");
+                foreach (var s in stages)
+                {
+                    count += await _mockProvider.SimulateStageAsync(s);
+                }
+            }
+            else
+            {
+                count = await _mockProvider.SimulateStageAsync(stage.ToString());
+            }
+
+            return Ok(new { message = $"Mock: {count} jogos simulados para a fase {stage}. Aguarde o sync (30s) para refletir no banco.", count });
+        }
+
+        /// <summary>
         /// Coloca um jogo como IN_PLAY (simulando jogo ao vivo).
         /// </summary>
         [HttpPost("mock/start/{apiId}")]
@@ -523,5 +549,18 @@ namespace Bolao.Copa2026.API.Controllers
     {
         public string Username { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
+    }
+
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+    public enum MockStageOption
+    {
+        ALL,
+        GROUP_STAGE,
+        LAST_32,
+        LAST_16,
+        QUARTER_FINALS,
+        SEMI_FINALS,
+        THIRD_PLACE,
+        FINAL
     }
 }
