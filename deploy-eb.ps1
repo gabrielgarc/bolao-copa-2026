@@ -52,13 +52,13 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 Write-Host "`n[4/5] Registrando nova versao no Elastic Beanstalk..." -ForegroundColor Yellow
-& "C:\Program Files\Amazon\AWSCLIV2\aws.exe" elasticbeanstalk create-application-version --application-name $AppName --version-label $Version --source-bundle S3Bucket="$BucketName",S3Key="$S3Key"
+& "C:\Program Files\Amazon\AWSCLIV2\aws.exe" --no-cli-pager elasticbeanstalk create-application-version --application-name $AppName --version-label $Version --source-bundle S3Bucket="$BucketName",S3Key="$S3Key"
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Aviso: Pode ser que a versao ja exista, tentando continuar..." -ForegroundColor DarkYellow
 }
 
 Write-Host "`n[5/5] Disparando atualizacao do ambiente..." -ForegroundColor Yellow
-& "C:\Program Files\Amazon\AWSCLIV2\aws.exe" elasticbeanstalk update-environment --environment-id $EnvId --version-label $Version
+& "C:\Program Files\Amazon\AWSCLIV2\aws.exe" --no-cli-pager elasticbeanstalk update-environment --environment-id $EnvId --version-label $Version
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Erro ao atualizar o ambiente. Verifique o console da AWS para detalhes." -ForegroundColor Red
     Pop-Location

@@ -1,0 +1,21 @@
+{
+  "name": "Bolão da Copa '26",
+  "short_name": "Bolão '26",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#111827",
+  "theme_color": "#111827",
+  "icons": [
+    {
+      "src": "/trophy-world-cup.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo-bolao.png",
+      "sizes": "192x192 512x512",
+      "type": "image/png"
+    }
+  ]
+}
