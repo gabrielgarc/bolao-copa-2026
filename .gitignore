@@ -37,3 +37,4 @@ publish-selfcontained/
 backend/Bolao.Copa2026.API/appsettings.json
 backend/deploy.zip
 backend/Bolao.Copa2026.API/bolao-api-deploy.zip
+*.zip
