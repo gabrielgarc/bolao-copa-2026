@@ -51,7 +51,9 @@ namespace Bolao.Copa2026.API.DTOs
         int FullMatches,
         int QualifiedTeamsCount,
         int HalfMatches,
-        int OutcomeMatches
+        int OutcomeMatches,
+        int PartialMatches,
+        int ZeroMatches
     );
 
     // DTO Usuário Atual

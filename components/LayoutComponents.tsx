@@ -91,6 +91,12 @@ export const Header: React.FC<HeaderProps> = ({ currentView, onViewChange, userN
                     Resultados Oficiais
                   </button>
                   <button 
+                    className={`w-full text-left p-4 uppercase text-[10px] md:text-xs font-bold border-b-2 border-black transition-colors ${currentView === AppView.MY_SCORE ? 'bg-green-600 text-white' : 'text-yellow-400 hover:bg-gray-700'}`}
+                    onClick={() => handleNav(AppView.MY_SCORE)}
+                  >
+                    Minha Pontuação
+                  </button>
+                  <button 
                     className={`w-full text-left p-4 uppercase text-[10px] md:text-xs font-bold transition-colors ${currentView === AppView.LEADERBOARD ? 'bg-yellow-400 text-black' : 'text-yellow-400 hover:bg-gray-700'}`}
                     onClick={() => handleNav(AppView.LEADERBOARD)}
                   >

@@ -27,7 +27,10 @@ import { AvatarViewer } from './components/AvatarViewer';
 type MatchesSubView = 'TABLE' | 'DATE' | 'TODAY';
 
 const App: React.FC = () => {
-    const [currentView, setCurrentView] = useState<AppView>(AppView.SPREADSHEET);
+    const [currentView, setCurrentView] = useState<AppView>(() => {
+        return (localStorage.getItem('bolao_current_view') as AppView) || AppView.SPREADSHEET;
+    });
+    
     const [currentStage, setCurrentStage] = useState<MatchStage>('GROUPS');
     const [activeGroup, setActiveGroup] = useState<string>('A');
     const [matchesSubView, setMatchesSubView] = useState<MatchesSubView>('TABLE');
@@ -43,7 +46,12 @@ const App: React.FC = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [myRanking, setMyRanking] = useState<MyRankingData>({ pointsByMatch: {}, pointsByStage: {}, totalPoints: 0, qualifiedTeamsCount: 0, correctQualifiedTeamIds: [], qualifiedTeamStatuses: {}, qualificationBonusByGroup: {} });
 
-    // Carregamento inicial de dados usando os novos serviços
+    // Persist current view
+    useEffect(() => {
+        localStorage.setItem('bolao_current_view', currentView);
+    }, [currentView]);
+
+    // Fetch data on mount and whenever the view changes (as requested)
     useEffect(() => {
         const loadInitialData = async () => {
             setIsLoading(true);
@@ -84,7 +92,7 @@ const App: React.FC = () => {
         };
 
         loadInitialData();
-    }, []);
+    }, [currentView]);
 
     const handlePredict = async (matchId: string, home: string, away: string) => {
         const newPredictions = {
@@ -359,39 +367,61 @@ const App: React.FC = () => {
                 )}
 
                 {currentView === AppView.LEADERBOARD && (
-                    <div className="max-w-7xl mx-auto">
-                        <div className="flex flex-col md:flex-row gap-6 items-start">
-                            {/* Left Column: Leaderboard */}
-                            <div className="w-full md:w-[45%]">
-                                <PixelCard className="bg-yellow-100">
-                                    <h2 className="text-lg md:text-xl text-center text-gray-900 mb-6 uppercase border-b-4 border-gray-900 pb-2 font-bold">Top Palpiteiros</h2>
-                                    <div className="flex flex-col">
+                    <div className="max-w-4xl mx-auto">
+                        <PixelCard className="bg-yellow-100">
+                            <h2 className="text-lg md:text-xl text-center text-gray-900 mb-6 uppercase border-b-4 border-gray-900 pb-2 font-bold">Top Palpiteiros</h2>
+                            <div className="overflow-x-auto -mx-2 md:mx-0 px-2 md:px-0">
+                                <table className="w-full text-left border-collapse min-w-[700px]">
+                                    <thead>
+                                        <tr className="border-b-4 border-gray-900 text-gray-900 uppercase text-[10px] md:text-xs font-black">
+                                            <th className="py-2 px-2 text-center w-10">Pos</th>
+                                            <th className="py-2 px-2">Palpiteiro</th>
+                                            <th className="py-2 px-2 text-center bg-yellow-200/50" title="Pontos Totais">Total</th>
+                                            <th className="py-2 px-2 text-center" title="Times Classificados (100pts cada)">Classif.</th>
+                                            <th className="py-2 px-2 text-center text-blue-700" title="Placar Exato (120pts)">120</th>
+                                            <th className="py-2 px-2 text-center text-green-700" title="Vencedor + 1 Placar (90pts)">90</th>
+                                            <th className="py-2 px-2 text-center text-orange-700" title="Apenas Vencedor (60pts)">60</th>
+                                            <th className="py-2 px-2 text-center text-red-700" title="Apenas 1 Placar (30pts)">30</th>
+                                            <th className="py-2 px-2 text-center text-gray-500" title="Nenhum Acerto (0pts)">0</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
                                         {[...leaderboard]
                                             .sort((a, b) => b.points - a.points)
-                                            .map((user, index) => (
-                                                <div key={user.id} className={`flex items-center justify-between border-b-2 border-gray-300 py-3 last:border-0 ${currentUser && user.name === currentUser.name ? 'bg-yellow-200 -mx-4 px-4' : ''}`}>
-                                                    <div className="flex items-center gap-2 md:gap-4">
-                                                        <div className="text-sm md:text-xl w-6 md:w-8 text-gray-400 font-bold shrink-0">#{index + 1}</div>
-                                                        <AvatarViewer configStr={user.avatar} size={64} className="w-12 h-12 md:w-16 md:h-16 border-2 border-black bg-gray-200 shrink-0" />
-                                                        <span className={`text-gray-900 text-[10px] sm:text-xs md:text-base font-bold ${currentUser && user.name === currentUser.name ? 'text-red-600' : ''} truncate max-w-[90px] sm:max-w-[150px] md:max-w-[200px]`}>
-                                                            {user.name} {currentUser && user.name === currentUser.name && '(VOCÊ)'}
-                                                        </span>
-                                                    </div>
-                                                    <div className="text-green-700 font-bold text-xs md:text-base whitespace-nowrap">{currentUser && user.name === currentUser.name ? userPoints : user.points} PTS</div>
-                                                </div>
-                                            ))}
-                                    </div>
-                                </PixelCard>
+                                            .map((user, index) => {
+                                                const isMe = currentUser && user.name === currentUser.name;
+                                                return (
+                                                    <tr key={user.id} className={`border-b-2 border-gray-300 last:border-0 ${isMe ? 'bg-yellow-200' : 'hover:bg-yellow-50'}`}>
+                                                        <td className="py-2 px-2 text-center font-bold text-gray-400">#{index + 1}</td>
+                                                        <td className="py-2 px-2 flex items-center gap-2">
+                                                            <AvatarViewer configStr={user.avatar} size={40} className="w-8 h-8 md:w-10 md:h-10 border-2 border-black bg-gray-200 shrink-0" />
+                                                            <span className={`font-bold text-xs md:text-sm truncate max-w-[120px] md:max-w-[200px] ${isMe ? 'text-red-600' : 'text-gray-900'}`}>
+                                                                {user.name} {isMe && '(VOCÊ)'}
+                                                            </span>
+                                                        </td>
+                                                        <td className="py-2 px-2 text-center font-black text-sm md:text-base text-green-700 bg-yellow-200/50">{isMe ? userPoints : user.points}</td>
+                                                        <td className="py-2 px-2 text-center font-bold text-gray-700">{user.qualifiedTeamsCount}</td>
+                                                        <td className="py-2 px-2 text-center font-bold text-blue-700">{user.fullMatches}</td>
+                                                        <td className="py-2 px-2 text-center font-bold text-green-700">{user.halfMatches}</td>
+                                                        <td className="py-2 px-2 text-center font-bold text-orange-700">{user.outcomeMatches}</td>
+                                                        <td className="py-2 px-2 text-center font-bold text-red-700">{user.partialMatches}</td>
+                                                        <td className="py-2 px-2 text-center font-bold text-gray-500">{user.zeroMatches}</td>
+                                                    </tr>
+                                                );
+                                            })}
+                                    </tbody>
+                                </table>
                             </div>
+                        </PixelCard>
+                    </div>
+                )}
 
-                            {/* Right Column: User Score Breakdown */}
-                            <div className="w-full md:w-[55%]">
-                                <UserScoreView
-                                    userRank={userRank}
-                                    myRanking={myRanking}
-                                />
-                            </div>
-                        </div>
+                {currentView === AppView.MY_SCORE && (
+                    <div className="max-w-4xl mx-auto">
+                        <UserScoreView
+                            userRank={userRank}
+                            myRanking={myRanking}
+                        />
                     </div>
                 )}
                 </>

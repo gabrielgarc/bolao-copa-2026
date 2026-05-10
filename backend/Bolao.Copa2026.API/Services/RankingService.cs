@@ -32,7 +32,7 @@ namespace Bolao.Copa2026.API.Services
             var users = await _userRepo.GetAllAsync();
 
             var leaderboard = userRankings
-                .Select(u => new RankingDto(u.UserId, u.UserName, u.TotalPoints, u.Avatar, u.FullMatches, u.QualifiedTeamsCount, u.HalfMatches, u.OutcomeMatches))
+                .Select(u => new RankingDto(u.UserId, u.UserName, u.TotalPoints, u.Avatar, u.FullMatches, u.QualifiedTeamsCount, u.HalfMatches, u.OutcomeMatches, u.PartialMatches, u.ZeroMatches))
                 .ToList();
 
             // Add users that are registered but don't have a ranking entry yet
@@ -40,7 +40,7 @@ namespace Bolao.Copa2026.API.Services
             {
                 if (!leaderboard.Any(r => r.Id == user.Id))
                 {
-                    leaderboard.Add(new RankingDto(user.Id, user.UserName, 0, user.Avatar, 0, 0, 0, 0));
+                    leaderboard.Add(new RankingDto(user.Id, user.UserName, 0, user.Avatar, 0, 0, 0, 0, 0, 0));
                 }
             }
 
@@ -50,6 +50,7 @@ namespace Bolao.Copa2026.API.Services
                 .ThenByDescending(u => u.QualifiedTeamsCount)
                 .ThenByDescending(u => u.HalfMatches)
                 .ThenByDescending(u => u.OutcomeMatches)
+                .ThenByDescending(u => u.PartialMatches)
                 .ToList();
         }
 
@@ -123,6 +124,7 @@ namespace Bolao.Copa2026.API.Services
                 int halfMatches = 0;
                 int outcomeMatches = 0;
                 int partialMatches = 0;
+                int zeroMatches = 0;
                 var pointsByMatch = new Dictionary<string, int>();
                 var pointsByStage = new Dictionary<string, int>();
                 var userPreds = predictions.Where(p => p.UserId == user.Id).ToList();
@@ -143,6 +145,7 @@ namespace Bolao.Copa2026.API.Services
                         else if (result.Type == "HALF") halfMatches++;
                         else if (result.Type == "OUTCOME") outcomeMatches++;
                         else if (result.Type == "PARTIAL") partialMatches++;
+                        else if (result.Type == "NONE") zeroMatches++;
                     }
                 }
 
@@ -273,6 +276,7 @@ namespace Bolao.Copa2026.API.Services
                         HalfMatches = halfMatches,
                         OutcomeMatches = outcomeMatches,
                         PartialMatches = partialMatches,
+                        ZeroMatches = zeroMatches,
                         QualifiedTeamsCount = qualifiedTeamsCount,
                         PointsByMatch = pointsByMatch,
                         PointsByStage = pointsByStage,
@@ -290,6 +294,7 @@ namespace Bolao.Copa2026.API.Services
                     existing.HalfMatches = halfMatches;
                     existing.OutcomeMatches = outcomeMatches;
                     existing.PartialMatches = partialMatches;
+                    existing.ZeroMatches = zeroMatches;
                     existing.QualifiedTeamsCount = qualifiedTeamsCount;
                     existing.PointsByMatch = pointsByMatch;
                     existing.PointsByStage = pointsByStage;

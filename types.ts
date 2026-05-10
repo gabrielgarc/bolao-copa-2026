@@ -37,7 +37,13 @@ export interface UserRanking {
   id: string;
   name: string;
   points: number;
-  avatar: string; 
+  avatar: string;
+  fullMatches: number;
+  qualifiedTeamsCount: number;
+  halfMatches: number;
+  outcomeMatches: number;
+  partialMatches: number;
+  zeroMatches: number;
 }
 
 export interface TeamStats {
@@ -62,6 +68,7 @@ export interface StandingsResponse {
 export enum AppView {
   MATCHES = 'MATCHES',
   LEADERBOARD = 'LEADERBOARD',
+  MY_SCORE = 'MY_SCORE',
   OFFICIAL_RESULTS = 'OFFICIAL_RESULTS',
   SPREADSHEET = 'SPREADSHEET'
 }

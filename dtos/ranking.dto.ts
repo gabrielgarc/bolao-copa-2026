@@ -4,4 +4,10 @@ export interface RankingDTO {
   name: string;
   points: number;
   avatar: string;
+  fullMatches: number;
+  qualifiedTeamsCount: number;
+  halfMatches: number;
+  outcomeMatches: number;
+  partialMatches: number;
+  zeroMatches: number;
 }

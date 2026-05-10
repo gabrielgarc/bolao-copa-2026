@@ -38,6 +38,9 @@ namespace Bolao.Copa2026.API.Models
         [BsonElement("partialMatches")]
         public int PartialMatches { get; set; }
 
+        [BsonElement("zeroMatches")]
+        public int ZeroMatches { get; set; }
+
         [BsonElement("pointsByStage")]
         [BsonDictionaryOptions(DictionaryRepresentation.Document)]
         public Dictionary<string, int> PointsByStage { get; set; } = new Dictionary<string, int>();
