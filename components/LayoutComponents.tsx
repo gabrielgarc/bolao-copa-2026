@@ -117,9 +117,12 @@ export const Header: React.FC<HeaderProps> = ({ currentView, onViewChange, userN
 };
 
 export const Footer: React.FC = () => {
+  // @ts-ignore
+  const commitHash = typeof __COMMIT_HASH__ !== 'undefined' ? __COMMIT_HASH__ : 'dev';
+  
   return (
     <footer className="fixed bottom-0 w-full text-center p-2 bg-gray-900 border-t-4 border-black text-[10px] text-gray-500 z-40">
-      Feito com React, Tailwind & Gemini 2.5
+      <span className="font-mono uppercase tracking-widest opacity-70">Build: {commitHash}</span>
     </footer>
   );
 };
