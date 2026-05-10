@@ -453,33 +453,33 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
 
             {/* ── Teams + Score Row ── */}
             {/* The names are positioned absolutely below the flags so they don't break the perfect vertical centering of flags vs trophy */}
-            <div className="z-10 w-full max-w-4xl flex items-center justify-between gap-4 md:gap-8 mb-10 md:mb-16">
+            <div className="z-10 w-full max-w-4xl flex items-center justify-between gap-1 md:gap-8 mb-8 md:mb-16">
 
               {/* Home */}
               <div className="flex-1 flex justify-end">
                 {!homeUnknown ? (
                   <div className="relative flex flex-col items-center">
-                    <PixelFlag team={finalMatch.homeTeam} className="w-28 h-[4.67rem] md:w-48 md:h-32 border-4 border-yellow-400 shadow-[0_0_20px_rgba(250,204,21,0.5)]" />
-                    <div className="absolute top-full mt-3 w-[200%] text-center">
-                      <span className="text-white font-black text-sm md:text-2xl uppercase tracking-wide drop-shadow-[2px_2px_0_rgba(0,0,0,1)]">
+                    <PixelFlag team={finalMatch.homeTeam} className="w-20 h-[3.33rem] md:w-48 md:h-32 border-2 md:border-4 border-yellow-400 shadow-[0_0_20px_rgba(250,204,21,0.5)]" />
+                    <div className="absolute top-full mt-2 md:mt-3 w-[200%] text-center">
+                      <span className="text-white font-black text-[10px] md:text-2xl uppercase tracking-wide drop-shadow-[2px_2px_0_rgba(0,0,0,1)]">
                         <span className="md:hidden">{finalMatch.homeTeam.code}</span>
                         <span className="hidden md:block">{finalMatch.homeTeam.namePt || finalMatch.homeTeam.name}</span>
                       </span>
                     </div>
                   </div>
                 ) : (
-                  <div className="text-white/30 text-sm uppercase font-bold">A definir</div>
+                  <div className="text-white/30 text-[10px] md:text-sm uppercase font-bold">A definir</div>
                 )}
               </div>
 
               {/* Score inputs + trophy */}
-              <div className="flex items-center gap-2 md:gap-4 shrink-0">
+              <div className="flex items-center gap-1 md:gap-4 shrink-0">
                 <PixelInput
                   type="number"
                   value={isOfficial ? (hasRealScore ? finalMatch.realHomeScore : '') : pred.home}
                   onChange={(e) => !isOfficial && handleInputChange(finalMatch.id, 'home', e.target.value)}
                   disabled={isLocked || isOfficial}
-                  className={`w-12 h-12 md:w-20 md:h-20 text-center p-0 font-black text-2xl md:text-4xl bg-gray-900 text-yellow-400 border-4 border-yellow-400 shadow-none
+                  className={`w-10 h-10 md:w-20 md:h-20 text-center p-0 font-black text-xl md:text-4xl bg-gray-900 text-yellow-400 border-[3px] md:border-4 border-yellow-400 shadow-none
                     ${(isLocked && !isOfficial) ? 'opacity-70 cursor-not-allowed' : ''}
                     ${isOfficial ? 'text-blue-400 border-blue-400' : ''}
                   `}
@@ -487,17 +487,17 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
                 />
                 
                 {/* Trophy with overlay */}
-                <div className="relative flex items-center justify-center shrink-0 mx-2 md:mx-6">
+                <div className="relative flex items-center justify-center shrink-0 mx-1 md:mx-6">
                   <img src="/trophy-world-cup.svg" alt="Trophy"
-                    className="w-28 h-40 md:w-40 md:h-56 object-contain drop-shadow-[0_0_15px_rgba(250,204,21,0.9)] scale-110" />
+                    className="w-16 h-24 md:w-40 md:h-56 object-contain drop-shadow-[0_0_15px_rgba(250,204,21,0.9)] md:scale-110" />
                   {status === 'saving' && (
                     <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-xl">
-                      <div className="w-12 h-12 border-4 border-yellow-400 border-t-transparent animate-spin rounded-full" />
+                      <div className="w-8 h-8 md:w-12 md:h-12 border-4 border-yellow-400 border-t-transparent animate-spin rounded-full" />
                     </div>
                   )}
                   {status === 'saved' && (
                     <div className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-xl">
-                      <span className="text-green-400 text-5xl font-black drop-shadow-[0_0_8px_rgba(0,255,0,0.8)]">✓</span>
+                      <span className="text-green-400 text-3xl md:text-5xl font-black drop-shadow-[0_0_8px_rgba(0,255,0,0.8)]">✓</span>
                     </div>
                   )}
                 </div>
@@ -507,7 +507,7 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
                   value={isOfficial ? (hasRealScore ? finalMatch.realAwayScore : '') : pred.away}
                   onChange={(e) => !isOfficial && handleInputChange(finalMatch.id, 'away', e.target.value)}
                   disabled={isLocked || isOfficial}
-                  className={`w-12 h-12 md:w-20 md:h-20 text-center p-0 font-black text-2xl md:text-4xl bg-gray-900 text-yellow-400 border-4 border-yellow-400 shadow-none
+                  className={`w-10 h-10 md:w-20 md:h-20 text-center p-0 font-black text-xl md:text-4xl bg-gray-900 text-yellow-400 border-[3px] md:border-4 border-yellow-400 shadow-none
                     ${(isLocked && !isOfficial) ? 'opacity-70 cursor-not-allowed' : ''}
                     ${isOfficial ? 'text-blue-400 border-blue-400' : ''}
                   `}
@@ -519,16 +519,16 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
               <div className="flex-1 flex justify-start">
                 {!awayUnknown ? (
                   <div className="relative flex flex-col items-center">
-                    <PixelFlag team={finalMatch.awayTeam} className="w-28 h-[4.67rem] md:w-48 md:h-32 border-4 border-yellow-400 shadow-[0_0_20px_rgba(250,204,21,0.5)]" />
-                    <div className="absolute top-full mt-3 w-[200%] text-center">
-                      <span className="text-white font-black text-sm md:text-2xl uppercase tracking-wide drop-shadow-[2px_2px_0_rgba(0,0,0,1)]">
+                    <PixelFlag team={finalMatch.awayTeam} className="w-20 h-[3.33rem] md:w-48 md:h-32 border-2 md:border-4 border-yellow-400 shadow-[0_0_20px_rgba(250,204,21,0.5)]" />
+                    <div className="absolute top-full mt-2 md:mt-3 w-[200%] text-center">
+                      <span className="text-white font-black text-[10px] md:text-2xl uppercase tracking-wide drop-shadow-[2px_2px_0_rgba(0,0,0,1)]">
                         <span className="md:hidden">{finalMatch.awayTeam.code}</span>
                         <span className="hidden md:block">{finalMatch.awayTeam.namePt || finalMatch.awayTeam.name}</span>
                       </span>
                     </div>
                   </div>
                 ) : (
-                  <div className="text-white/30 text-sm uppercase font-bold">A definir</div>
+                  <div className="text-white/30 text-[10px] md:text-sm uppercase font-bold">A definir</div>
                 )}
               </div>
             </div>
