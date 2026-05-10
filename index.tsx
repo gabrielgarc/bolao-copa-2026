@@ -10,7 +10,8 @@ if (!rootElement) {
   throw new Error("Could not find root element to mount to");
 }
 
-const isAdminRoute = window.location.pathname === '/bolao-adm';
+const pathname = window.location.pathname.replace(/\/+$/, ''); // remove trailing slashes
+const isAdminRoute = pathname === '/bolao-adm' || window.location.hash === '#bolao-adm';
 
 const root = ReactDOM.createRoot(rootElement);
 root.render(
