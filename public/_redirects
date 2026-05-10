@@ -1,0 +1,6 @@
+/* Amplify não lê este arquivo. Configure o redirect no Console do Amplify:
+   Amplify Console → App → Hosting → Rewrites and redirects → Add rule:
+   Source: </^[^.]+$|\.(?!(css|gif|ico|jpg|jpeg|js|png|svg|txt|webp|woff|woff2|ttf|map|json)$)([^.]+$)/>
+   Target: /index.html
+   Type: 200 (Rewrite)
+*/
