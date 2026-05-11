@@ -371,18 +371,18 @@ const App: React.FC = () => {
                         <PixelCard className="bg-yellow-100">
                             <h2 className="text-lg md:text-xl text-center text-gray-900 mb-6 uppercase border-b-4 border-gray-900 pb-2 font-bold">Top Palpiteiros</h2>
                             <div className="overflow-x-auto -mx-2 md:mx-0 px-2 md:px-0">
-                                <table className="w-full text-left border-collapse min-w-[700px]">
+                                <table className="w-full text-left border-collapse">
                                     <thead>
-                                        <tr className="border-b-4 border-gray-900 text-gray-900 uppercase text-[10px] md:text-xs font-black">
-                                            <th className="py-2 px-2 text-center w-10">Pos</th>
-                                            <th className="py-2 px-2">Palpiteiro</th>
-                                            <th className="py-2 px-2 text-center bg-yellow-200/50" title="Pontos Totais">Total</th>
-                                            <th className="py-2 px-2 text-center" title="Times Classificados (100pts cada)">Classif.</th>
-                                            <th className="py-2 px-2 text-center text-blue-700" title="Placar Exato (120pts)">120</th>
-                                            <th className="py-2 px-2 text-center text-green-700" title="Vencedor + 1 Placar (90pts)">90</th>
-                                            <th className="py-2 px-2 text-center text-orange-700" title="Apenas Vencedor (60pts)">60</th>
-                                            <th className="py-2 px-2 text-center text-red-700" title="Apenas 1 Placar (30pts)">30</th>
-                                            <th className="py-2 px-2 text-center text-gray-500" title="Nenhum Acerto (0pts)">0</th>
+                                        <tr className="border-b-4 border-gray-900 text-gray-900 uppercase text-[8px] md:text-xs font-black">
+                                            <th className="p-1 md:p-2 text-center w-8 md:w-10">Pos</th>
+                                            <th className="p-1 md:p-2">Palpiteiro</th>
+                                            <th className="p-1 md:p-2 text-center bg-yellow-200/50" title="Pontos Totais">Total</th>
+                                            <th className="p-1 md:p-2 text-center" title="Times Classificados (100pts cada)">Clas.</th>
+                                            <th className="p-1 md:p-2 text-center text-blue-700" title="Placar Exato (120pts)">120</th>
+                                            <th className="p-1 md:p-2 text-center text-green-700" title="Vencedor + 1 Placar (90pts)">90</th>
+                                            <th className="p-1 md:p-2 text-center text-orange-700" title="Apenas Vencedor (60pts)">60</th>
+                                            <th className="p-1 md:p-2 text-center text-red-700" title="Apenas 1 Placar (30pts)">30</th>
+                                            <th className="p-1 md:p-2 text-center text-gray-500" title="Nenhum Acerto (0pts)">0</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -390,22 +390,23 @@ const App: React.FC = () => {
                                             .sort((a, b) => b.points - a.points)
                                             .map((user, index) => {
                                                 const isMe = currentUser && user.name === currentUser.name;
+
                                                 return (
-                                                    <tr key={user.id} className={`border-b-2 border-gray-300 last:border-0 ${isMe ? 'bg-yellow-200' : 'hover:bg-yellow-50'}`}>
-                                                        <td className="py-2 px-2 text-center font-bold text-gray-400">#{index + 1}</td>
-                                                        <td className="py-2 px-2 flex items-center gap-2">
-                                                            <AvatarViewer configStr={user.avatar} size={40} className="w-8 h-8 md:w-10 md:h-10 border-2 border-black bg-gray-200 shrink-0" />
-                                                            <span className={`font-bold text-xs md:text-sm truncate max-w-[120px] md:max-w-[200px] ${isMe ? 'text-red-600' : 'text-gray-900'}`}>
+                                                    <tr key={user.id} className={`border-b-2 border-gray-300 last:border-0 ${isMe ? 'bg-yellow-200' : 'hover:bg-yellow-50'} transition-all text-[10px] md:text-sm`}>
+                                                        <td className="p-1 md:p-2 text-center font-bold text-gray-500">#{index + 1}</td>
+                                                        <td className="p-1 md:p-2 flex items-center gap-1 md:gap-2">
+                                                            <AvatarViewer configStr={user.avatar} size={64} className="w-10 h-10 md:w-14 md:h-14 border-2 border-black shrink-0 bg-gray-200" />
+                                                            <span className={`font-bold truncate max-w-[80px] md:max-w-[200px] ${isMe ? 'text-red-600' : 'text-gray-900'}`}>
                                                                 {user.name} {isMe && '(VOCÊ)'}
                                                             </span>
                                                         </td>
-                                                        <td className="py-2 px-2 text-center font-black text-sm md:text-base text-green-700 bg-yellow-200/50">{isMe ? userPoints : user.points}</td>
-                                                        <td className="py-2 px-2 text-center font-bold text-gray-700">{user.qualifiedTeamsCount}</td>
-                                                        <td className="py-2 px-2 text-center font-bold text-blue-700">{user.fullMatches}</td>
-                                                        <td className="py-2 px-2 text-center font-bold text-green-700">{user.halfMatches}</td>
-                                                        <td className="py-2 px-2 text-center font-bold text-orange-700">{user.outcomeMatches}</td>
-                                                        <td className="py-2 px-2 text-center font-bold text-red-700">{user.partialMatches}</td>
-                                                        <td className="py-2 px-2 text-center font-bold text-gray-500">{user.zeroMatches}</td>
+                                                        <td className="p-1 md:p-2 text-center font-black text-sm md:text-base text-green-700 bg-yellow-200/50">{isMe ? userPoints : user.points}</td>
+                                                        <td className="p-1 md:p-2 text-center font-bold text-gray-700">{user.qualifiedTeamsCount}</td>
+                                                        <td className="p-1 md:p-2 text-center font-bold text-blue-700">{user.fullMatches}</td>
+                                                        <td className="p-1 md:p-2 text-center font-bold text-green-700">{user.halfMatches}</td>
+                                                        <td className="p-1 md:p-2 text-center font-bold text-orange-700">{user.outcomeMatches}</td>
+                                                        <td className="p-1 md:p-2 text-center font-bold text-red-700">{user.partialMatches}</td>
+                                                        <td className="p-1 md:p-2 text-center font-bold text-gray-500">{user.zeroMatches}</td>
                                                     </tr>
                                                 );
                                             })}

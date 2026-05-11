@@ -251,8 +251,12 @@ namespace Bolao.Copa2026.API.Services
                 if (sim > 0)
                     _logger.LogInformation("Mock ALL: {Stage} → {Sim} simulados, {Brk} chaveamentos.", stage, sim, brk);
             }
-
             return (totalSimulated, totalBracketed);
+        }
+
+        public async Task<int> RecalculateBracketsAsync()
+        {
+            return await PopulateNextRoundAsync("GROUP_STAGE");
         }
 
         /// <summary>

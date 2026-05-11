@@ -50,7 +50,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess }) => {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-[80vh]">
+        <div className="flex flex-col items-center justify-center min-h-[80vh] p-4 md:p-8">
             <PixelCard className={`w-full transition-all duration-300 ${!isLogin ? 'max-w-4xl' : 'max-w-sm'}`}>
                 <div className="flex flex-col items-center justify-center mb-6">
                     <h2 
@@ -83,60 +83,72 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess }) => {
                     </button>
                 </div>
 
-                <form onSubmit={handleSubmit} className={`flex flex-col ${!isLogin ? 'md:flex-row md:gap-8' : ''}`}>
-                    
-                    {/* Left Column (or full width if login) */}
-                    <div className="flex-1 flex flex-col gap-4 max-w-sm mx-auto w-full">
-                        {error && (
-                            <div className="bg-red-500 text-white p-2 border-2 text-xs border-black text-center font-bold">
-                                {error}
-                            </div>
-                        )}
+                <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+                    <div className={`flex flex-col ${!isLogin ? 'md:flex-row md:gap-8' : ''}`}>
+                        
+                        {/* Left Column (or full width if login) */}
+                        <div className="flex-1 flex flex-col gap-4 max-w-sm mx-auto w-full">
+                            {error && (
+                                <div className="bg-red-500 text-white p-2 border-2 text-xs border-black text-center font-bold">
+                                    {error}
+                                </div>
+                            )}
 
-                        <div className="flex flex-col gap-1">
-                            <label className="text-[10px] md:text-xs font-bold uppercase text-black">Usuário:</label>
-                            <input
-                                type="text"
-                                className="bg-white border-4 border-black p-2 text-sm md:text-base font-bold outline-none focus:bg-yellow-100 text-black"
-                                value={userName}
-                                onChange={(e) => setUserName(e.target.value)}
-                                maxLength={20}
-                            />
-                        </div>
-
-                        <div className="flex flex-col gap-1">
-                            <label className="text-[10px] md:text-xs font-bold uppercase text-black">Senha:</label>
-                            <input
-                                type="password"
-                                className="bg-white border-4 border-black p-2 text-sm md:text-base font-bold outline-none focus:bg-yellow-100 text-black"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                            />
-                        </div>
-
-                        {!isLogin && (
                             <div className="flex flex-col gap-1">
-                                <label className="text-[10px] md:text-xs font-bold uppercase text-black">Repita a Senha:</label>
+                                <label className="text-[10px] md:text-xs font-bold uppercase text-black">Usuário:</label>
+                                <input
+                                    type="text"
+                                    className="bg-white border-4 border-black p-2 text-sm md:text-base font-bold outline-none focus:bg-yellow-100 text-black"
+                                    value={userName}
+                                    onChange={(e) => setUserName(e.target.value)}
+                                    maxLength={20}
+                                />
+                            </div>
+
+                            <div className="flex flex-col gap-1">
+                                <label className="text-[10px] md:text-xs font-bold uppercase text-black">Senha:</label>
                                 <input
                                     type="password"
                                     className="bg-white border-4 border-black p-2 text-sm md:text-base font-bold outline-none focus:bg-yellow-100 text-black"
-                                    value={confirmPassword}
-                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
                                 />
                             </div>
-                        )}
 
-                        <div className={`flex justify-center ${isLogin ? 'mt-4' : 'mt-2 mb-4 md:mt-4'}`}>
-                            <PixelButton variant="action" className="w-full text-center flex justify-center text-sm" disabled={isLoading} onClick={(e: any) => null}>
-                                {isLoading ? 'Wait...' : (isLogin ? 'Entrar' : 'Criar Conta')}
-                            </PixelButton>
+                            {!isLogin && (
+                                <div className="flex flex-col gap-1">
+                                    <label className="text-[10px] md:text-xs font-bold uppercase text-black">Repita a Senha:</label>
+                                    <input
+                                        type="password"
+                                        className="bg-white border-4 border-black p-2 text-sm md:text-base font-bold outline-none focus:bg-yellow-100 text-black"
+                                        value={confirmPassword}
+                                        onChange={(e) => setConfirmPassword(e.target.value)}
+                                    />
+                                </div>
+                            )}
+
+                            {isLogin && (
+                                <div className="flex justify-center mt-4">
+                                    <PixelButton variant="action" className="w-full text-center flex justify-center text-sm" disabled={isLoading} onClick={(e: any) => null}>
+                                        {isLoading ? 'Wait...' : 'Entrar'}
+                                    </PixelButton>
+                                </div>
+                            )}
                         </div>
-                    </div>
 
-                    {/* Right Column (Avatar Editor) */}
+                        {/* Right Column (Avatar Editor) */}
+                        {!isLogin && (
+                            <div className="flex-[1.5] w-full">
+                                <AvatarEditor onChange={setAvatarConfig} />
+                            </div>
+                        )}
+                    </div>
+                    
                     {!isLogin && (
-                        <div className="flex-[1.5] w-full">
-                            <AvatarEditor onChange={setAvatarConfig} />
+                        <div className="flex justify-center max-w-sm mx-auto w-full">
+                            <PixelButton variant="action" className="w-full text-center flex justify-center text-sm md:text-base md:py-3" disabled={isLoading} onClick={(e: any) => null}>
+                                {isLoading ? 'Wait...' : 'Criar Conta'}
+                            </PixelButton>
                         </div>
                     )}
                 </form>
