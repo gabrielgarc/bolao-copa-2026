@@ -101,6 +101,27 @@ export const AvatarEditor: React.FC<AvatarEditorProps> = ({ onChange }) => {
         }));
     };
 
+    const handleRandomize = () => {
+        const randomHex = () => '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
+        
+        setConfig({
+            face: Math.floor(Math.random() * faces.length),
+            expression: Math.floor(Math.random() * expressions.length),
+            hair: Math.floor(Math.random() * hairs.length),
+            shirt: Math.floor(Math.random() * shirts.length),
+            accessory: Math.floor(Math.random() * accessories.length),
+            colors: {
+                skin: skinPresets[Math.floor(Math.random() * skinPresets.length)],
+                hair: hairPresets[Math.floor(Math.random() * hairPresets.length)],
+                eyes: eyePresets[Math.floor(Math.random() * eyePresets.length)],
+                shirtC1: randomHex(),
+                shirtC2: randomHex(),
+                accessory: randomHex(),
+                background: randomHex()
+            }
+        });
+    };
+
     const tabs: TabName[] = ['Cabeça', 'Cabelo', 'Rosto', 'Roupa', 'Extras'];
 
     return (
@@ -109,8 +130,15 @@ export const AvatarEditor: React.FC<AvatarEditorProps> = ({ onChange }) => {
                 
                 {/* Preview Area */}
                 <div className="flex justify-center w-full">
-                    <div className="border-4 border-gray-100 rounded-2xl p-3 bg-gray-50 flex justify-center items-center shadow-inner">
+                    <div className="border-4 border-gray-100 rounded-2xl p-3 bg-gray-50 flex flex-col justify-center items-center shadow-inner relative">
                         <AvatarViewer configStr={JSON.stringify(config)} size={160} />
+                        <button
+                            type="button"
+                            onClick={handleRandomize}
+                            className="mt-3 px-3 py-1 bg-yellow-400 border-2 border-black font-bold uppercase text-[10px] sm:text-xs rounded shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:bg-yellow-300 hover:translate-y-px hover:shadow-[1px_1px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-y-[2px] transition-all flex items-center gap-1"
+                        >
+                            <span>🎲 Aleatório</span>
+                        </button>
                     </div>
                 </div>
                 
