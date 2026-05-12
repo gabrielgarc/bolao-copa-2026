@@ -40,6 +40,7 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
   const [errorDetail, setErrorDetail] = useState('');
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({});
   const [expandedStandings, setExpandedStandings] = useState<Record<string, boolean>>({});
+  const [viewMode, setViewMode] = useState<'GROUP' | 'DATE'>('GROUP');
 
   // Garante que se o App carregar os dados atrasado, a tela puxe!
   React.useEffect(() => {
@@ -92,6 +93,49 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
     }
   };
 
+  const getBrasiliaTime = (dateStr: string, timeStr: string) => {
+    if (!dateStr || !timeStr) return { date: dateStr, time: timeStr, dayOfWeek: '', fullDate: dateStr };
+    try {
+      let year = 2026, month = 1, day = 1;
+      if (dateStr.includes('-')) {
+        const [y, m, d] = dateStr.split('-').map(Number);
+        year = y; month = m; day = d;
+      } else {
+        const [d, m, y] = dateStr.split('/').map(Number);
+        day = d; month = m; year = y || 2026;
+      }
+      const [hour, min] = timeStr.split(':').map(Number);
+      
+      const utcDate = new Date(Date.UTC(year, month - 1, day, hour, min));
+      
+      const dateFormatter = new Intl.DateTimeFormat('pt-BR', {
+        timeZone: 'America/Sao_Paulo',
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      });
+      const timeFormatter = new Intl.DateTimeFormat('pt-BR', {
+        timeZone: 'America/Sao_Paulo',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      });
+      const weekdayFormatter = new Intl.DateTimeFormat('pt-BR', {
+        timeZone: 'America/Sao_Paulo',
+        weekday: 'long'
+      });
+
+      const date = dateFormatter.format(utcDate);
+      const time = timeFormatter.format(utcDate);
+      let dayOfWeek = weekdayFormatter.format(utcDate);
+      dayOfWeek = dayOfWeek.charAt(0).toUpperCase() + dayOfWeek.slice(1);
+
+      return { date, time, dayOfWeek, fullDate: `${date} (${dayOfWeek})` };
+    } catch {
+      return { date: dateStr, time: timeStr, dayOfWeek: '', fullDate: dateStr };
+    }
+  };
+
   const formatDisplayDate = (dateStr: string) => {
     if (!dateStr) return '';
     if (dateStr.includes('-')) {
@@ -129,8 +173,7 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
       const hour = parseInt(timeParts[0]);
       const min = parseInt(timeParts[1]);
 
-      const matchDate = new Date(year, month - 1, day, hour, min);
-      // Validacao final se o `matchDate` foi contruido corretamente
+      const matchDate = new Date(Date.UTC(year, month - 1, day, hour, min));
       if (isNaN(matchDate.getTime())) return false;
       return new Date() >= matchDate;
     } catch {
@@ -156,6 +199,29 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
     return (Object.entries(matchesByGroup) as [string, Match[]][]).sort((a, b) => a[0].localeCompare(b[0]));
   }, [matchesByGroup]);
 
+  // --- LOGIC FOR DATE VIEW ---
+  const matchesByDate = useMemo(() => {
+    const dates: Record<string, Match[]> = {};
+    filteredMatches.forEach(m => {
+      const date = m.date;
+      if (!dates[date]) dates[date] = [];
+      dates[date].push(m);
+    });
+    return dates;
+  }, [filteredMatches]);
+
+  const sortedDateEntries = useMemo(() => {
+    return Object.entries(matchesByDate).sort((a, b) => {
+      // Sort by date YYYY-MM-DD or DD/MM/YYYY
+      const parseDate = (d: string) => {
+        if (d.includes('-')) return d;
+        const [day, month, year] = d.split('/');
+        return `${year || '2026'}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+      };
+      return parseDate(a[0]).localeCompare(parseDate(b[0]));
+    });
+  }, [matchesByDate]);
+
   // Helper render row for Match (Reused logic ideally, but separated for strict layout control)
   const renderMatchRow = (match: Match, showGroup: boolean = false) => {
     const pred = localPredictions[match.id] || { home: '', away: '' };
@@ -165,15 +231,17 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
     const status = saveStatus[match.id];
     const isFinal = currentStage === 'FINAL';
 
+    const br = getBrasiliaTime(match.date, match.time);
+
     return (
       <tr key={match.id} className={`border-b border-gray-200 hover:bg-blue-50 transition-colors ${isLocked ? 'bg-gray-50' : ''} ${isFinal ? 'bg-gradient-to-r from-yellow-50 to-amber-100 hover:from-yellow-100 hover:to-amber-200' : ''}`}>
         <td className="p-1 md:p-2 border-r border-gray-200 text-center leading-none">
           <div className="text-[10px] md:text-sm text-gray-800 font-semibold flex flex-col items-center">
-            <span>{formatDisplayDate(match.date)}</span>
-            <span className="text-[9px] md:hidden text-gray-500 font-normal">{match.time}</span>
+            <span>{br.date}</span>
+            <span className="text-[9px] md:hidden text-gray-500 font-normal">{br.time}</span>
           </div>
           {showGroup && <div className="text-[7px] md:text-[9px] text-blue-600 font-bold uppercase mt-1">{match.group.replace('Grupo ', 'GP ')}</div>}
-          <div className="hidden md:block text-[8px] text-gray-400 uppercase mt-0.5">{match.time}</div>
+          <div className="hidden md:block text-[8px] text-gray-400 uppercase mt-0.5">{br.time}</div>
         </td>
         <td className="p-0.5 md:p-2 border-r border-gray-200 text-right overflow-hidden">
           <div className="flex items-center justify-end gap-0.5 md:gap-3">
@@ -255,14 +323,14 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
         )}
         {!isOfficial && (
           <td className="p-0.5 md:p-1 text-center border-l border-gray-200">
-            {hasRealScore && pointsByMatch[match.id] !== undefined ? (
+            {hasRealScore ? (
               <span className={`px-1.5 py-0.5 font-bold text-[9px] md:text-[10px] border ${pointsByMatch[match.id] === 120 ? 'bg-green-100 text-green-700 border-green-400' :
                 pointsByMatch[match.id] === 90 ? 'bg-pink-100 text-pink-700 border-pink-400' :
                   pointsByMatch[match.id] === 60 ? 'bg-cyan-100 text-cyan-700 border-cyan-400' :
                     pointsByMatch[match.id] === 30 ? 'bg-yellow-100 text-yellow-700 border-yellow-400' :
                       'bg-gray-100 text-gray-500 border-gray-300'
                 }`}>
-                {pointsByMatch[match.id]}
+                {pointsByMatch[match.id] ?? 0}
               </span>
             ) : (
               <span className="text-gray-300">-</span>
@@ -423,6 +491,24 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
         ))}
       </div>
 
+      {/* Toggle de Visualização */}
+      <div className="mb-8 flex justify-center">
+        <div className="bg-gray-800 p-1 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,0.5)] flex">
+          <button
+            onClick={() => setViewMode('GROUP')}
+            className={`px-4 py-1.5 text-[9px] md:text-[11px] uppercase font-bold transition-all ${viewMode === 'GROUP' ? (isOfficial ? 'bg-red-600 text-white' : 'bg-yellow-400 text-black') : 'text-gray-400 hover:text-white'}`}
+          >
+            Por Grupo
+          </button>
+          <button
+            onClick={() => setViewMode('DATE')}
+            className={`px-4 py-1.5 text-[9px] md:text-[11px] uppercase font-bold transition-all ${viewMode === 'DATE' ? (isOfficial ? 'bg-red-600 text-white' : 'bg-yellow-400 text-black') : 'text-gray-400 hover:text-white'}`}
+          >
+            Por Dia
+          </button>
+        </div>
+      </div>
+
       {/* ==================== EPIC FINAL VIEW ==================== */}
       {currentStage === 'FINAL' && (() => {
         const finalMatch = filteredMatches[0];
@@ -566,33 +652,93 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
       {/* ==================== DESKTOP VIEW (SPLIT TABLES) ==================== */}
       {currentStage !== 'FINAL' && (
         <div className="hidden md:block space-y-12">
-          {sortedGroupEntries.map(([groupName, groupMatches]) => (
-            <div key={groupName} className="flex flex-col gap-2 mb-8">
-
-              {/* Headers alinhados horizontalmente */}
-              <div className="flex flex-row gap-6 items-end px-2">
-                <div className={currentStage === 'GROUPS' ? "w-[58%]" : "w-full"}>
-                  {groupName && (
-                    <h2 className="text-yellow-400 text-xl font-bold uppercase drop-shadow-[2px_2px_0px_rgba(0,0,0,1)] leading-none">
-                      {groupName}
-                    </h2>
+          {viewMode === 'GROUP' ? (
+            sortedGroupEntries.map(([groupName, groupMatches]) => (
+              <div key={groupName} className="flex flex-col gap-2 mb-8">
+                {/* Headers alinhados horizontalmente */}
+                <div className="flex flex-row gap-6 items-end px-2">
+                  <div className={currentStage === 'GROUPS' ? "w-[58%]" : "w-full"}>
+                    {groupName && (
+                      <h2 className="text-yellow-400 text-xl font-bold uppercase drop-shadow-[2px_2px_0px_rgba(0,0,0,1)] leading-none">
+                        {groupName}
+                      </h2>
+                    )}
+                  </div>
+                  {currentStage === 'GROUPS' && (
+                    <div className="w-[42%]">
+                      <div className="text-xs text-white/50 uppercase font-bold leading-none">Classificação Simulada</div>
+                    </div>
                   )}
                 </div>
-                {currentStage === 'GROUPS' && (
-                  <div className="w-[42%]">
-                    <div className="text-xs text-white/50 uppercase font-bold leading-none">Classificação Simulada</div>
+
+                <div className="flex flex-row gap-6 items-stretch">
+                  <div className={currentStage === 'GROUPS' ? "w-[58%] flex flex-col" : "w-full flex flex-col"}>
+                    <PixelCard className="p-0 overflow-hidden bg-white shadow-[6px_6px_0px_0px_rgba(0,0,0,0.5)] h-full" colorClass="bg-white">
+                      <table className="w-full h-full text-left border-collapse table-fixed">
+                        <thead>
+                          <tr className={`${isOfficial ? 'bg-red-600' : 'bg-blue-600'} text-white text-[10px] uppercase font-bold border-b-4 border-black`}>
+                            <th className="p-1 border-r border-black/20 w-[15%] text-center">Data</th>
+                            <th className="p-1 border-r border-black/20 w-[30%] text-right">Time A</th>
+                            <th className="p-1 border-r border-black/20 w-[18%] text-center">Placar</th>
+                            <th className="p-1 text-left w-[30%]">Time B</th>
+                            {!isOfficial && <th className="p-1 border-l border-black/20 w-[10%] text-center">Oficial</th>}
+                            {!isOfficial && <th className="p-1 border-l border-black/20 w-[7%] text-center">Pts</th>}
+                          </tr>
+                        </thead>
+                        <tbody className="text-xs font-bold">
+                          {groupMatches.map((match) => renderMatchRow(match, false))}
+                        </tbody>
+                      </table>
+                    </PixelCard>
+                  </div>
+
+                  {currentStage === 'GROUPS' && (
+                    <div className="w-[42%] flex flex-col relative">
+                      {groupMatches.some(m => saveStatus[m.id] === 'saving') && (
+                        <div className="absolute inset-0 bg-white/60 z-10 flex items-center justify-center backdrop-blur-[1px] transition-opacity">
+                          <div className="flex items-center gap-2 bg-blue-600 text-white px-3 py-1.5 text-xs font-bold border-2 border-black shadow-[3px_3px_0_rgba(0,0,0,1)] animate-pulse">
+                            <span className="inline-block w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                            Atualizando...
+                          </div>
+                        </div>
+                      )}
+                      <StandingsTable stats={findGroupStandings(groupName, standings)} className="h-full shadow-[6px_6px_0px_0px_rgba(0,0,0,0.5)]" />
+                    </div>
+                  )}
+                </div>
+
+                {currentStage === 'GROUPS' && !isOfficial && (
+                  <div className="mt-2 w-full">
+                    <button
+                      onClick={() => setExpandedGroups(prev => ({ ...prev, [groupName]: !prev[groupName] }))}
+                      className="w-full text-[10px] md:text-xs bg-gray-800 hover:bg-gray-700 text-yellow-400 px-3 py-2 font-bold uppercase border-2 border-black shadow-[3px_3px_0_rgba(0,0,0,1)] flex justify-between items-center transition-all group"
+                    >
+                      <span>Resumo de Pontuação ({getGroupTotalScore(groupName, groupMatches).groupTotal} PTS)</span>
+                      <span className="text-white group-hover:scale-125 transition-transform">
+                        {expandedGroups[groupName] ? '▲' : '▼'}
+                      </span>
+                    </button>
+                    {expandedGroups[groupName] && (
+                      <div className="animate-fadeIn mt-2">
+                        {renderScoreSummary(groupName, groupMatches)}
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
-
-              <div className="flex flex-row gap-6 items-stretch">
-                {/* Lado Esquerdo: Planilha de Jogos */}
-                <div className={currentStage === 'GROUPS' ? "w-[58%] flex flex-col" : "w-full flex flex-col"}>
-                  <PixelCard className="p-0 overflow-hidden bg-white shadow-[6px_6px_0px_0px_rgba(0,0,0,0.5)] h-full" colorClass="bg-white">
-                    <table className="w-full h-full text-left border-collapse table-fixed">
+            ))
+          ) : (
+            <div className="space-y-12">
+              {sortedDateEntries.map(([date, dateMatches]) => (
+                <div key={date} className="flex flex-col gap-2 mb-8">
+                  <h2 className="text-yellow-400 text-xl font-bold uppercase drop-shadow-[2px_2px_0px_rgba(0,0,0,1)] leading-none px-2">
+                    {getBrasiliaTime(date, dateMatches[0]?.time || '12:00').fullDate}
+                  </h2>
+                  <PixelCard className="p-0 overflow-hidden bg-white shadow-[6px_6px_0px_0px_rgba(0,0,0,0.5)]" colorClass="bg-white">
+                    <table className="w-full text-left border-collapse table-fixed">
                       <thead>
                         <tr className={`${isOfficial ? 'bg-red-600' : 'bg-blue-600'} text-white text-[10px] uppercase font-bold border-b-4 border-black`}>
-                          <th className="p-1 border-r border-black/20 w-[15%] text-center">Data</th>
+                          <th className="p-1 border-r border-black/20 w-[15%] text-center">Horário</th>
                           <th className="p-1 border-r border-black/20 w-[30%] text-right">Time A</th>
                           <th className="p-1 border-r border-black/20 w-[18%] text-center">Placar</th>
                           <th className="p-1 text-left w-[30%]">Time B</th>
@@ -601,51 +747,16 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
                         </tr>
                       </thead>
                       <tbody className="text-xs font-bold">
-                        {groupMatches.map((match) => renderMatchRow(match, false))}
+                        {dateMatches.map((match) => renderMatchRow(match, true))}
                       </tbody>
                     </table>
                   </PixelCard>
                 </div>
-
-                {currentStage === 'GROUPS' && (
-                  <div className="w-[42%] flex flex-col relative">
-                    {groupMatches.some(m => saveStatus[m.id] === 'saving') && (
-                      <div className="absolute inset-0 bg-white/60 z-10 flex items-center justify-center backdrop-blur-[1px] transition-opacity">
-                        <div className="flex items-center gap-2 bg-blue-600 text-white px-3 py-1.5 text-xs font-bold border-2 border-black shadow-[3px_3px_0_rgba(0,0,0,1)] animate-pulse">
-                          <span className="inline-block w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                          Atualizando...
-                        </div>
-                      </div>
-                    )}
-                    <StandingsTable stats={findGroupStandings(groupName, standings)} className="h-full shadow-[6px_6px_0px_0px_rgba(0,0,0,0.5)]" />
-                  </div>
-                )}
-              </div>
-
-              {/* Resumo de Pontuação (Embaixo das duas tabelas) */}
-              {currentStage === 'GROUPS' && !isOfficial && (
-                <div className="mt-2 w-full">
-                  <button
-                    onClick={() => setExpandedGroups(prev => ({ ...prev, [groupName]: !prev[groupName] }))}
-                    className="w-full text-[10px] md:text-xs bg-gray-800 hover:bg-gray-700 text-yellow-400 px-3 py-2 font-bold uppercase border-2 border-black shadow-[3px_3px_0_rgba(0,0,0,1)] flex justify-between items-center transition-all group"
-                  >
-                    <span>Resumo de Pontuação ({getGroupTotalScore(groupName, groupMatches).groupTotal} PTS)</span>
-                    <span className="text-white group-hover:scale-125 transition-transform">
-                      {expandedGroups[groupName] ? '▲' : '▼'}
-                    </span>
-                  </button>
-
-                  {expandedGroups[groupName] && (
-                    <div className="animate-fadeIn mt-2">
-                      {renderScoreSummary(groupName, groupMatches)}
-                    </div>
-                  )}
-                </div>
-              )}
+              ))}
             </div>
-          ))}
+          )}
 
-          {currentStage === 'GROUPS' && standings.overallThirds.length > 0 && (
+          {currentStage === 'GROUPS' && viewMode === 'GROUP' && standings.overallThirds.length > 0 && (
             <div className="flex flex-col gap-4 mt-8">
               <h2 className="text-yellow-400 text-xl font-bold uppercase drop-shadow-[2px_2px_0px_rgba(0,0,0,1)] px-2">
                 Repescagem (Melhores 3º Colocados)
@@ -677,6 +788,23 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
               </thead>
               <tbody className="text-[9px] font-bold">
                 {(() => {
+                  if (viewMode === 'DATE') {
+                    return sortedDateEntries.map(([date, dateMatches]) => {
+                      const dayElements = [];
+                      dayElements.push(
+                        <tr key={`${date}-header`} className="bg-gray-800 text-yellow-400 border-b border-black">
+                          <td colSpan={isOfficial ? 4 : 6} className="p-1.5 text-[10px] font-bold text-center tracking-widest uppercase border-t border-black">
+                            {getBrasiliaTime(date, dateMatches[0]?.time || '12:00').fullDate}
+                          </td>
+                        </tr>
+                      );
+                      dateMatches.forEach(match => {
+                        dayElements.push(renderMatchRow(match, true));
+                      });
+                      return dayElements;
+                    });
+                  }
+
                   const groupMatches = [...filteredMatches].sort((a, b) => a.group.localeCompare(b.group) || a.date.localeCompare(b.date));
                   const elements: React.ReactNode[] = [];
                   let currentGroup = "";
