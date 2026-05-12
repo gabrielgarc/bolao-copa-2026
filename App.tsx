@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { AppView, MatchStage, TeamStats, Match, StandingsResponse } from './types';
-import { PixelButton, PixelCard } from './components/PixelComponents';
+import { PixelButton, PixelCard, PixelModal } from './components/PixelComponents';
 import { MatchCard } from './components/MatchCard';
 import { OfficialMatchCard } from './components/OfficialMatchCard';
 import { StandingsTable } from './components/StandingsTable';
@@ -47,6 +47,12 @@ const App: React.FC = () => {
     const [simulatedToday, setSimulatedToday] = useState<string>('');
     const [isLoading, setIsLoading] = useState(true);
     const [myRanking, setMyRanking] = useState<MyRankingData>({ pointsByMatch: {}, pointsByStage: {}, totalPoints: 0, qualifiedTeamsCount: 0, correctQualifiedTeamIds: [], qualifiedTeamStatuses: {}, qualificationBonusByGroup: {} });
+    const [modal, setModal] = useState<{ isOpen: boolean; title: string; message: string; type: 'success' | 'error' | 'info' }>({ 
+        isOpen: false, 
+        title: '', 
+        message: '', 
+        type: 'info' 
+    });
 
     // Persist current view
     useEffect(() => {
@@ -463,12 +469,21 @@ const App: React.FC = () => {
                                         setIsLoading(true);
                                         const updatedUser = await UserService.updateAvatar(currentUser.id, newConfig);
                                         setCurrentUser(updatedUser);
-                                        setCurrentView(AppView.LEADERBOARD);
-                                        // Feedback visual
-                                        alert("Avatar atualizado com sucesso!");
+                                        // Feedback visual com Modal
+                                        setModal({
+                                            isOpen: true,
+                                            title: "Visual Atualizado!",
+                                            message: "Seu novo avatar já está brilhando no ranking oficial.",
+                                            type: 'success'
+                                        });
                                     } catch (err) {
                                         console.error(err);
-                                        alert("Erro ao atualizar avatar.");
+                                        setModal({
+                                            isOpen: true,
+                                            title: "Erro ao Salvar",
+                                            message: "Não conseguimos atualizar seu avatar agora. Tente novamente em instantes.",
+                                            type: 'error'
+                                        });
                                     } finally {
                                         setIsLoading(false);
                                     }
@@ -492,6 +507,14 @@ const App: React.FC = () => {
             </main>
 
             <Footer />
+            
+            <PixelModal 
+                isOpen={modal.isOpen}
+                onClose={() => setModal(prev => ({ ...prev, isOpen: false }))}
+                title={modal.title}
+                message={modal.message}
+                type={modal.type}
+            />
         </div>
     );
 };

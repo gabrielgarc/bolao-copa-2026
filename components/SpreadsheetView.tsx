@@ -41,12 +41,7 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({});
   const [expandedStandings, setExpandedStandings] = useState<Record<string, boolean>>({});
   const [viewMode, setViewMode] = useState<'GROUP' | 'DATE'>('GROUP');
-
-  useEffect(() => {
-    if (currentStage !== 'GROUPS') {
-      setViewMode('GROUP');
-    }
-  }, [currentStage]);
+  const effectiveViewMode = currentStage === 'GROUPS' ? viewMode : 'GROUP';
 
   // Garante que se o App carregar os dados atrasado, a tela puxe!
   React.useEffect(() => {
@@ -503,7 +498,7 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
           <div className="bg-gray-800 p-1 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,0.5)] flex">
             <button
               onClick={() => setViewMode('GROUP')}
-              className={`px-4 py-1.5 text-[9px] md:text-[11px] uppercase font-bold transition-all ${viewMode === 'GROUP' ? (isOfficial ? 'bg-red-600 text-white' : 'bg-yellow-400 text-black') : 'text-gray-400 hover:text-white'}`}
+              className={`px-4 py-1.5 text-[9px] md:text-[11px] uppercase font-bold transition-all ${effectiveViewMode === 'GROUP' ? (isOfficial ? 'bg-red-600 text-white' : 'bg-yellow-400 text-black') : 'text-gray-400 hover:text-white'}`}
             >
               Por Grupo
             </button>
@@ -660,7 +655,7 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
       {/* ==================== DESKTOP VIEW (SPLIT TABLES) ==================== */}
       {currentStage !== 'FINAL' && (
         <div className="hidden md:block space-y-12">
-          {viewMode === 'GROUP' ? (
+          {effectiveViewMode === 'GROUP' ? (
             sortedGroupEntries.map(([groupName, groupMatches]) => (
               <div key={groupName} className="flex flex-col gap-2 mb-8">
                 {/* Headers alinhados horizontalmente */}
@@ -764,7 +759,7 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
             </div>
           )}
 
-          {currentStage === 'GROUPS' && viewMode === 'GROUP' && standings.overallThirds.length > 0 && (
+          {currentStage === 'GROUPS' && effectiveViewMode === 'GROUP' && standings.overallThirds.length > 0 && (
             <div className="flex flex-col gap-4 mt-8">
               <h2 className="text-yellow-400 text-xl font-bold uppercase drop-shadow-[2px_2px_0px_rgba(0,0,0,1)] px-2">
                 Repescagem (Melhores 3º Colocados)
@@ -796,7 +791,7 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
               </thead>
               <tbody className="text-[9px] font-bold">
                 {(() => {
-                  if (viewMode === 'DATE') {
+                  if (effectiveViewMode === 'DATE') {
                     return sortedDateEntries.map(([date, dateMatches]) => {
                       const dayElements = [];
                       dayElements.push(

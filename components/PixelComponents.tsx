@@ -136,3 +136,66 @@ export const PixelFlag: React.FC<{ team: Team, className?: string }> = ({ team, 
     </div>
   );
 };
+
+interface PixelModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  title: string;
+  message: string;
+  type?: 'success' | 'error' | 'info';
+}
+
+export const PixelModal: React.FC<PixelModalProps> = ({ isOpen, onClose, title, message, type = 'info' }) => {
+  if (!isOpen) return null;
+
+  const typeColors = {
+    success: { bg: 'bg-green-100', border: 'border-green-600', text: 'text-green-800' },
+    error: { bg: 'bg-red-100', border: 'border-red-600', text: 'text-red-800' },
+    info: { bg: 'bg-blue-100', border: 'border-blue-600', text: 'text-blue-800' }
+  };
+
+  const colors = typeColors[type];
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
+      <div className={`relative w-full max-w-sm bg-white border-4 border-black shadow-[8px_8px_0_rgba(0,0,0,1)] p-6 animate-scaleIn`}>
+        <div className={`absolute -top-4 left-4 px-3 py-1 bg-black text-white font-bold uppercase text-[10px] tracking-widest`}>
+          {type === 'success' ? '✓ Sucesso' : type === 'error' ? '⚠ Erro' : 'ℹ Info'}
+        </div>
+        
+        <h3 className="text-xl font-black uppercase mb-4 tracking-tighter text-gray-900 border-b-2 border-gray-100 pb-2">
+          {title}
+        </h3>
+        
+        <div className={`p-4 ${colors.bg} border-2 ${colors.border} mb-6`}>
+          <p className="text-sm font-bold uppercase leading-relaxed text-gray-800">
+            {message}
+          </p>
+        </div>
+        
+        <div className="flex justify-end">
+          <PixelButton 
+            variant={type === 'error' ? 'danger' : 'action'}
+            onClick={onClose}
+            className="font-black"
+          >
+            Entendido
+          </PixelButton>
+        </div>
+      </div>
+      
+      <style>{`
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes scaleIn {
+          from { opacity: 0; transform: scale(0.9) translateY(10px); }
+          to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .animate-fadeIn { animation: fadeIn 0.2s ease-out forwards; }
+        .animate-scaleIn { animation: scaleIn 0.25s cubic-bezier(0.17, 0.67, 0.83, 0.67) forwards; }
+      `}</style>
+    </div>
+  );
+};
