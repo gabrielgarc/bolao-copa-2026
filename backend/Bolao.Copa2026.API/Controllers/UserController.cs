@@ -39,5 +39,18 @@ namespace Bolao.Copa2026.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [HttpPost("update-avatar")]
+        public async Task<ActionResult<UserDto>> UpdateAvatar([FromBody] UpdateAvatarRequestDto request)
+        {
+            try
+            {
+                var user = await _service.UpdateAvatarAsync(request.UserId, request.AvatarConfig);
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

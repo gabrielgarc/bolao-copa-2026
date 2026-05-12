@@ -23,6 +23,7 @@ import { RankingModel } from './models/ranking.model';
 import { UserModel } from './models/user.model';
 import { LoginScreen } from './components/LoginScreen';
 import { AvatarViewer } from './components/AvatarViewer';
+import { AvatarEditor } from './components/AvatarEditor';
 import { RulesScreen } from './components/RulesScreen';
 
 type MatchesSubView = 'TABLE' | 'DATE' | 'TODAY';
@@ -435,6 +436,56 @@ const App: React.FC = () => {
 
                 {currentView === AppView.RULES && (
                     <RulesScreen />
+                )}
+
+                {currentView === AppView.EDIT_AVATAR && currentUser && (
+                    <div className="max-w-2xl mx-auto animate-fadeIn">
+                        <div className="text-center mb-6">
+                            <h2 className="text-2xl md:text-4xl text-white font-black uppercase drop-shadow-[4px_4px_0_rgba(0,0,0,1)] tracking-widest italic">
+                                Editar Avatar
+                            </h2>
+                            <p className="text-yellow-400 font-bold uppercase text-[10px] md:text-xs mt-2">
+                                Personalize seu visual para o Ranking Global
+                            </p>
+                        </div>
+                        
+                        <AvatarEditor 
+                            initialConfig={userAvatar}
+                            onChange={(config) => {
+                                // We'll store the temp config in a local state if needed, 
+                                // but AvatarEditor handles its own state and we use onSave.
+                                (window as any)._tempAvatarConfig = config;
+                            }}
+                            onSave={async () => {
+                                const newConfig = (window as any)._tempAvatarConfig;
+                                if (newConfig && currentUser) {
+                                    try {
+                                        setIsLoading(true);
+                                        const updatedUser = await UserService.updateAvatar(currentUser.id, newConfig);
+                                        setCurrentUser(updatedUser);
+                                        setCurrentView(AppView.LEADERBOARD);
+                                        // Feedback visual
+                                        alert("Avatar atualizado com sucesso!");
+                                    } catch (err) {
+                                        console.error(err);
+                                        alert("Erro ao atualizar avatar.");
+                                    } finally {
+                                        setIsLoading(false);
+                                    }
+                                }
+                            }}
+                            isLoading={isLoading}
+                        />
+                        
+                        <div className="mt-6 flex justify-center">
+                            <button 
+                                onClick={() => setCurrentView(AppView.SPREADSHEET)}
+                                className="text-white/60 hover:text-white font-bold uppercase text-xs transition-colors"
+                            >
+                                ← Voltar para os Palpites
+                            </button>
+                        </div>
+                    </div>
                 )}
                 </>
                 )}

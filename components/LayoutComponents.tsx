@@ -28,11 +28,25 @@ export const Header: React.FC<HeaderProps> = ({ currentView, onViewChange, userN
         
         {/* Left: User Info */}
         <div className="flex items-center justify-start gap-2 z-10 flex-1">
-          {userAvatar ? (
-            <AvatarViewer configStr={userAvatar} size={50} className="md:w-[60px] md:h-[60px] border-2 border-black bg-gray-700 shrink-0" />
-          ) : (
-            <div className="w-[50px] h-[50px] md:w-[60px] md:h-[60px] bg-gray-800 border-2 border-black shrink-0"></div>
-          )}
+          <button 
+            onClick={() => handleNav(AppView.EDIT_AVATAR)}
+            className="group relative transition-transform active:scale-95"
+            title="Editar Avatar"
+          >
+            {userAvatar ? (
+              <AvatarViewer configStr={userAvatar} size={50} className="md:w-[60px] md:h-[60px] border-2 border-black bg-gray-700 shrink-0 group-hover:border-yellow-400 transition-colors" />
+            ) : (
+              <div className="w-[50px] h-[50px] md:w-[60px] md:h-[60px] bg-gray-800 border-2 border-black shrink-0 group-hover:border-yellow-400 transition-colors"></div>
+            )}
+            <div className="absolute -bottom-1 -right-1 bg-yellow-400 border-2 border-black p-0.5 md:p-1 rounded-none shadow-[2px_2px_0_rgba(0,0,0,1)] opacity-0 group-hover:opacity-100 transition-opacity">
+               <svg xmlns="http://www.w3.org/2000/svg" className="w-2 h-2 md:w-3 md:h-3 text-black" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+               </svg>
+            </div>
+            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+              <span className="text-[7px] md:text-[9px] text-white font-bold uppercase">Editar</span>
+            </div>
+          </button>
           
           <div className="flex flex-col items-start gap-0.5">
             <span className="text-[9px] md:text-xs text-white font-bold uppercase truncate max-w-[60px] sm:max-w-[100px] md:max-w-none leading-none mb-1">

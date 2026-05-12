@@ -14,6 +14,9 @@ import {
 
 interface AvatarEditorProps {
     onChange: (config: string) => void;
+    initialConfig?: string;
+    onSave?: () => void;
+    isLoading?: boolean;
 }
 
 type TabName = 'Cabeça' | 'Cabelo' | 'Rosto' | 'Roupa' | 'Extras';
@@ -75,15 +78,24 @@ const ColorSelector = ({ label, value, onChange, presets }: { label: string, val
     </div>
 );
 
-export const AvatarEditor: React.FC<AvatarEditorProps> = ({ onChange }) => {
+export const AvatarEditor: React.FC<AvatarEditorProps> = ({ onChange, initialConfig, onSave, isLoading }) => {
     const [activeTab, setActiveTab] = useState<TabName>('Cabeça');
-    const [config, setConfig] = useState<AvatarConfig>({
-        face: 0,
-        expression: 0,
-        hair: 1,
-        shirt: 0,
-        accessory: 0,
-        colors: { ...defaultColors }
+    const [config, setConfig] = useState<AvatarConfig>(() => {
+        if (initialConfig) {
+            try {
+                return JSON.parse(initialConfig);
+            } catch (e) {
+                console.error("Erro ao carregar avatar inicial:", e);
+            }
+        }
+        return {
+            face: 0,
+            expression: 0,
+            hair: 1,
+            shirt: 0,
+            accessory: 0,
+            colors: { ...defaultColors }
+        };
     });
 
     useEffect(() => {
@@ -209,6 +221,31 @@ export const AvatarEditor: React.FC<AvatarEditorProps> = ({ onChange }) => {
                     </div>
                 </div>
             </div>
+
+            {onSave && (
+                <div className="mt-6 flex flex-col gap-3">
+                    <button
+                        type="button"
+                        onClick={onSave}
+                        disabled={isLoading}
+                        className={`w-full py-4 bg-green-600 text-white font-black uppercase text-sm md:text-base border-4 border-black shadow-[4px_4px_0_rgba(0,0,0,1)] active:shadow-none active:translate-y-1 transition-all flex items-center justify-center gap-2 ${isLoading ? 'opacity-70 cursor-not-allowed' : 'hover:bg-green-500'}`}
+                    >
+                        {isLoading ? (
+                            <>
+                                <div className="w-4 h-4 border-2 border-white border-t-transparent animate-spin rounded-full"></div>
+                                Salvando...
+                            </>
+                        ) : (
+                            <>
+                                <span>💾 Salvar Alterações</span>
+                            </>
+                        )}
+                    </button>
+                    <p className="text-[9px] md:text-xs text-gray-400 text-center font-bold uppercase italic">
+                        Seu novo visual será atualizado no ranking imediatamente!
+                    </p>
+                </div>
+            )}
             
             <style>{`
                 .hide-scrollbar::-webkit-scrollbar {

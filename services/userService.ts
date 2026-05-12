@@ -24,6 +24,13 @@ export const UserService = {
     return user;
   },
 
+  async updateAvatar(userId: string, avatarConfig: string): Promise<UserModel> {
+    const response = await apiClient.post<any>('/user/update-avatar', { userId, avatarConfig });
+    const user = new UserModel(response.data);
+    localStorage.setItem('bolao_user', JSON.stringify(user));
+    return user;
+  },
+
   logout() {
     localStorage.removeItem('bolao_user');
   }

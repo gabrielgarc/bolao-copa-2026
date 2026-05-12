@@ -76,4 +76,9 @@ namespace Bolao.Copa2026.API.DTOs
         string Password,
         string AvatarConfig
     );
+
+    public record UpdateAvatarRequestDto(
+        Guid UserId,
+        string AvatarConfig
+    );
 }

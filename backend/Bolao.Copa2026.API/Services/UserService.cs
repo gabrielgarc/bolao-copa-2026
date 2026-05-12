@@ -63,5 +63,27 @@ namespace Bolao.Copa2026.API.Services
 
             return new UserDto(newUser.Id, newUser.UserName, rank, 0, newUser.Avatar);
         }
+        public async Task<UserDto> UpdateAvatarAsync(Guid userId, string avatarConfig)
+        {
+            var user = await _userRepo.GetByIdAsync(userId);
+            if (user == null) throw new Exception("Usuário não encontrado.");
+
+            user.Avatar = avatarConfig;
+            await _userRepo.UpdateAsync(user.Id, user);
+
+            // Update avatar in ranking as well
+            var allRankings = await _userRankingRepo.GetAllAsync();
+            var userRanking = allRankings.FirstOrDefault(r => r.UserId == userId);
+            if (userRanking != null)
+            {
+                userRanking.Avatar = avatarConfig;
+                await _userRankingRepo.UpdateAsync(userRanking.Id, userRanking);
+            }
+
+            int totalPoints = userRanking?.TotalPoints ?? 0;
+            var rank = allRankings.Count(r => r.TotalPoints > totalPoints) + 1;
+
+            return new UserDto(user.Id, user.UserName, rank, totalPoints, user.Avatar);
+        }
     }
 }
