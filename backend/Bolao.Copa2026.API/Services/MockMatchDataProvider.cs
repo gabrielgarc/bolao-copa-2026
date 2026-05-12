@@ -254,6 +254,41 @@ namespace Bolao.Copa2026.API.Services
             return (totalSimulated, totalBracketed);
         }
 
+        /// <summary>
+        /// Encontra o próximo jogo cronológico que ainda não tem resultado e simula um placar.
+        /// </summary>
+        public async Task<DbMatch?> SimulateNextMatchAsync()
+        {
+            await EnsureInitializedAsync();
+
+            using var scope = _scopeFactory.CreateScope();
+            var matchRepo = scope.ServiceProvider.GetRequiredService<IRepository<DbMatch>>();
+            var allDbMatches = await matchRepo.GetAllAsync();
+
+            // Encontra a primeira partida (por data/hora) que ainda não tem resultado no banco E nem no mock atual
+            var nextMatch = allDbMatches
+                .Where(m => !m.RealHomeScore.HasValue && !_mockStates.ContainsKey(m.ApiId) && m.ApiId != 0 && m.HomeTeamId != Guid.Empty && m.AwayTeamId != Guid.Empty)
+                .OrderBy(m => m.Date)
+                .ThenBy(m => m.Time)
+                .FirstOrDefault();
+
+            if (nextMatch != null)
+            {
+                var rng = new Random();
+                var home = rng.Next(0, 4);
+                var away = rng.Next(0, 4);
+
+                // Evita empate no mata-mata
+                if (nextMatch.Stage != "GROUP_STAGE" && home == away)
+                    home++;
+
+                SetMatchResult(nextMatch.ApiId, home, away, "FINISHED");
+                _logger.LogInformation("Mock NEXT: Simulada partida {Id} ({Home} {H}x{A} {Away})", nextMatch.ApiId, nextMatch.HomeTeamName, home, away, nextMatch.AwayTeamName);
+            }
+
+            return nextMatch;
+        }
+
         public async Task<int> RecalculateBracketsAsync()
         {
             return await PopulateNextRoundAsync("GROUP_STAGE");

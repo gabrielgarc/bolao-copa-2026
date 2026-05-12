@@ -60,45 +60,45 @@ const App: React.FC = () => {
     }, [currentView]);
 
     // Fetch data on mount and whenever the view changes (as requested)
-    useEffect(() => {
-        const loadInitialData = async () => {
-            setIsLoading(true);
-            try {
-                const userData = await UserService.getCurrentPlayer();
-                setCurrentUser(userData);
+    const loadInitialData = async () => {
+        setIsLoading(true);
+        try {
+            const userData = await UserService.getCurrentPlayer();
+            setCurrentUser(userData);
 
-                if (userData) {
-                    const [matchesData, rankingsData, predsData, groupDefs, simulatedDate, simStandings, offStandings, myRankingData] = await Promise.all([
-                        MatchService.getAll(),
-                        RankingService.getLeaderboard(),
-                        PredictionService.getSaved(),
-                        ApiService.getGroupDefinitions(),
-                        ApiService.getSimulatedDate(),
-                        PredictionService.getStandings(false),
-                        PredictionService.getStandings(true),
-                        RankingService.getMyRanking()
-                    ]);
+            if (userData) {
+                const [matchesData, rankingsData, predsData, groupDefs, simulatedDate, simStandings, offStandings, myRankingData] = await Promise.all([
+                    MatchService.getAll(),
+                    RankingService.getLeaderboard(),
+                    PredictionService.getSaved(),
+                    ApiService.getGroupDefinitions(),
+                    ApiService.getSimulatedDate(),
+                    PredictionService.getStandings(false),
+                    PredictionService.getStandings(true),
+                    RankingService.getMyRanking()
+                ]);
 
-                    setAllMatches(matchesData);
-                    setLeaderboard(rankingsData);
-                    setPredictions(predsData);
-                    setSimulatedStandings(simStandings);
-                    setOfficialStandings(offStandings);
-                    const definitionsMap = groupDefs.reduce((acc: Record<string, any[]>, group: any) => {
-                        acc[group.groupLetter] = group.teams;
-                        return acc;
-                    }, {});
-                    setGroupDefinitions(definitionsMap);
-                    setSimulatedToday(simulatedDate);
-                    setMyRanking(myRankingData);
-                }
-            } catch (error) {
-                console.error("Erro ao carregar dados:", error);
-            } finally {
-                setIsLoading(false);
+                setAllMatches(matchesData);
+                setLeaderboard(rankingsData);
+                setPredictions(predsData);
+                setSimulatedStandings(simStandings);
+                setOfficialStandings(offStandings);
+                const definitionsMap = groupDefs.reduce((acc: Record<string, any[]>, group: any) => {
+                    acc[group.groupLetter] = group.teams;
+                    return acc;
+                }, {});
+                setGroupDefinitions(definitionsMap);
+                setSimulatedToday(simulatedDate);
+                setMyRanking(myRankingData);
             }
-        };
+        } catch (error) {
+            console.error("Erro ao carregar dados:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
+    useEffect(() => {
         loadInitialData();
     }, [currentView]);
 
@@ -356,6 +356,7 @@ const App: React.FC = () => {
                         correctQualifiedTeamIds={myRanking.correctQualifiedTeamIds || []}
                         qualifiedTeamStatuses={myRanking.qualifiedTeamStatuses || {}}
                         qualificationBonusByGroup={myRanking.qualificationBonusByGroup || {}}
+                        onRefresh={loadInitialData}
                     />
                 )}
 
@@ -371,6 +372,7 @@ const App: React.FC = () => {
                         pointsByMatch={myRanking.pointsByMatch}
                         qualifiedTeamsCount={myRanking.qualifiedTeamsCount}
                         correctQualifiedTeamIds={myRanking.correctQualifiedTeamIds || []}
+                        onRefresh={loadInitialData}
                     />
                 )}
 

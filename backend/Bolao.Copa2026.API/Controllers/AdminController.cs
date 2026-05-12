@@ -147,6 +147,24 @@ namespace Bolao.Copa2026.API.Controllers
             return Ok(new { message = $"Mock: {count} times de chaveamento recalculados com base nos resultados atuais.", count });
         }
 
+        [HttpPost("mock/next")]
+        public async Task<ActionResult> MockNextMatch()
+        {
+            if (_mockProvider == null)
+                return BadRequest("MockApi não está habilitado.");
+
+            var match = await _mockProvider.SimulateNextMatchAsync();
+            if (match == null)
+                return NotFound("Todos os jogos já foram simulados.");
+
+            return Ok(new { 
+                message = $"Mock: Partida {match.ApiId} ({match.HomeTeamName} vs {match.AwayTeamName}) simulada com sucesso.",
+                matchId = match.ApiId,
+                home = match.HomeTeamName,
+                away = match.AwayTeamName
+            });
+        }
+
         /// <summary>
         /// Simula resultados aleatórios para um grupo inteiro via mock.
         /// O sync (30s) vai pegar esses resultados e escrever no banco.
