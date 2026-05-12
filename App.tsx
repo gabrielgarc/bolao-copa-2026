@@ -312,7 +312,7 @@ const App: React.FC = () => {
     const userAvatar = currentUser?.avatar || currentUserRanking?.avatar;
 
     return (
-        <div className={`min-h-screen pb-20 transition-colors duration-500 ${currentView === AppView.OFFICIAL_RESULTS ? 'bg-red-900' : 'bg-green-800'} bg-[url('https://www.transparenttextures.com/patterns/pixel-weave.png')]`}>
+        <div className={`min-h-screen pb-20 transition-colors duration-500 ${currentView === AppView.OFFICIAL_RESULTS ? 'bg-red-900' : 'bg-green-800'} bg-[url('https://www.transparenttextures.com/patterns/pixel-weave.png')] ${currentView === AppView.LEADERBOARD ? 'h-screen overflow-hidden' : ''}`}>
             <Header
                 currentView={currentView}
                 onViewChange={setCurrentView}
@@ -368,13 +368,13 @@ const App: React.FC = () => {
                 )}
 
                 {currentView === AppView.LEADERBOARD && (
-                    <div className="max-w-4xl mx-auto">
-                        <PixelCard className="bg-yellow-100">
-                            <h2 className="text-lg md:text-xl text-center text-gray-900 mb-6 uppercase border-b-4 border-gray-900 pb-2 font-bold">Top Palpiteiros</h2>
-                            <div className="overflow-x-auto -mx-2 md:mx-0 px-2 md:px-0">
-                                <table className="w-full text-left border-collapse">
-                                    <thead>
-                                        <tr className="border-b-4 border-gray-900 text-gray-900 uppercase text-[8px] md:text-xs font-black">
+                    <div className="max-w-6xl mx-auto h-[calc(100vh-160px)] flex flex-col overflow-hidden">
+                        <PixelCard className="bg-yellow-100 flex-grow flex flex-col overflow-hidden">
+                            <h2 className="text-lg md:text-xl text-center text-gray-900 mb-4 uppercase border-b-4 border-gray-900 pb-2 font-bold shrink-0">Top Palpiteiros</h2>
+                            <div className="flex-grow overflow-x-auto overflow-y-auto -mx-2 md:mx-0 px-2 md:px-0 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-transparent">
+                                <table className="w-full text-left border-collapse relative">
+                                    <thead className="sticky top-0 z-20 bg-yellow-100 shadow-[0_2px_0_0_rgba(0,0,0,1)]">
+                                        <tr className="text-gray-900 uppercase text-[8px] md:text-xs font-black">
                                             <th className="p-1 md:p-2 text-center w-8 md:w-10">Pos</th>
                                             <th className="p-1 md:p-2">Palpiteiro</th>
                                             <th className="p-1 md:p-2 text-center bg-yellow-200/50" title="Pontos Totais">Total</th>
@@ -395,13 +395,19 @@ const App: React.FC = () => {
                                                 return (
                                                     <tr key={user.id} className={`border-b-2 border-gray-300 last:border-0 ${isMe ? 'bg-yellow-200' : 'hover:bg-yellow-50'} transition-all text-[10px] md:text-sm`}>
                                                         <td className="p-1 md:p-2 text-center font-bold text-gray-500">#{index + 1}</td>
-                                                        <td className="p-1 md:p-2 flex items-center gap-1 md:gap-2">
-                                                            <AvatarViewer configStr={user.avatar} size={64} className="w-10 h-10 md:w-14 md:h-14 border-2 border-black shrink-0 bg-gray-200" />
-                                                            <span className={`font-bold truncate max-w-[80px] md:max-w-[200px] ${isMe ? 'text-red-600' : 'text-gray-900'}`}>
+                                                        <td className="p-1 md:p-2 flex items-center gap-2 md:gap-4 overflow-visible relative hover:z-50">
+                                                            <div className="relative group/avatar shrink-0 z-10 hover:z-50 transition-all duration-300">
+                                                                <AvatarViewer 
+                                                                    configStr={user.avatar} 
+                                                                    size={80} 
+                                                                    className="w-12 h-12 md:w-20 md:h-20 border-2 md:border-4 border-black bg-gray-200 shadow-[2px_2px_0_rgba(0,0,0,1)] my-1 transition-all duration-300 cursor-zoom-in group-hover/avatar:scale-[2.2] md:group-hover/avatar:scale-[2.8] group-hover/avatar:shadow-[8px_8px_0_rgba(0,0,0,0.5)] origin-left" 
+                                                                />
+                                                            </div>
+                                                            <span className={`font-black text-[10px] md:text-lg uppercase tracking-tighter ${isMe ? 'text-red-600' : 'text-gray-900'}`}>
                                                                 {user.name} {isMe && '(VOCÊ)'}
                                                             </span>
                                                         </td>
-                                                        <td className="p-1 md:p-2 text-center font-black text-sm md:text-base text-green-700 bg-yellow-200/50">{isMe ? userPoints : user.points}</td>
+                                                        <td className="p-1 md:p-2 text-center font-black text-sm md:text-xl text-green-700 bg-yellow-200/50">{isMe ? userPoints : user.points}</td>
                                                         <td className="p-1 md:p-2 text-center font-bold text-gray-700">{user.qualifiedTeamsCount}</td>
                                                         <td className="p-1 md:p-2 text-center font-bold text-blue-700">{user.fullMatches}</td>
                                                         <td className="p-1 md:p-2 text-center font-bold text-green-700">{user.halfMatches}</td>
