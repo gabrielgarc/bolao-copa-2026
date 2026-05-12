@@ -23,6 +23,7 @@ import { RankingModel } from './models/ranking.model';
 import { UserModel } from './models/user.model';
 import { LoginScreen } from './components/LoginScreen';
 import { AvatarViewer } from './components/AvatarViewer';
+import { RulesScreen } from './components/RulesScreen';
 
 type MatchesSubView = 'TABLE' | 'DATE' | 'TODAY';
 
@@ -424,6 +425,10 @@ const App: React.FC = () => {
                             myRanking={myRanking}
                         />
                     </div>
+                )}
+
+                {currentView === AppView.RULES && (
+                    <RulesScreen />
                 )}
                 </>
                 )}

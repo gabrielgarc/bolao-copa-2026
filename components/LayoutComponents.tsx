@@ -97,6 +97,12 @@ export const Header: React.FC<HeaderProps> = ({ currentView, onViewChange, userN
                     Minha Pontuação
                   </button>
                   <button 
+                    className={`w-full text-left p-4 uppercase text-[10px] md:text-xs font-bold border-b-2 border-black transition-colors ${currentView === AppView.RULES ? 'bg-orange-500 text-white' : 'text-yellow-400 hover:bg-gray-700'}`}
+                    onClick={() => handleNav(AppView.RULES)}
+                  >
+                    Regulamento
+                  </button>
+                  <button 
                     className={`w-full text-left p-4 uppercase text-[10px] md:text-xs font-bold transition-colors ${currentView === AppView.LEADERBOARD ? 'bg-yellow-400 text-black' : 'text-yellow-400 hover:bg-gray-700'}`}
                     onClick={() => handleNav(AppView.LEADERBOARD)}
                   >
