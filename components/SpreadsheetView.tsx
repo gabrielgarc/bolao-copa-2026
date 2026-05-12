@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Match, MatchStage, TeamStats } from '../types';
 import { PixelCard, PixelInput, PixelFlag, PixelButton } from './PixelComponents';
 import { StandingsTable } from './StandingsTable';
@@ -41,6 +41,12 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({});
   const [expandedStandings, setExpandedStandings] = useState<Record<string, boolean>>({});
   const [viewMode, setViewMode] = useState<'GROUP' | 'DATE'>('GROUP');
+
+  useEffect(() => {
+    if (currentStage !== 'GROUPS') {
+      setViewMode('GROUP');
+    }
+  }, [currentStage]);
 
   // Garante que se o App carregar os dados atrasado, a tela puxe!
   React.useEffect(() => {
@@ -491,23 +497,25 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
         ))}
       </div>
 
-      {/* Toggle de Visualização */}
-      <div className="mb-8 flex justify-center">
-        <div className="bg-gray-800 p-1 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,0.5)] flex">
-          <button
-            onClick={() => setViewMode('GROUP')}
-            className={`px-4 py-1.5 text-[9px] md:text-[11px] uppercase font-bold transition-all ${viewMode === 'GROUP' ? (isOfficial ? 'bg-red-600 text-white' : 'bg-yellow-400 text-black') : 'text-gray-400 hover:text-white'}`}
-          >
-            Por Grupo
-          </button>
-          <button
-            onClick={() => setViewMode('DATE')}
-            className={`px-4 py-1.5 text-[9px] md:text-[11px] uppercase font-bold transition-all ${viewMode === 'DATE' ? (isOfficial ? 'bg-red-600 text-white' : 'bg-yellow-400 text-black') : 'text-gray-400 hover:text-white'}`}
-          >
-            Por Dia
-          </button>
+      {/* Toggle de Visualização - Apenas na fase de grupos */}
+      {currentStage === 'GROUPS' && (
+        <div className="mb-8 flex justify-center">
+          <div className="bg-gray-800 p-1 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,0.5)] flex">
+            <button
+              onClick={() => setViewMode('GROUP')}
+              className={`px-4 py-1.5 text-[9px] md:text-[11px] uppercase font-bold transition-all ${viewMode === 'GROUP' ? (isOfficial ? 'bg-red-600 text-white' : 'bg-yellow-400 text-black') : 'text-gray-400 hover:text-white'}`}
+            >
+              Por Grupo
+            </button>
+            <button
+              onClick={() => setViewMode('DATE')}
+              className={`px-4 py-1.5 text-[9px] md:text-[11px] uppercase font-bold transition-all ${viewMode === 'DATE' ? (isOfficial ? 'bg-red-600 text-white' : 'bg-yellow-400 text-black') : 'text-gray-400 hover:text-white'}`}
+            >
+              Por Dia
+            </button>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* ==================== EPIC FINAL VIEW ==================== */}
       {currentStage === 'FINAL' && (() => {
