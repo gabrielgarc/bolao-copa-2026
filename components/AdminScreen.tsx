@@ -130,7 +130,44 @@ export const AdminScreen: React.FC = () => {
                         <h2 className="text-xl font-bold text-yellow-400 mb-4 uppercase">Simulações / Mocks</h2>
                         <div className="space-y-3">
                             <div className="bg-gray-800 p-3 border border-black space-y-2">
-                                <h3 className="text-sm font-bold text-gray-300">Grupos</h3>
+                                <h3 className="text-sm font-bold text-gray-300">Simulação Cronológica</h3>
+                                <PixelButton 
+                                    variant="action" 
+                                    className="w-full" 
+                                    disabled={loading}
+                                    onClick={() => handleAction('mock/next')}
+                                >
+                                    ⚽ Simular Próximo Jogo
+                                </PixelButton>
+                            </div>
+
+                            <div className="bg-gray-800 p-3 border border-black space-y-2">
+                                <h3 className="text-sm font-bold text-gray-300">Simular Fase Inteira</h3>
+                                <div className="flex flex-wrap gap-2">
+                                    {[
+                                        { id: 'ALL', label: 'Tudo' },
+                                        { id: 'GROUP_STAGE', label: 'Grupos' },
+                                        { id: 'LAST_32', label: '1/16 (32)' },
+                                        { id: 'LAST_16', label: '1/8 (16)' },
+                                        { id: 'QUARTER_FINALS', label: 'Quartas' },
+                                        { id: 'SEMI_FINALS', label: 'Semis' },
+                                        { id: 'THIRD_PLACE', label: '3º Lugar' },
+                                        { id: 'FINAL', label: 'Final' }
+                                    ].map(s => (
+                                        <button 
+                                            key={s.id}
+                                            disabled={loading}
+                                            onClick={() => handleAction(`mock/stage?stage=${s.id}`)}
+                                            className="bg-gray-700 hover:bg-gray-600 px-3 py-1 border border-black text-[10px] font-bold"
+                                        >
+                                            {s.label}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="bg-gray-800 p-3 border border-black space-y-2">
+                                <h3 className="text-sm font-bold text-gray-300">Simular Grupos</h3>
                                 <div className="flex flex-wrap gap-2">
                                     {['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'].map(g => (
                                         <button 

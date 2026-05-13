@@ -63,6 +63,16 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
     { id: 'FINAL', label: '🏆 Final' },
   ];
 
+  const stageMultipliers: Record<string, number> = {
+    'GROUPS': 1,
+    'R32': 2,
+    'R16': 3,
+    'QF': 4,
+    'SF': 5,
+    'THIRD_PLACE': 6,
+    'FINAL': 7
+  };
+
   const handleInputChange = async (matchId: string, side: 'home' | 'away', value: string) => {
     const match = matches.find(m => m.id === matchId);
     if (!match || match.isLocked || isMatchStarted(match)) return;
@@ -358,14 +368,22 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
         {!isOfficial && (
           <td className="p-0.5 md:p-1 text-center border-l border-gray-200">
             {hasRealScore ? (
-              <span className={`px-1.5 py-0.5 font-bold text-[9px] md:text-[10px] border ${pointsByMatch[match.id] === 120 ? 'bg-green-100 text-green-700 border-green-400' :
-                pointsByMatch[match.id] === 90 ? 'bg-pink-100 text-pink-700 border-pink-400' :
-                  pointsByMatch[match.id] === 60 ? 'bg-cyan-100 text-cyan-700 border-cyan-400' :
-                    pointsByMatch[match.id] === 30 ? 'bg-yellow-100 text-yellow-700 border-yellow-400' :
-                      'bg-gray-100 text-gray-500 border-gray-300'
-                }`}>
-                {pointsByMatch[match.id] ?? 0}
-              </span>
+              (() => {
+                const total = pointsByMatch[match.id] || 0;
+                const mult = stageMultipliers[currentStage] || 1;
+                const base = mult > 0 ? total / mult : 0;
+                
+                return (
+                  <span className={`px-1 py-0.5 font-bold text-[8px] md:text-[10px] border block whitespace-nowrap ${total >= (120 * mult) ? 'bg-green-100 text-green-700 border-green-400' :
+                    total >= (90 * mult) ? 'bg-pink-100 text-pink-700 border-pink-400' :
+                      total >= (60 * mult) ? 'bg-cyan-100 text-cyan-700 border-cyan-400' :
+                        total >= (30 * mult) ? 'bg-yellow-100 text-yellow-700 border-yellow-400' :
+                          'bg-gray-100 text-gray-500 border-gray-300'
+                    }`}>
+                    {mult > 1 ? `${base}*${mult}=${total}` : total}
+                  </span>
+                );
+              })()
             ) : (
               <span className="text-gray-300">-</span>
             )}
@@ -677,7 +695,7 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
                       pts >= 420 ? 'bg-cyan-500 text-white' :
                         pts > 0 ? 'bg-yellow-500 text-black' :
                           'bg-gray-700 text-gray-400'
-                    }`}>{pts} PTS</span>
+                    }`}>{pts / 7} * 7 = {pts} PTS</span>
                 )}
               </div>
             )}
