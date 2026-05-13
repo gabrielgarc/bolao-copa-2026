@@ -39,7 +39,6 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
   onRefresh
 }) => {
   const [localPredictions, setLocalPredictions] = useState<Record<string, { home: string; away: string }>>(predictions);
-  const [isSimulating, setIsSimulating] = useState(false);
   const [saveStatus, setSaveStatus] = useState<Record<string, 'saving' | 'error' | 'saved'>>({});
   const [errorModalOpen, setErrorModalOpen] = useState(false);
   const [errorDetail, setErrorDetail] = useState('');
@@ -106,18 +105,6 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
           setErrorModalOpen(true);
         }
       }
-    }
-  };
-
-  const handleSimulateNext = async () => {
-    setIsSimulating(true);
-    try {
-      await AdminService.mockNextMatch();
-      if (onRefresh) await onRefresh();
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setIsSimulating(false);
     }
   };
 
@@ -526,15 +513,6 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
           <h2 className="text-xl md:text-3xl text-white font-bold drop-shadow-[2px_2px_0_rgba(0,0,0,1)] uppercase italic tracking-widest bg-red-600 inline-block px-4 py-2 border-4 border-black">
             Resultados Oficiais
           </h2>
-          
-          <PixelButton 
-            variant="action" 
-            onClick={handleSimulateNext}
-            disabled={isSimulating}
-            className="text-[10px] md:text-xs"
-          >
-            {isSimulating ? '⌛ Simulando...' : '⚽ Simular Próximo Jogo'}
-          </PixelButton>
         </div>
       )}
 

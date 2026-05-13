@@ -132,6 +132,16 @@ namespace Bolao.Copa2026.API.Services
         {
             _mockStates[apiId] = new MockMatchState(homeScore, awayScore, status);
             _logger.LogInformation("Mock: Match {ApiId} → {Home}x{Away} ({Status})", apiId, homeScore, awayScore, status);
+
+            if (status == "FINISHED")
+            {
+                // Dispara check assíncrono (fire and forget ou espera?)
+                // Melhor disparar via Task.Run para não travar o set
+                if (_baseMatchesById.TryGetValue(apiId, out var match))
+                {
+                    Task.Run(() => AutoCheckStageCompletionAsync(match.Stage!));
+                }
+            }
         }
 
         public void StartMatch(int apiId)
@@ -150,6 +160,11 @@ namespace Bolao.Copa2026.API.Services
             else
                 _mockStates[apiId] = new MockMatchState(0, 0, "FINISHED");
             _logger.LogInformation("Mock: Match {ApiId} → FINISHED", apiId);
+
+            if (_baseMatchesById.TryGetValue(apiId, out var match))
+            {
+                Task.Run(() => AutoCheckStageCompletionAsync(match.Stage!));
+            }
         }
 
         public async Task<int> SimulateGroupAsync(string groupLetter)
@@ -284,9 +299,27 @@ namespace Bolao.Copa2026.API.Services
 
                 SetMatchResult(nextMatch.ApiId, home, away, "FINISHED");
                 _logger.LogInformation("Mock NEXT: Simulada partida {Id} ({Home} {H}x{A} {Away})", nextMatch.ApiId, nextMatch.HomeTeamName, home, away, nextMatch.AwayTeamName);
+                
+                await AutoCheckStageCompletionAsync(nextMatch.Stage!);
             }
 
             return nextMatch;
+        }
+
+        private async Task AutoCheckStageCompletionAsync(string stage)
+        {
+            await EnsureInitializedAsync();
+            var stageMatches = _baseMatchesById.Values
+                .Where(m => m.Stage != null && m.Stage.Equals(stage, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            if (stageMatches.Count > 0 && stageMatches.All(m => 
+                (_mockStates.TryGetValue(m.Id!.Value, out var s) && s.Status == "FINISHED") || 
+                m.Status == "FINISHED"))
+            {
+                _logger.LogInformation("Mock: Fase {Stage} completa! Populando próxima fase...", stage);
+                await PopulateNextRoundAsync(stage);
+            }
         }
 
         public async Task<int> RecalculateBracketsAsync()
@@ -312,28 +345,31 @@ namespace Bolao.Copa2026.API.Services
 
             if (finishedStage == "GROUP_STAGE")
             {
-                // Calcula standings usando os mocks atuais (scores no _mockStates)
+                // Calcula standings usando os mocks atuais
                 var groupStandings = ComputeGroupStandingsFromMock(allDbMatches, teams);
 
-                // Coleta classificados: 1º e 2º de cada grupo + 8 melhores 3ºs
-                var groupWinners = new Dictionary<string, (Guid id, string name)>();
-                var groupRunners = new Dictionary<string, (Guid id, string name)>();
+                // Coleta classificados: 1º e 2º de cada grupo (12 grupos) + 8 melhores 3ºs
+                var qualified = new List<(Guid id, string name)>();
                 var allThirds = new List<(Guid id, string name, int pts, int gd, int gf)>();
 
-                foreach (var (groupKey, standings) in groupStandings)
+                var groupLetters = new[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L" };
+                foreach (var g in groupLetters)
                 {
-                    if (standings.Count >= 1) groupWinners[groupKey] = standings[0];
-                    if (standings.Count >= 2) groupRunners[groupKey] = standings[1];
-                    if (standings.Count >= 3)
+                    var key = $"GROUP_{g}";
+                    if (groupStandings.TryGetValue(key, out var standings))
                     {
-                        var third = standings[2];
-                        // Pega stats do time
-                        var stats = GetTeamStats(groupKey, third.id, allDbMatches);
-                        allThirds.Add((third.id, third.name, stats.pts, stats.gd, stats.gf));
+                        if (standings.Count >= 1) qualified.Add(standings[0]);
+                        if (standings.Count >= 2) qualified.Add(standings[1]);
+                        if (standings.Count >= 3)
+                        {
+                            var third = standings[2];
+                            var stats = GetTeamStats(key, third.id, allDbMatches);
+                            allThirds.Add((third.id, third.name, stats.pts, stats.gd, stats.gf));
+                        }
                     }
                 }
 
-                // Best 8 thirds (FIFA 2026: 12 groups → 12 thirds → top 8 qualify)
+                // Best 8 thirds
                 var qualifiedThirds = allThirds
                     .OrderByDescending(t => t.pts)
                     .ThenByDescending(t => t.gd)
@@ -342,20 +378,11 @@ namespace Bolao.Copa2026.API.Services
                     .Select(t => (t.id, t.name))
                     .ToList();
 
-                // Build ordered list of 32 qualified teams for LAST_32 bracket
-                var qualified = new List<(Guid id, string name)>();
-                var groupLetters = new[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L" };
-                foreach (var g in groupLetters)
-                {
-                    var key = $"GROUP_{g}";
-                    if (groupWinners.TryGetValue(key, out var w)) qualified.Add(w);
-                    if (groupRunners.TryGetValue(key, out var r)) qualified.Add(r);
-                }
                 qualified.AddRange(qualifiedThirds);
 
-                // Atualiza partidas LAST_32 no banco
+                // Atualiza partidas LAST_32 sequencialmente (32 times -> 16 matches)
                 var last32Db = allDbMatches.Where(m => m.Stage == "LAST_32")
-                    .OrderBy(m => m.Date).ThenBy(m => m.Time).ToList();
+                    .OrderBy(m => m.ApiId).ToList(); // Usa ApiId para ordem sequencial (73, 74...)
 
                 for (int i = 0; i < last32Db.Count && i * 2 + 1 < qualified.Count; i++)
                 {
@@ -367,19 +394,16 @@ namespace Bolao.Copa2026.API.Services
                     await matchRepo.UpdateAsync(dbMatch.Id, dbMatch);
                     updates++;
 
-                    // Atualiza também o snapshot in-memory
                     if (dbMatch.ApiId != 0 && _baseMatchesById.TryGetValue(dbMatch.ApiId, out var baseMatch))
                     {
-                        var homeTeamDb = teams.GetValueOrDefault(dbMatch.HomeTeamId);
-                        var awayTeamDb = teams.GetValueOrDefault(dbMatch.AwayTeamId);
-                        baseMatch.HomeTeam = new MatchTeam { Name = dbMatch.HomeTeamName ?? "TBD", ShortName = dbMatch.HomeTeamName ?? "TBD", Id = homeTeamDb?.ApiId };
-                        baseMatch.AwayTeam = new MatchTeam { Name = dbMatch.AwayTeamName ?? "TBD", ShortName = dbMatch.AwayTeamName ?? "TBD", Id = awayTeamDb?.ApiId };
+                        baseMatch.HomeTeam = new MatchTeam { Name = dbMatch.HomeTeamName, Id = teams.GetValueOrDefault(dbMatch.HomeTeamId)?.ApiId };
+                        baseMatch.AwayTeam = new MatchTeam { Name = dbMatch.AwayTeamName, Id = teams.GetValueOrDefault(dbMatch.AwayTeamId)?.ApiId };
                     }
                 }
             }
             else
             {
-                // Fases eliminatórias: propagamos vencedores para o próximo round
+                // Fases eliminatórias: propagamos vencedores/perdedores sequencialmente
                 var nextStage = finishedStage switch
                 {
                     "LAST_32" => "LAST_16",
@@ -389,59 +413,57 @@ namespace Bolao.Copa2026.API.Services
                     _ => null
                 };
 
-                // Terceiro lugar: perdedores das semis
+                var finishedDbMatches = allDbMatches.Where(m => m.Stage == finishedStage)
+                    .OrderBy(m => m.ApiId).ToList();
+
                 if (finishedStage == "SEMI_FINALS")
                 {
-                    var semiMatches = allDbMatches.Where(m => m.Stage == "SEMI_FINALS")
-                        .OrderBy(m => m.Date).ToList();
                     var thirdPlaceMatch = allDbMatches.FirstOrDefault(m => m.Stage == "THIRD_PLACE");
+                    var finalMatch = allDbMatches.FirstOrDefault(m => m.Stage == "FINAL");
 
-                    if (thirdPlaceMatch != null && semiMatches.Count >= 2)
+                    if (finishedDbMatches.Count >= 2)
                     {
-                        var semi1 = semiMatches[0];
-                        var semi2 = semiMatches[1];
-                        var (loser1Id, loser1Name) = GetLoserFromMock(semi1);
-                        var (loser2Id, loser2Name) = GetLoserFromMock(semi2);
+                        var (w1Id, w1Name) = GetWinnerFromMock(finishedDbMatches[0]);
+                        var (w2Id, w2Name) = GetWinnerFromMock(finishedDbMatches[1]);
+                        var (l1Id, l1Name) = GetLoserFromMock(finishedDbMatches[0]);
+                        var (l2Id, l2Name) = GetLoserFromMock(finishedDbMatches[1]);
 
-                        thirdPlaceMatch.HomeTeamId = loser1Id;
-                        thirdPlaceMatch.HomeTeamName = loser1Name;
-                        thirdPlaceMatch.AwayTeamId = loser2Id;
-                        thirdPlaceMatch.AwayTeamName = loser2Name;
-                        await matchRepo.UpdateAsync(thirdPlaceMatch.Id, thirdPlaceMatch);
-                        updates++;
-
-                        if (thirdPlaceMatch.ApiId != 0 && _baseMatchesById.TryGetValue(thirdPlaceMatch.ApiId, out var tp))
+                        if (finalMatch != null)
                         {
-                            tp.HomeTeam = new MatchTeam { Name = loser1Name, ShortName = loser1Name };
-                            tp.AwayTeam = new MatchTeam { Name = loser2Name, ShortName = loser2Name };
+                            finalMatch.HomeTeamId = w1Id; finalMatch.HomeTeamName = w1Name;
+                            finalMatch.AwayTeamId = w2Id; finalMatch.AwayTeamName = w2Name;
+                            await matchRepo.UpdateAsync(finalMatch.Id, finalMatch);
+                            updates++;
+                        }
+                        if (thirdPlaceMatch != null)
+                        {
+                            thirdPlaceMatch.HomeTeamId = l1Id; thirdPlaceMatch.HomeTeamName = l1Name;
+                            thirdPlaceMatch.AwayTeamId = l2Id; thirdPlaceMatch.AwayTeamName = l2Name;
+                            await matchRepo.UpdateAsync(thirdPlaceMatch.Id, thirdPlaceMatch);
+                            updates++;
                         }
                     }
                 }
-
-                if (nextStage != null)
+                else if (nextStage != null)
                 {
-                    var finishedDbMatches = allDbMatches.Where(m => m.Stage == finishedStage)
-                        .OrderBy(m => m.Date).ThenBy(m => m.Time).ToList();
                     var nextDbMatches = allDbMatches.Where(m => m.Stage == nextStage)
-                        .OrderBy(m => m.Date).ThenBy(m => m.Time).ToList();
+                        .OrderBy(m => m.ApiId).ToList();
 
                     for (int i = 0; i < nextDbMatches.Count && i * 2 + 1 < finishedDbMatches.Count; i++)
                     {
                         var nextMatch = nextDbMatches[i];
-                        var (winner1Id, winner1Name) = GetWinnerFromMock(finishedDbMatches[i * 2]);
-                        var (winner2Id, winner2Name) = GetWinnerFromMock(finishedDbMatches[i * 2 + 1]);
+                        var (w1Id, w1Name) = GetWinnerFromMock(finishedDbMatches[i * 2]);
+                        var (w2Id, w2Name) = GetWinnerFromMock(finishedDbMatches[i * 2 + 1]);
 
-                        nextMatch.HomeTeamId = winner1Id;
-                        nextMatch.HomeTeamName = winner1Name;
-                        nextMatch.AwayTeamId = winner2Id;
-                        nextMatch.AwayTeamName = winner2Name;
+                        nextMatch.HomeTeamId = w1Id; nextMatch.HomeTeamName = w1Name;
+                        nextMatch.AwayTeamId = w2Id; nextMatch.AwayTeamName = w2Name;
                         await matchRepo.UpdateAsync(nextMatch.Id, nextMatch);
                         updates++;
 
                         if (nextMatch.ApiId != 0 && _baseMatchesById.TryGetValue(nextMatch.ApiId, out var baseNext))
                         {
-                            baseNext.HomeTeam = new MatchTeam { Name = winner1Name, ShortName = winner1Name };
-                            baseNext.AwayTeam = new MatchTeam { Name = winner2Name, ShortName = winner2Name };
+                            baseNext.HomeTeam = new MatchTeam { Name = w1Name };
+                            baseNext.AwayTeam = new MatchTeam { Name = w2Name };
                         }
                     }
                 }
