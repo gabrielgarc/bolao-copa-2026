@@ -142,13 +142,28 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
         timeZone: 'America/Sao_Paulo',
         weekday: 'long'
       });
+      const weekdayShortFormatter = new Intl.DateTimeFormat('pt-BR', {
+        timeZone: 'America/Sao_Paulo',
+        weekday: 'short'
+      });
 
       const date = dateFormatter.format(utcDate);
+      const shortDate = date.substring(0, 5); // "DD/MM"
       const time = timeFormatter.format(utcDate);
       let dayOfWeek = weekdayFormatter.format(utcDate);
       dayOfWeek = dayOfWeek.charAt(0).toUpperCase() + dayOfWeek.slice(1);
+      
+      let dayOfWeekShort = weekdayShortFormatter.format(utcDate);
+      dayOfWeekShort = dayOfWeekShort.charAt(0).toUpperCase() + dayOfWeekShort.slice(1).replace('.', '');
 
-      return { date, time, dayOfWeek, fullDate: `${date} (${dayOfWeek})` };
+      return { 
+        date, 
+        shortDate, 
+        time, 
+        dayOfWeek, 
+        dayOfWeekShort,
+        fullDate: `${shortDate} (${dayOfWeek})` 
+      };
     } catch {
       return { date: dateStr, time: timeStr, dayOfWeek: '', fullDate: dateStr };
     }
@@ -221,20 +236,19 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
   const matchesByDate = useMemo(() => {
     const dates: Record<string, Match[]> = {};
     filteredMatches.forEach(m => {
-      const date = m.date;
-      if (!dates[date]) dates[date] = [];
-      dates[date].push(m);
+      const brInfo = getBrasiliaTime(m.date, m.time);
+      const dateKey = brInfo.date;
+      if (!dates[dateKey]) dates[dateKey] = [];
+      dates[dateKey].push(m);
     });
     return dates;
   }, [filteredMatches]);
 
   const sortedDateEntries = useMemo(() => {
     return Object.entries(matchesByDate).sort((a, b) => {
-      // Sort by date YYYY-MM-DD or DD/MM/YYYY
       const parseDate = (d: string) => {
-        if (d.includes('-')) return d;
         const [day, month, year] = d.split('/');
-        return `${year || '2026'}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+        return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
       };
       return parseDate(a[0]).localeCompare(parseDate(b[0]));
     });
@@ -254,12 +268,14 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
     return (
       <tr key={match.id} className={`border-b border-gray-200 hover:bg-blue-50 transition-colors ${isLocked ? 'bg-gray-50' : ''} ${isFinal ? 'bg-gradient-to-r from-yellow-50 to-amber-100 hover:from-yellow-100 hover:to-amber-200' : ''}`}>
         <td className="p-1 md:p-2 border-r border-gray-200 text-center leading-none">
-          <div className="text-[10px] md:text-sm text-gray-800 font-semibold flex flex-col items-center">
-            <span>{br.date}</span>
-            <span className="text-[9px] md:hidden text-gray-500 font-normal">{br.time}</span>
+          <div className="text-[10px] md:text-sm text-gray-800 font-semibold flex flex-wrap items-center justify-center gap-x-1 gap-y-0.5">
+            {effectiveViewMode === 'DATE' ? (
+              <span className="whitespace-nowrap">{br.time}</span>
+            ) : (
+              <span className="whitespace-nowrap">{br.dayOfWeekShort} {br.shortDate} - {br.time}</span>
+            )}
           </div>
-          {showGroup && <div className="text-[7px] md:text-[9px] text-blue-600 font-bold uppercase mt-1">{match.group.replace('Grupo ', 'GP ')}</div>}
-          <div className="hidden md:block text-[8px] text-gray-400 uppercase mt-0.5">{br.time}</div>
+          {showGroup && effectiveViewMode !== 'DATE' && <div className="text-[7px] md:text-[9px] text-blue-600 font-bold uppercase mt-1">{match.group.replace('Grupo ', 'GP ')}</div>}
         </td>
         <td className="p-0.5 md:p-2 border-r border-gray-200 text-right overflow-hidden">
           <div className="flex items-center justify-end gap-0.5 md:gap-3">
@@ -761,7 +777,7 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
               {sortedDateEntries.map(([date, dateMatches]) => (
                 <div key={date} className="flex flex-col gap-2 mb-8">
                   <h2 className="text-yellow-400 text-xl font-bold uppercase drop-shadow-[2px_2px_0px_rgba(0,0,0,1)] leading-none px-2">
-                    {getBrasiliaTime(date, dateMatches[0]?.time || '12:00').fullDate}
+                    {getBrasiliaTime(dateMatches[0].date, dateMatches[0].time).fullDate}
                   </h2>
                   <PixelCard className="p-0 overflow-hidden bg-white shadow-[6px_6px_0px_0px_rgba(0,0,0,0.5)]" colorClass="bg-white">
                     <table className="w-full text-left border-collapse table-fixed">
@@ -807,7 +823,7 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
             <table className="w-full text-left border-collapse table-fixed">
               <thead>
                 <tr className={`${isOfficial ? 'bg-red-600' : 'bg-blue-600'} text-white text-[8px] uppercase font-bold border-b-2 border-black`}>
-                  <th className="p-1 border-r border-black/20 w-[21%] text-center">Data</th>
+                  <th className="p-1 border-r border-black/20 w-[21%] text-center">{effectiveViewMode === 'DATE' ? 'Hora' : 'Data'}</th>
                   <th className="p-1 border-r border-black/20 w-[18%] text-right">Casa</th>
                   <th className="p-1 border-r border-black/20 w-[22%] text-center">Placar</th>
                   <th className="p-1 text-left w-[18%]">Fora</th>
@@ -823,7 +839,7 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
                       dayElements.push(
                         <tr key={`${date}-header`} className="bg-gray-800 text-yellow-400 border-b border-black">
                           <td colSpan={isOfficial ? 4 : 6} className="p-1.5 text-[10px] font-bold text-center tracking-widest uppercase border-t border-black">
-                            {getBrasiliaTime(date, dateMatches[0]?.time || '12:00').fullDate}
+                            {getBrasiliaTime(dateMatches[0].date, dateMatches[0].time).fullDate}
                           </td>
                         </tr>
                       );
