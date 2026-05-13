@@ -278,7 +278,7 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
     return (
       <tr key={match.id} className={`border-b border-gray-200 hover:bg-blue-50 transition-colors ${isLocked ? 'bg-gray-50' : ''} ${isFinal ? 'bg-gradient-to-r from-yellow-50 to-amber-100 hover:from-yellow-100 hover:to-amber-200' : ''}`}>
         <td className="p-1 md:p-2 border-r border-gray-200 text-center leading-none">
-          <div className="text-[10px] md:text-sm text-gray-800 font-semibold flex flex-wrap items-center justify-center gap-x-1 gap-y-0.5">
+          <div className="text-[8px] md:text-sm text-gray-800 font-semibold flex flex-wrap items-center justify-center gap-x-1 gap-y-0.5">
             {effectiveViewMode === 'DATE' ? (
               <span className="whitespace-nowrap">{br.time}</span>
             ) : (
@@ -374,13 +374,13 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
                 const base = mult > 0 ? total / mult : 0;
                 
                 return (
-                  <span className={`px-1 py-0.5 font-bold text-[8px] md:text-[10px] border block whitespace-nowrap ${total >= (120 * mult) ? 'bg-green-100 text-green-700 border-green-400' :
-                    total >= (90 * mult) ? 'bg-pink-100 text-pink-700 border-pink-400' :
-                      total >= (60 * mult) ? 'bg-cyan-100 text-cyan-700 border-cyan-400' :
-                        total >= (30 * mult) ? 'bg-yellow-100 text-yellow-700 border-yellow-400' :
-                          'bg-gray-100 text-gray-500 border-gray-300'
+                  <span className={`px-1 py-0.5 font-bold text-[9px] md:text-[10px] border inline-block whitespace-nowrap min-w-[28px] md:min-w-[40px] text-center ${base >= 120 ? 'bg-blue-100 text-blue-700 border-blue-400' :
+                    base >= 90 ? 'bg-green-100 text-green-700 border-green-400' :
+                      base >= 60 ? 'bg-yellow-100 text-yellow-700 border-yellow-400' :
+                        base >= 30 ? 'bg-gray-100 text-gray-500 border-gray-300' :
+                          'bg-red-100 text-red-700 border-red-400'
                     }`}>
-                    {mult > 1 ? `${base}*${mult}=${total}` : total}
+                    {total}
                   </span>
                 );
               })()
@@ -690,12 +690,12 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
                   {finalMatch.realHomeScore} – {finalMatch.realAwayScore}
                 </span>
                 {!isOfficial && pts !== undefined && (
-                  <span className={`px-3 py-1 font-black text-sm md:text-base border-2 border-black ${pts >= 840 ? 'bg-green-500 text-white' :
-                    pts >= 630 ? 'bg-pink-500 text-white' :
-                      pts >= 420 ? 'bg-cyan-500 text-white' :
-                        pts > 0 ? 'bg-yellow-500 text-black' :
-                          'bg-gray-700 text-gray-400'
-                    }`}>{pts / 7} * 7 = {pts} PTS</span>
+                  <span className={`px-3 py-1 font-black text-sm md:text-base border-2 border-black ${pts >= 840 ? 'bg-blue-600 text-white' :
+                    pts >= 630 ? 'bg-green-600 text-white' :
+                      pts >= 420 ? 'bg-yellow-500 text-black' :
+                        pts >= 210 ? 'bg-gray-500 text-white' :
+                          'bg-red-600 text-white'
+                    }`}>{pts} PTS</span>
                 )}
               </div>
             )}
