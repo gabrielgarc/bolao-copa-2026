@@ -12,9 +12,10 @@ interface HeaderProps {
   userRank?: number;
   userAvatar?: string;
   userPoints?: number;
+  hasUnreadAnnouncement?: boolean;
 }
 
-export const Header: React.FC<HeaderProps> = ({ currentView, onViewChange, userName = "Jogador", userRank = 0, userAvatar, userPoints = 0 }) => {
+export const Header: React.FC<HeaderProps> = ({ currentView, onViewChange, userName = "Jogador", userRank = 0, userAvatar, userPoints = 0, hasUnreadAnnouncement = false }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleNav = (view: AppView) => {
@@ -117,10 +118,25 @@ export const Header: React.FC<HeaderProps> = ({ currentView, onViewChange, userN
                     Minha Pontuação
                   </button>
                   <button 
-                    className={`w-full text-left p-4 uppercase text-[10px] md:text-xs font-bold transition-colors ${currentView === AppView.RULES ? 'bg-orange-500 text-white' : 'text-yellow-400 hover:bg-gray-700'}`}
+                    className={`w-full text-left p-4 uppercase text-[10px] md:text-xs font-bold border-b-2 border-black transition-colors ${currentView === AppView.RULES ? 'bg-orange-500 text-white' : 'text-yellow-400 hover:bg-gray-700'}`}
                     onClick={() => handleNav(AppView.RULES)}
                   >
                     Regulamento
+                  </button>
+                  <button 
+                    className={`w-full text-left p-4 uppercase text-[10px] md:text-xs font-bold border-b-2 border-black transition-colors ${currentView === AppView.HALL_OF_FAME ? 'bg-purple-600 text-white' : 'text-yellow-400 hover:bg-gray-700'}`}
+                    onClick={() => handleNav(AppView.HALL_OF_FAME)}
+                  >
+                    Hall da Fama
+                  </button>
+                  <button 
+                    className={`w-full text-left p-4 uppercase text-[10px] md:text-xs font-bold border-b-2 border-black transition-colors flex items-center justify-between ${currentView === AppView.ANNOUNCEMENTS ? 'bg-orange-600 text-white' : 'text-yellow-400 hover:bg-gray-700'}`}
+                    onClick={() => handleNav(AppView.ANNOUNCEMENTS)}
+                  >
+                    <span>Avisos</span>
+                    {hasUnreadAnnouncement && (
+                      <span className="w-2.5 h-2.5 rounded-full bg-red-500 border border-black animate-pulse shrink-0" />
+                    )}
                   </button>
                   <button 
                     className="w-full text-left p-4 uppercase text-[10px] md:text-xs font-bold text-red-500 hover:bg-red-900 border-t-4 border-black transition-colors"

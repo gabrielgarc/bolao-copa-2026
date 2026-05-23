@@ -81,4 +81,18 @@ namespace Bolao.Copa2026.API.DTOs
         Guid UserId,
         string AvatarConfig
     );
+
+    // DTOs de Avisos
+    public record AnnouncementDto(
+        Guid Id,
+        string Title,
+        string Description,
+        DateTime CreatedAt,
+        bool IsRead
+    );
+
+    public record CreateAnnouncementDto(
+        string Title,
+        string Description
+    );
 }

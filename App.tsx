@@ -25,6 +25,11 @@ import { LoginScreen } from './components/LoginScreen';
 import { AvatarViewer } from './components/AvatarViewer';
 import { AvatarEditor } from './components/AvatarEditor';
 import { RulesScreen } from './components/RulesScreen';
+import { HallOfFameScreen } from './components/HallOfFameScreen';
+import { AnnouncementModal } from './components/AnnouncementModal';
+import { AnnouncementsScreen } from './components/AnnouncementsScreen';
+import { AnnouncementService } from './services/announcementService';
+import { Announcement } from './models/announcement.model';
 
 type MatchesSubView = 'TABLE' | 'DATE' | 'TODAY';
 
@@ -53,6 +58,8 @@ const App: React.FC = () => {
         message: '', 
         type: 'info' 
     });
+    const [pendingAnnouncement, setPendingAnnouncement] = useState<Announcement | null>(null);
+    const [hasUnreadAnnouncement, setHasUnreadAnnouncement] = useState(false);
 
     // Persist current view
     useEffect(() => {
@@ -90,6 +97,19 @@ const App: React.FC = () => {
                 setGroupDefinitions(definitionsMap);
                 setSimulatedToday(simulatedDate);
                 setMyRanking(myRankingData);
+
+                // Verificar se há aviso não lido
+                try {
+                    const unread = await AnnouncementService.getUnread(userData.id);
+                    if (unread) {
+                        setPendingAnnouncement(unread);
+                        setHasUnreadAnnouncement(true);
+                    } else {
+                        setHasUnreadAnnouncement(false);
+                    }
+                } catch (e) {
+                    console.warn('Erro ao verificar avisos:', e);
+                }
             }
         } catch (error) {
             console.error("Erro ao carregar dados:", error);
@@ -327,6 +347,7 @@ const App: React.FC = () => {
                 userRank={userRank}
                 userAvatar={userAvatar}
                 userPoints={userPoints}
+                hasUnreadAnnouncement={hasUnreadAnnouncement}
             />
 
             <main className="p-3 md:p-8">
@@ -446,6 +467,14 @@ const App: React.FC = () => {
                     <RulesScreen />
                 )}
 
+                {currentView === AppView.HALL_OF_FAME && (
+                    <HallOfFameScreen />
+                )}
+
+                {currentView === AppView.ANNOUNCEMENTS && (
+                    <AnnouncementsScreen />
+                )}
+
                 {currentView === AppView.EDIT_AVATAR && currentUser && (
                     <div className="max-w-2xl mx-auto animate-fadeIn">
                         <div className="text-center mb-6">
@@ -517,6 +546,23 @@ const App: React.FC = () => {
                 message={modal.message}
                 type={modal.type}
             />
+
+            {pendingAnnouncement && (
+                <AnnouncementModal
+                    announcement={pendingAnnouncement}
+                    onConfirm={async () => {
+                        if (currentUser) {
+                            try {
+                                await AnnouncementService.markAsRead(pendingAnnouncement.id, currentUser.id);
+                            } catch (e) {
+                                console.warn('Erro ao marcar aviso como lido:', e);
+                            }
+                        }
+                        setPendingAnnouncement(null);
+                        setHasUnreadAnnouncement(false);
+                    }}
+                />
+            )}
         </div>
     );
 };
