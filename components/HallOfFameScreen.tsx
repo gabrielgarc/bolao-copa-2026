@@ -14,7 +14,7 @@ const winnersData: WinnerRecord[] = [
     year: 2022,
     location: "Catar",
     themeClass: "bg-gradient-to-br from-red-950 to-amber-950 border-amber-500 text-amber-200",
-    firstPlace: "malu",
+    firstPlace: "Malu",
     secondPlace: "Dai e Rafa"
   },
   {
@@ -28,8 +28,8 @@ const winnersData: WinnerRecord[] = [
     year: 2014,
     location: "Brasil",
     themeClass: "bg-gradient-to-br from-emerald-950 to-green-950 border-green-400 text-green-200",
-    firstPlace: "andre oberg",
-    secondPlace: "tomás Garcia"
+    firstPlace: "André Oberg",
+    secondPlace: "Tomás Garcia"
   },
   {
     year: 2010,
@@ -53,14 +53,14 @@ export const HallOfFameScreen: React.FC = () => {
             <div className="w-2 h-2 bg-blue-500 rounded-full animate-ping" style={{ animationDelay: '400ms' }}></div>
             <div className="w-2 h-2 bg-green-500 rounded-full animate-ping" style={{ animationDelay: '600ms' }}></div>
           </div>
-          
-          <h2 
+
+          <h2
             className="text-lg sm:text-2xl md:text-3xl text-yellow-400 font-bold uppercase drop-shadow-[4px_4px_0_rgba(239,68,68,1)] tracking-widest leading-normal mb-2"
             style={{ fontFamily: "'Press Start 2P', cursive" }}
           >
             HALL DA FAMA
           </h2>
-          <p 
+          <p
             className="text-white text-[8px] md:text-xs uppercase font-bold tracking-[0.2em] opacity-80"
             style={{ fontFamily: "'Press Start 2P', cursive" }}
           >
@@ -71,7 +71,7 @@ export const HallOfFameScreen: React.FC = () => {
         {/* Grid de Edições */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {winnersData.map((record) => (
-            <div 
+            <div
               key={record.year}
               className={`
                 border-4 border-black p-5 relative overflow-hidden
@@ -99,13 +99,13 @@ export const HallOfFameScreen: React.FC = () => {
               <div className="space-y-4 relative z-10">
                 {/* 1º Lugar */}
                 <div className="flex items-center gap-3 bg-black/30 p-3 border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,0.4)]">
-                  <img 
-                    src="/trophy-world-cup.svg" 
-                    alt="Taça da Copa" 
-                    className="w-10 h-10 md:w-12 md:h-12 object-contain shrink-0" 
+                  <img
+                    src="/trophy-world-cup.svg"
+                    alt="Taça da Copa"
+                    className="w-10 h-10 md:w-12 md:h-12 object-contain shrink-0"
                   />
                   <div className="flex-grow">
-                    <div 
+                    <div
                       className="text-[7px] md:text-[8px] uppercase font-bold opacity-60 tracking-wider mb-0.5"
                       style={{ fontFamily: "'Press Start 2P', cursive" }}
                     >
@@ -121,7 +121,7 @@ export const HallOfFameScreen: React.FC = () => {
                 <div className="flex items-center gap-3 bg-black/20 p-3 border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,0.4)]">
                   <div className="text-2xl md:text-3xl shrink-0">🥈</div>
                   <div className="flex-grow">
-                    <div 
+                    <div
                       className="text-[7px] md:text-[8px] uppercase font-bold opacity-60 tracking-wider mb-0.5"
                       style={{ fontFamily: "'Press Start 2P', cursive" }}
                     >
@@ -139,7 +139,7 @@ export const HallOfFameScreen: React.FC = () => {
 
         {/* Footer/Mensagem de incentivo */}
         <div className="mt-10 pt-6 border-t-4 border-black text-center bg-black/20 p-4">
-          <p 
+          <p
             className="text-yellow-400 text-[8px] md:text-[10px] uppercase font-bold leading-relaxed mb-1"
             style={{ fontFamily: "'Press Start 2P', cursive" }}
           >
