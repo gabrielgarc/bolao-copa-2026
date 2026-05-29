@@ -64,12 +64,12 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
 
   const stageMultipliers: Record<string, number> = {
     'GROUPS': 1,
-    'R32': 2,
-    'R16': 3,
-    'QF': 4,
-    'SF': 5,
-    'THIRD_PLACE': 6,
-    'FINAL': 7
+    'R32': 3,
+    'R16': 5,
+    'QF': 7,
+    'SF': 9,
+    'THIRD_PLACE': 10,
+    'FINAL': 15
   };
 
   const handleInputChange = async (matchId: string, side: 'home' | 'away', value: string) => {
@@ -444,7 +444,7 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
                   <span className={`text-[9px] md:text-[11px] ${status === 'waiting' ? 'text-gray-400' :
                     status === 'correct' ? 'text-green-400' : 'text-red-400/50'
                     }`}>
-                    {status === 'waiting' ? '?' : (status === 'correct' ? '+100' : '+0')}
+                    {status === 'waiting' ? '?' : (status === 'correct' ? '+50' : '+0')}
                   </span>
                 </div>
               );
@@ -933,9 +933,7 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
         </div>
       )}
 
-      <div className="mt-8 text-center text-white/50 text-[6px] md:text-[10px] uppercase font-bold bg-black/20 p-2 md:p-4 border border-white/10 mx-auto">
-        💡 Seus palpites atualizam a classificação do grupo em tempo real no PC!
-      </div>
+
 
       {errorModalOpen && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">

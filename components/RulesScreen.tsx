@@ -80,7 +80,7 @@ export const RulesScreen: React.FC = () => {
                                     </li>
                                     <li className="flex justify-between items-center pt-2">
                                         <span className="font-bold">Time Classificado (Mata-mata)</span>
-                                        <span className="font-bold text-green-700">+100 pts/time</span>
+                                        <span className="font-bold text-green-700">+50 pts/time</span>
                                     </li>
                                 </ul>
                             </div>
@@ -145,49 +145,49 @@ export const RulesScreen: React.FC = () => {
                                             <td className="p-2 border-2 border-black text-left italic">Classificados (32 times)</td>
                                             <td className="p-2 border-2 border-black">-</td>
                                             <td className="p-2 border-2 border-black">-</td>
-                                            <td className="p-2 border-2 border-black text-green-700">3.200</td>
+                                            <td className="p-2 border-2 border-black text-green-700">1.600</td>
                                         </tr>
                                         <tr>
                                             <td className="p-2 border-2 border-black text-left">Dezesseis-avos</td>
                                             <td className="p-2 border-2 border-black">16</td>
-                                            <td className="p-2 border-2 border-black text-blue-600">x2</td>
-                                            <td className="p-2 border-2 border-black">3.840</td>
+                                            <td className="p-2 border-2 border-black text-blue-600">x3</td>
+                                            <td className="p-2 border-2 border-black">5.760</td>
                                         </tr>
                                         <tr className="bg-gray-100">
                                             <td className="p-2 border-2 border-black text-left">Oitavas de Final</td>
                                             <td className="p-2 border-2 border-black">8</td>
-                                            <td className="p-2 border-2 border-black text-blue-600">x3</td>
-                                            <td className="p-2 border-2 border-black">2.880</td>
+                                            <td className="p-2 border-2 border-black text-blue-600">x5</td>
+                                            <td className="p-2 border-2 border-black">4.800</td>
                                         </tr>
                                         <tr>
                                             <td className="p-2 border-2 border-black text-left">Quartas de Final</td>
                                             <td className="p-2 border-2 border-black">4</td>
-                                            <td className="p-2 border-2 border-black text-blue-600">x4</td>
-                                            <td className="p-2 border-2 border-black">1.920</td>
+                                            <td className="p-2 border-2 border-black text-blue-600">x7</td>
+                                            <td className="p-2 border-2 border-black">3.360</td>
                                         </tr>
                                         <tr className="bg-gray-100">
                                             <td className="p-2 border-2 border-black text-left">Semifinais</td>
                                             <td className="p-2 border-2 border-black">2</td>
-                                            <td className="p-2 border-2 border-black text-red-600 font-black">x5</td>
-                                            <td className="p-2 border-2 border-black">1.200</td>
+                                            <td className="p-2 border-2 border-black text-red-600 font-black">x9</td>
+                                            <td className="p-2 border-2 border-black">2.160</td>
                                         </tr>
                                         <tr>
                                             <td className="p-2 border-2 border-black text-left">3º Lugar</td>
                                             <td className="p-2 border-2 border-black">1</td>
-                                            <td className="p-2 border-2 border-black text-red-600 font-black">x6</td>
-                                            <td className="p-2 border-2 border-black">720</td>
+                                            <td className="p-2 border-2 border-black text-red-600 font-black">x10</td>
+                                            <td className="p-2 border-2 border-black">1.200</td>
                                         </tr>
                                         <tr className="bg-yellow-400 text-black">
                                             <td className="p-2 border-2 border-black text-left font-black underline">Grande Final</td>
                                             <td className="p-2 border-2 border-black">1</td>
-                                            <td className="p-2 border-2 border-black font-black">x7</td>
-                                            <td className="p-2 border-2 border-black font-black">840</td>
+                                            <td className="p-2 border-2 border-black font-black">x15</td>
+                                            <td className="p-2 border-2 border-black font-black">1.800</td>
                                         </tr>
                                     </tbody>
                                     <tfoot>
                                         <tr className="bg-gray-900 text-white font-black">
                                             <td colSpan={3} className="p-2 border-2 border-black text-right uppercase">Total Disponível</td>
-                                            <td className="p-2 border-2 border-black">23.240</td>
+                                            <td className="p-2 border-2 border-black">29.320</td>
                                         </tr>
                                     </tfoot>
                                 </table>

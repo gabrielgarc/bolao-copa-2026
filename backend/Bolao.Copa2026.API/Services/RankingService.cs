@@ -206,7 +206,7 @@ namespace Bolao.Copa2026.API.Services
                                 qualifiedTeamStatuses[teamIdStr] = "correct";
                                 qualifiedTeamsCount++;
                                 correctQualifiedTeamIds.Add(team.TeamId);
-                                groupBonus += 100;
+                                groupBonus += 50;
                             }
                             else
                             {
@@ -226,7 +226,7 @@ namespace Bolao.Copa2026.API.Services
                                 qualifiedTeamsCount++;
                                 if (!correctQualifiedTeamIds.Contains(team.TeamId))
                                     correctQualifiedTeamIds.Add(team.TeamId);
-                                groupBonus += 100;
+                                groupBonus += 50;
                             }
                             else
                             {
@@ -261,7 +261,7 @@ namespace Bolao.Copa2026.API.Services
                     }
                 }
 
-                totalPoints += qualifiedTeamsCount * 100;
+                totalPoints += qualifiedTeamsCount * 50;
 
                 var existing = await _userRankingRepo.FindOneAsync(r => r.UserId == user.Id);
                 if (existing == null)
@@ -313,14 +313,14 @@ namespace Bolao.Copa2026.API.Services
             int weight = stage switch
             {
                 "GROUP_STAGE" => 1,
-                "LAST_32" => 2,
-                "ROUND_OF_32" => 2,
-                "LAST_16" => 3,
-                "ROUND_OF_16" => 3,
-                "QUARTER_FINALS" => 4,
-                "SEMI_FINALS" => 5,
-                "THIRD_PLACE" => 6,
-                "FINAL" => 7,
+                "LAST_32" => 3,
+                "ROUND_OF_32" => 3,
+                "LAST_16" => 5,
+                "ROUND_OF_16" => 5,
+                "QUARTER_FINALS" => 7,
+                "SEMI_FINALS" => 9,
+                "THIRD_PLACE" => 10,
+                "FINAL" => 15,
                 _ => 1
             };
 

@@ -67,8 +67,8 @@ export const UserScoreView: React.FC<UserScoreViewProps> = ({ userRank, myRankin
                       🏆 Times Classificados
                       <span className="ml-1 text-gray-400 font-normal normal-case">({myRanking.qualifiedTeamsCount}/32)</span>
                     </span>
-                    <span className={`text-xs md:text-base font-bold ${getPointColor(myRanking.qualifiedTeamsCount * 100)} px-3 py-1 border-2 border-black`}>
-                      {myRanking.qualifiedTeamsCount * 100} pts
+                    <span className={`text-xs md:text-base font-bold ${getPointColor(myRanking.qualifiedTeamsCount * 50)} px-3 py-1 border-2 border-black`}>
+                      {myRanking.qualifiedTeamsCount * 50} pts
                     </span>
                   </div>
                 )}
