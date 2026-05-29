@@ -13,6 +13,7 @@ namespace Bolao.Copa2026.API.Controllers
         private readonly IRepository<Match> _matchRepo;
         private readonly IRepository<UserRanking> _userRankingRepo;
         private readonly IRepository<User> _userRepo;
+        private readonly IRepository<RegistrationToken> _tokenRepo;
         private readonly IRankingService _rankingService;
         private readonly IPredictionService _predictionService;
         private readonly MockMatchDataProvider? _mockProvider;
@@ -22,6 +23,7 @@ namespace Bolao.Copa2026.API.Controllers
             IRepository<Match> matchRepo,
             IRepository<UserRanking> userRankingRepo,
             IRepository<User> userRepo,
+            IRepository<RegistrationToken> tokenRepo,
             IRankingService rankingService,
             IPredictionService predictionService,
             IConfiguration config,
@@ -30,6 +32,7 @@ namespace Bolao.Copa2026.API.Controllers
             _matchRepo = matchRepo;
             _userRankingRepo = userRankingRepo;
             _userRepo = userRepo;
+            _tokenRepo = tokenRepo;
             _rankingService = rankingService;
             _predictionService = predictionService;
             _config = config;
@@ -120,6 +123,43 @@ namespace Bolao.Copa2026.API.Controllers
             }).OrderByDescending(u => u.points).ToList();
 
             return Ok(usersData);
+        }
+
+        // ==================== TOKENS DE CADASTRO ====================
+
+        [HttpGet("tokens")]
+        public async Task<ActionResult> GetTokens()
+        {
+            var tokens = await _tokenRepo.GetAllAsync();
+            return Ok(tokens.OrderByDescending(t => t.CreatedAt).Select(t => new Bolao.Copa2026.API.DTOs.RegistrationTokenDto(
+                t.Id, t.Token, t.IsUsed, t.UserName, t.CreatedAt
+            )));
+        }
+
+        [HttpPost("tokens")]
+        public async Task<ActionResult> GenerateToken([FromBody] Bolao.Copa2026.API.DTOs.GenerateTokenRequestDto request)
+        {
+            if (string.IsNullOrWhiteSpace(request.Prefix) || request.Prefix.Length != 4 || !request.Prefix.All(char.IsLetter))
+            {
+                return BadRequest("O prefixo deve conter exatamente 4 letras.");
+            }
+
+            var random = new Random();
+            var numberPart = random.Next(1000, 10000).ToString(); // 4 dígitos
+
+            var newTokenString = $"{request.Prefix.ToUpper()}{numberPart}";
+
+            var token = new RegistrationToken
+            {
+                Token = newTokenString,
+                IsUsed = false
+            };
+
+            await _tokenRepo.CreateAsync(token);
+
+            return Ok(new Bolao.Copa2026.API.DTOs.RegistrationTokenDto(
+                token.Id, token.Token, token.IsUsed, token.UserName, token.CreatedAt
+            ));
         }
 
         // ==================== MOCK API ENDPOINTS ====================

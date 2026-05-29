@@ -17,8 +17,8 @@ export const UserService = {
     return user;
   },
 
-  async create(userName: string, password: string, avatarConfig: string): Promise<UserModel> {
-    const response = await apiClient.post<any>('/user/create', { userName, password, avatarConfig });
+  async create(userName: string, password: string, avatarConfig: string, token: string, name: string): Promise<UserModel> {
+    const response = await apiClient.post<any>('/user/create', { userName, password, avatarConfig, token, name });
     const user = new UserModel(response.data);
     localStorage.setItem('bolao_user', JSON.stringify(user));
     return user;
@@ -33,5 +33,9 @@ export const UserService = {
 
   logout() {
     localStorage.removeItem('bolao_user');
+  },
+
+  async resetPassword(token: string, newPassword: string): Promise<void> {
+    await apiClient.post('/user/reset-password', { token, newPassword });
   }
 };

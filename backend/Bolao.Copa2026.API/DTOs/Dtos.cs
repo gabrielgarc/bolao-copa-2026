@@ -74,7 +74,9 @@ namespace Bolao.Copa2026.API.DTOs
     public record CreateUserRequestDto(
         string UserName,
         string Password,
-        string AvatarConfig
+        string AvatarConfig,
+        string Token,
+        string Name
     );
 
     public record UpdateAvatarRequestDto(
@@ -94,5 +96,23 @@ namespace Bolao.Copa2026.API.DTOs
     public record CreateAnnouncementDto(
         string Title,
         string Description
+    );
+
+    // DTOs de Token de Cadastro
+    public record RegistrationTokenDto(
+        Guid Id,
+        string Token,
+        bool IsUsed,
+        string? UserName,
+        DateTime CreatedAt
+    );
+
+    public record GenerateTokenRequestDto(
+        string Prefix
+    );
+
+    public record ResetPasswordRequestDto(
+        string Token,
+        string NewPassword
     );
 }

@@ -36,7 +36,7 @@ const winnersData: WinnerRecord[] = [
     location: "África do Sul",
     themeClass: "bg-gradient-to-br from-yellow-950 to-orange-950 border-yellow-400 text-yellow-200",
     firstPlace: "João Garcia",
-    secondPlace: "Miguel"
+    secondPlace: "-"
   }
 ];
 

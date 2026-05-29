@@ -17,6 +17,9 @@ namespace Bolao.Copa2026.API.Models
         [BsonElement("userName")]
         public string UserName { get; set; } = string.Empty;
 
+        [BsonElement("name")]
+        public string Name { get; set; } = string.Empty;
+
         [BsonElement("avatar")]
         public string Avatar { get; set; } = string.Empty;
 

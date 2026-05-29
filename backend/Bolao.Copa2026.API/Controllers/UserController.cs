@@ -31,8 +31,22 @@ namespace Bolao.Copa2026.API.Controllers
         {
             try
             {
-                var user = await _service.CreateUserAsync(request.UserName, request.Password, request.AvatarConfig);
+                var user = await _service.CreateUserAsync(request.UserName, request.Password, request.AvatarConfig, request.Token, request.Name);
                 return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("reset-password")]
+        public async Task<ActionResult> ResetPassword([FromBody] ResetPasswordRequestDto request)
+        {
+            try
+            {
+                await _service.ResetPasswordAsync(request.Token, request.NewPassword);
+                return Ok(new { message = "Senha alterada com sucesso." });
             }
             catch (Exception ex)
             {

@@ -8,5 +8,13 @@ export const AdminService = {
     async clearMock() {
         const response = await apiClient.delete('/Admin/mock/clear');
         return response.data;
+    },
+    async getTokens() {
+        const response = await apiClient.get('/Admin/tokens');
+        return response.data;
+    },
+    async generateToken(prefix: string) {
+        const response = await apiClient.post('/Admin/tokens', { prefix });
+        return response.data;
     }
 };

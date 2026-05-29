@@ -70,6 +70,8 @@ builder.Services.AddScoped<IRepository<UserRanking>>(sp =>
     new MongoRepository<UserRanking>(sp.GetRequiredService<IMongoDatabase>(), "user_rankings"));
 builder.Services.AddScoped<IRepository<Announcement>>(sp => 
     new MongoRepository<Announcement>(sp.GetRequiredService<IMongoDatabase>(), "announcements"));
+builder.Services.AddScoped<IRepository<RegistrationToken>>(sp => 
+    new MongoRepository<RegistrationToken>(sp.GetRequiredService<IMongoDatabase>(), "registration_tokens"));
 
 // --- Injeção de Dependência dos Serviços ---
 builder.Services.AddScoped<IMatchService, MatchService>();

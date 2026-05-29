@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { PixelButton, PixelCard, PixelInput } from './PixelComponents';
 import apiClient from '../services/apiClient';
 import { AnnouncementService } from '../services/announcementService';
+import { AdminService } from '../services/adminService';
 import { Announcement } from '../models/announcement.model';
 
 export const AdminScreen: React.FC = () => {
@@ -21,12 +22,19 @@ export const AdminScreen: React.FC = () => {
     const [annLoading, setAnnLoading] = useState(false);
     const [annMessage, setAnnMessage] = useState('');
 
+    // Tokens
+    const [tokens, setTokens] = useState<any[]>([]);
+    const [tokenPrefix, setTokenPrefix] = useState('');
+    const [tokenLoading, setTokenLoading] = useState(false);
+    const [tokenMessage, setTokenMessage] = useState('');
+
     useEffect(() => {
         const token = localStorage.getItem('adminToken');
         if (token === 'admin-secret-token') {
             setIsAuthenticated(true);
             fetchUsers();
             fetchAnnouncements();
+            fetchTokens();
         }
     }, []);
 
@@ -36,6 +44,33 @@ export const AdminScreen: React.FC = () => {
             setAnnouncements(data);
         } catch (err) {
             console.error('Erro ao buscar avisos', err);
+        }
+    };
+
+    const fetchTokens = async () => {
+        try {
+            const data = await AdminService.getTokens();
+            setTokens(data);
+        } catch (err) {
+            console.error('Erro ao buscar tokens', err);
+        }
+    };
+
+    const handleGenerateToken = async () => {
+        if (!tokenPrefix || tokenPrefix.length !== 4) {
+            setTokenMessage('Prefixo deve ter exatamente 4 letras.');
+            return;
+        }
+        setTokenLoading(true);
+        try {
+            await AdminService.generateToken(tokenPrefix);
+            setTokenPrefix('');
+            setTokenMessage('Token gerado!');
+            fetchTokens();
+        } catch (err: any) {
+            setTokenMessage(`Erro: ${err.response?.data || err.message}`);
+        } finally {
+            setTokenLoading(false);
         }
     };
 
@@ -276,6 +311,45 @@ export const AdminScreen: React.FC = () => {
                             ))}
                             {users.length === 0 && (
                                 <div className="p-4 text-center text-gray-500 text-sm">Nenhum usuário encontrado.</div>
+                            )}
+                        </div>
+                    </PixelCard>
+
+                    {/* Tokens de Cadastro */}
+                    <PixelCard>
+                        <div className="flex justify-between items-center mb-4">
+                            <h2 className="text-xl font-bold text-yellow-400 uppercase">Tokens ({tokens.length})</h2>
+                            <button onClick={fetchTokens} className="text-xs text-blue-400 underline">Atualizar</button>
+                        </div>
+                        
+                        <div className="mb-4 space-y-2">
+                            <label className="block text-xs uppercase font-bold text-gray-300">Novo Token (4 Letras)</label>
+                            <div className="flex gap-2">
+                                <PixelInput
+                                    type="text"
+                                    value={tokenPrefix}
+                                    onChange={(e) => setTokenPrefix(e.target.value.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 4))}
+                                    className="flex-1 text-black uppercase"
+                                    placeholder="EX: GABR"
+                                />
+                                <PixelButton variant="action" disabled={tokenLoading} onClick={handleGenerateToken}>
+                                    Gerar
+                                </PixelButton>
+                            </div>
+                            {tokenMessage && <div className="text-xs font-bold text-green-400">{tokenMessage}</div>}
+                        </div>
+
+                        <div className="bg-gray-800 border-2 border-black h-48 overflow-y-auto">
+                            {tokens.map(t => (
+                                <div key={t.id} className="flex justify-between items-center p-2 border-b border-gray-700">
+                                    <div className="font-mono text-sm font-bold text-yellow-300">{t.token}</div>
+                                    <div className={`text-[10px] font-bold ${t.isUsed ? 'text-red-400' : 'text-green-400'}`}>
+                                        {t.isUsed ? `Usado por ${t.userName}` : 'Disponível'}
+                                    </div>
+                                </div>
+                            ))}
+                            {tokens.length === 0 && (
+                                <div className="p-4 text-center text-gray-500 text-sm">Nenhum token gerado.</div>
                             )}
                         </div>
                     </PixelCard>

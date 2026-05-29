@@ -27,6 +27,7 @@ if %ERRORLEVEL% NEQ 0 (
 echo.
 echo Abrindo o navegador...
 start http://localhost:3000
+start http://localhost:3000/bolao-adm
 
 echo Abrindo o Swagger...
 start http://localhost:5000/swagger

@@ -32,7 +32,7 @@ namespace Bolao.Copa2026.API.Services
             var users = await _userRepo.GetAllAsync();
 
             var leaderboard = userRankings
-                .Select(u => new RankingDto(u.UserId, u.UserName, u.TotalPoints, u.Avatar, u.FullMatches, u.QualifiedTeamsCount, u.HalfMatches, u.OutcomeMatches, u.PartialMatches, u.ZeroMatches))
+                .Select(u => new RankingDto(u.UserId, u.Name, u.TotalPoints, u.Avatar, u.FullMatches, u.QualifiedTeamsCount, u.HalfMatches, u.OutcomeMatches, u.PartialMatches, u.ZeroMatches))
                 .ToList();
 
             // Add users that are registered but don't have a ranking entry yet
@@ -40,7 +40,7 @@ namespace Bolao.Copa2026.API.Services
             {
                 if (!leaderboard.Any(r => r.Id == user.Id))
                 {
-                    leaderboard.Add(new RankingDto(user.Id, user.UserName, 0, user.Avatar, 0, 0, 0, 0, 0, 0));
+                    leaderboard.Add(new RankingDto(user.Id, user.Name, 0, user.Avatar, 0, 0, 0, 0, 0, 0));
                 }
             }
 
@@ -270,6 +270,7 @@ namespace Bolao.Copa2026.API.Services
                     {
                         UserId = user.Id,
                         UserName = user.UserName,
+                        Name = user.Name,
                         Avatar = user.Avatar,
                         TotalPoints = totalPoints,
                         FullMatches = fullMatches,
@@ -288,6 +289,7 @@ namespace Bolao.Copa2026.API.Services
                 else
                 {
                     existing.UserName = user.UserName;
+                    existing.Name = user.Name;
                     existing.Avatar = user.Avatar;
                     existing.TotalPoints = totalPoints;
                     existing.FullMatches = fullMatches;
