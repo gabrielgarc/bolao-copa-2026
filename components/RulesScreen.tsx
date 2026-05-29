@@ -1,8 +1,23 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { PixelCard } from './PixelComponents';
+import { RankingService } from '../services/rankingService';
 
 export const RulesScreen: React.FC = () => {
+    const [playerCount, setPlayerCount] = useState<number>(0);
+
+    useEffect(() => {
+        const fetchPlayers = async () => {
+            const leaderboard = await RankingService.getLeaderboard();
+            setPlayerCount(leaderboard.length);
+        };
+        fetchPlayers();
+    }, []);
+
+    const totalPot = playerCount * 50;
+    const firstPlacePrize = totalPot * 0.8;
+    const secondPlacePrize = totalPot * 0.2;
+
     return (
         <div className="max-w-4xl mx-auto animate-fadeIn">
             <PixelCard className="bg-white/95 border-gray-900 mb-8 text-gray-900">
@@ -215,10 +230,17 @@ export const RulesScreen: React.FC = () => {
 
                 {/* Section 5: Prizes */}
                 <section>
-                    <h3 className="flex items-center gap-3 text-lg md:text-xl font-black uppercase text-gray-900 mb-4">
-                        <span className="bg-yellow-400 border-2 border-black px-2 py-0.5 text-sm">4</span>
-                        Premiação
-                    </h3>
+                    <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 gap-2">
+                        <h3 className="flex items-center gap-3 text-lg md:text-xl font-black uppercase text-gray-900">
+                            <span className="bg-yellow-400 border-2 border-black px-2 py-0.5 text-sm">4</span>
+                            Premiação
+                        </h3>
+                        {playerCount > 0 && (
+                            <div className="bg-green-100 border-2 border-green-800 text-green-800 px-3 py-1 text-sm font-bold uppercase inline-block">
+                                Total Arrecadado: R$ {totalPot.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ({playerCount} {playerCount === 1 ? 'jogador' : 'jogadores'})
+                            </div>
+                        )}
+                    </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="relative group">
                             <div className="absolute inset-0 bg-yellow-500 translate-x-2 translate-y-2 group-hover:translate-x-3 group-hover:translate-y-3 transition-all border-4 border-black"></div>
@@ -226,6 +248,11 @@ export const RulesScreen: React.FC = () => {
                                 <div className="text-4xl mb-2">🥇</div>
                                 <h4 className="font-black text-2xl uppercase text-gray-900 italic">1º LUGAR</h4>
                                 <div className="text-4xl font-black text-green-600 my-2">80%</div>
+                                {playerCount > 0 && (
+                                    <div className="text-2xl font-black text-green-700 my-2">
+                                        R$ {firstPlacePrize.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                    </div>
+                                )}
                                 <p className="text-xs text-gray-500 uppercase font-bold tracking-tighter">Do montante total arrecadado</p>
                             </div>
                         </div>
@@ -236,6 +263,11 @@ export const RulesScreen: React.FC = () => {
                                 <div className="text-4xl mb-2">🥈</div>
                                 <h4 className="font-black text-2xl uppercase text-gray-900 italic">2º LUGAR</h4>
                                 <div className="text-4xl font-black text-gray-600 my-2">20%</div>
+                                {playerCount > 0 && (
+                                    <div className="text-2xl font-black text-gray-700 my-2">
+                                        R$ {secondPlacePrize.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                    </div>
+                                )}
                                 <p className="text-xs text-gray-500 uppercase font-bold tracking-tighter">Do montante total arrecadado</p>
                             </div>
                         </div>

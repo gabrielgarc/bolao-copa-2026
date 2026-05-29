@@ -21,5 +21,8 @@ namespace Bolao.Copa2026.API.Models
         
         [BsonElement("awayScore")]
         public int AwayScore { get; set; }
+        
+        [BsonElement("lastUpdated")]
+        public DateTime? LastUpdated { get; set; }
     }
 }

@@ -80,10 +80,13 @@ namespace Bolao.Copa2026.API.Services
 
             var existing = await _predictionRepo.FindOneAsync(p => p.UserId == userId && p.MatchId == dto.MatchId);
 
+            var updateTime = DateTime.UtcNow.AddHours(-3);
+
             if (existing != null)
             {
                 existing.HomeScore = home;
                 existing.AwayScore = away;
+                existing.LastUpdated = updateTime;
                 await _predictionRepo.UpdateAsync(existing.Id, existing);
             }
             else
@@ -94,7 +97,8 @@ namespace Bolao.Copa2026.API.Services
                     UserId = userId,
                     MatchId = dto.MatchId,
                     HomeScore = home,
-                    AwayScore = away
+                    AwayScore = away,
+                    LastUpdated = updateTime
                 });
             }
 
