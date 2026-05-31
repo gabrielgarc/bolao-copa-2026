@@ -16,13 +16,13 @@ export const AnnouncementModal: React.FC<AnnouncementModalProps> = ({ announceme
       {/* Brilho de fundo pulsante */}
       <div className="absolute inset-0 animate-pulse bg-yellow-500/5 pointer-events-none" />
 
-      <div className="relative w-full max-w-md animate-scaleIn">
+      <div className="relative w-full max-w-md max-h-[90vh] flex flex-col animate-scaleIn">
         {/* Sombra retrô */}
         <div className="absolute inset-0 translate-x-2 translate-y-2 bg-yellow-500 border-4 border-black" />
 
-        <div className="relative bg-gray-900 border-4 border-black text-white">
+        <div className="relative bg-gray-900 border-4 border-black text-white flex flex-col max-h-full overflow-hidden">
           {/* Header */}
-          <div className="bg-yellow-400 border-b-4 border-black px-4 py-3 flex items-center gap-3">
+          <div className="bg-yellow-400 border-b-4 border-black px-4 py-3 flex items-center gap-3 shrink-0">
             <span className="text-2xl">📢</span>
             <div>
               <div
@@ -36,14 +36,14 @@ export const AnnouncementModal: React.FC<AnnouncementModalProps> = ({ announceme
           </div>
 
           {/* Conteúdo */}
-          <div className="p-6">
+          <div className="p-6 flex flex-col overflow-hidden min-h-0 flex-grow">
             <h3
-              className="text-lg md:text-xl font-black uppercase text-yellow-400 drop-shadow-[2px_2px_0_rgba(0,0,0,1)] mb-4 leading-tight"
+              className="text-lg md:text-xl font-black uppercase text-yellow-400 drop-shadow-[2px_2px_0_rgba(0,0,0,1)] mb-4 leading-tight shrink-0"
             >
               {announcement.title}
             </h3>
 
-            <div className="bg-black/30 border-2 border-gray-700 p-4 mb-6">
+            <div className="bg-black/30 border-2 border-gray-700 p-4 mb-6 overflow-y-auto flex-grow min-h-0">
               <p className="text-sm md:text-base text-gray-200 leading-relaxed whitespace-pre-wrap">
                 {announcement.description}
               </p>
@@ -58,6 +58,7 @@ export const AnnouncementModal: React.FC<AnnouncementModalProps> = ({ announceme
                 shadow-[4px_4px_0_rgba(0,0,0,1)]
                 active:shadow-none active:translate-x-1 active:translate-y-1
                 transition-all hover:bg-yellow-300
+                shrink-0
               "
             >
               Ok, entendi! ✓
