@@ -27,8 +27,15 @@ Write-Host "========================================" -ForegroundColor Cyan
 # Entra na pasta do backend
 Push-Location "backend\Bolao.Copa2026.API"
 
+$PublishTemp = "..\..\publish-temp"
+
+# Garante que a pasta temporária de publish está limpa antes de iniciar
+if (Test-Path $PublishTemp) {
+    Remove-Item $PublishTemp -Recurse -Force
+}
+
 Write-Host "`n[1/5] Publicando o projeto .NET..." -ForegroundColor Yellow
-dotnet publish -c Release -o publish
+dotnet publish Bolao.Copa2026.API.csproj -c Release -o $PublishTemp
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Erro no dotnet publish." -ForegroundColor Red
     Pop-Location
@@ -39,9 +46,12 @@ Write-Host "`n[2/5] Criando o arquivo ZIP com o formato correto (tar.exe)..." -F
 if (Test-Path $ZipName) {
     Remove-Item $ZipName -Force
 }
-Push-Location publish
-tar.exe -a -cf "../$ZipName" *
+Push-Location $PublishTemp
+tar.exe -a -cf "../backend/Bolao.Copa2026.API/$ZipName" *
 Pop-Location
+
+# Remove a pasta temporária após gerar o ZIP
+Remove-Item $PublishTemp -Recurse -Force
 
 Write-Host "`n[3/5] Fazendo upload para o S3 (s3://$BucketName/$S3Key)..." -ForegroundColor Yellow
 & "C:\Program Files\Amazon\AWSCLIV2\aws.exe" s3 cp $ZipName "s3://$BucketName/$S3Key"
