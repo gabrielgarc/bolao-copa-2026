@@ -277,7 +277,7 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
         </td>
         <td className="p-0.5 md:p-2 border-r border-gray-200 text-right overflow-hidden">
           <div className="flex items-center justify-end gap-0.5 md:gap-3">
-            <span className={`uppercase font-bold text-[7px] leading-none md:text-[15px] md:leading-tight min-w-0 truncate md:whitespace-normal md:break-words ${isLocked ? 'text-gray-400' : 'text-black'}`}>
+            <span className={`uppercase font-bold text-[6px] tracking-tighter md:tracking-normal leading-none md:text-[15px] md:leading-tight min-w-0 truncate md:whitespace-normal md:break-words ${isLocked ? 'text-gray-400' : 'text-black'}`}>
               <span className="md:hidden">{getMobileTeamName(match.homeTeam.namePt || match.homeTeam.name)}</span>
               <span className="hidden md:inline">{match.homeTeam.namePt || match.homeTeam.name}</span>
             </span>
@@ -336,7 +336,7 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
         <td className="p-0.5 md:p-2 text-left overflow-hidden">
           <div className="flex items-center gap-0.5 md:gap-3">
             <PixelFlag team={match.awayTeam} className="w-5 h-3.5 md:w-8 md:h-5 border-black shrink-0" />
-            <span className={`uppercase font-bold text-[7px] leading-none md:text-[15px] md:leading-tight min-w-0 truncate md:whitespace-normal md:break-words ${isLocked && !isOfficial ? 'text-gray-400' : 'text-black'}`}>
+            <span className={`uppercase font-bold text-[6px] tracking-tighter md:tracking-normal leading-none md:text-[15px] md:leading-tight min-w-0 truncate md:whitespace-normal md:break-words ${isLocked && !isOfficial ? 'text-gray-400' : 'text-black'}`}>
               <span className="md:hidden">{getMobileTeamName(match.awayTeam.namePt || match.awayTeam.name)}</span>
               <span className="hidden md:inline">{match.awayTeam.namePt || match.awayTeam.name}</span>
             </span>

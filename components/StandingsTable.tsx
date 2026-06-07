@@ -44,7 +44,7 @@ export const StandingsTable: React.FC<StandingsTableProps> = ({ stats, className
                         team={row.team} 
                         className="w-4 h-3 md:w-8 md:h-5 shrink-0 border-black" 
                       />
-                      <span className="text-black uppercase text-[7px] md:text-sm leading-none md:leading-normal min-w-0 truncate md:whitespace-normal md:break-words">
+                      <span className="text-black uppercase text-[6px] md:text-sm tracking-tighter md:tracking-normal leading-none md:leading-normal min-w-0 truncate md:whitespace-normal md:break-words">
                         <span className="md:hidden">{getMobileTeamName(row.team.namePt || row.team.name)}</span>
                         <span className="hidden md:inline">{row.team.namePt || row.team.name}</span>
                       </span>
