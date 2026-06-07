@@ -13,9 +13,11 @@ namespace Bolao.Copa2026.API.Controllers
         private readonly IRepository<Match> _matchRepo;
         private readonly IRepository<UserRanking> _userRankingRepo;
         private readonly IRepository<User> _userRepo;
+        private readonly IRepository<Prediction> _predictionRepo;
         private readonly IRepository<RegistrationToken> _tokenRepo;
         private readonly IRankingService _rankingService;
         private readonly IPredictionService _predictionService;
+        private readonly IGeminiService _geminiService;
         private readonly MockMatchDataProvider? _mockProvider;
         private readonly IConfiguration _config;
 
@@ -23,18 +25,22 @@ namespace Bolao.Copa2026.API.Controllers
             IRepository<Match> matchRepo,
             IRepository<UserRanking> userRankingRepo,
             IRepository<User> userRepo,
+            IRepository<Prediction> predictionRepo,
             IRepository<RegistrationToken> tokenRepo,
             IRankingService rankingService,
             IPredictionService predictionService,
+            IGeminiService geminiService,
             IConfiguration config,
             MockMatchDataProvider? mockProvider = null)
         {
             _matchRepo = matchRepo;
             _userRankingRepo = userRankingRepo;
             _userRepo = userRepo;
+            _predictionRepo = predictionRepo;
             _tokenRepo = tokenRepo;
             _rankingService = rankingService;
             _predictionService = predictionService;
+            _geminiService = geminiService;
             _config = config;
             _mockProvider = mockProvider;
         }
@@ -304,6 +310,65 @@ namespace Bolao.Copa2026.API.Controllers
 
             _mockProvider.ClearAll();
             return Ok(new { message = "Mock: Todos os estados limpos." });
+        }
+
+        // ==================== O COMENTARISTA AI ====================
+        [HttpGet("ai-comment")]
+        public async Task<ActionResult> GetAiComment()
+        {
+            var matches = await _matchRepo.GetAllAsync();
+            var users = await _userRepo.GetAllAsync();
+            var rankings = await _userRankingRepo.GetAllAsync();
+            var predictions = await _predictionRepo.GetAllAsync();
+
+            var finishedMatches = matches.Where(m => m.Status == "FINISHED" || m.Status == "IN_PLAY" || m.IsLocked).ToList();
+            var futureMatches = matches.Where(m => m.Status != "FINISHED" && m.Status != "IN_PLAY" && !m.IsLocked).ToList();
+
+            var topUsers = rankings.OrderByDescending(r => r.TotalPoints).Take(3).ToList();
+            var bottomUsers = rankings.OrderBy(r => r.TotalPoints).Take(3).ToList();
+
+            var contextBuilder = new System.Text.StringBuilder();
+            
+            contextBuilder.AppendLine("=== RANKING (Top 3 e Últimos 3) ===");
+            foreach (var r in topUsers)
+            {
+                var user = users.FirstOrDefault(u => u.Id == r.UserId);
+                contextBuilder.AppendLine($"Top: {user?.UserName} - {r.TotalPoints} pts");
+            }
+            foreach (var r in bottomUsers)
+            {
+                var user = users.FirstOrDefault(u => u.Id == r.UserId);
+                contextBuilder.AppendLine($"Lanterna: {user?.UserName} - {r.TotalPoints} pts");
+            }
+
+            contextBuilder.AppendLine("\n=== JOGOS JÁ REALIZADOS (Pode citar palpites de usuários específicos aqui) ===");
+            foreach (var m in finishedMatches.OrderByDescending(m => m.Date).Take(5))
+            {
+                contextBuilder.AppendLine($"Jogo: {m.HomeTeamName} {m.RealHomeScore} x {m.RealAwayScore} {m.AwayTeamName}");
+                var matchPreds = predictions.Where(p => p.MatchId == m.Id).ToList();
+                foreach(var p in matchPreds)
+                {
+                    var user = users.FirstOrDefault(u => u.Id == p.UserId);
+                    if(user != null)
+                        contextBuilder.AppendLine($" - {user.UserName} apostou {p.HomeScore}x{p.AwayScore}");
+                }
+            }
+
+            contextBuilder.AppendLine("\n=== PRÓXIMOS JOGOS (NÃO MENCIONE PALPITES INDIVIDUAIS COM NOME, SÓ ESTATÍSTICAS) ===");
+            foreach (var m in futureMatches.Take(3))
+            {
+                contextBuilder.AppendLine($"Próximo: {m.HomeTeamName} x {m.AwayTeamName}");
+                var matchPreds = predictions.Where(p => p.MatchId == m.Id).ToList();
+                if(matchPreds.Any())
+                {
+                    var avgHome = matchPreds.Average(p => p.HomeScore);
+                    var avgAway = matchPreds.Average(p => p.AwayScore);
+                    contextBuilder.AppendLine($" - Média de apostas da galera: {avgHome:0.0} x {avgAway:0.0}");
+                }
+            }
+
+            var comment = await _geminiService.GenerateCommentaryAsync(contextBuilder.ToString());
+            return Ok(new { comment });
         }
     }
 

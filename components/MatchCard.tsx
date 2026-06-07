@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Match } from '../types';
 import { PixelCard, PixelInput, PixelFlag } from './PixelComponents';
+import { getMobileTeamName } from '../utils/teamUtils';
 import { calculatePoints } from '../utils/scoring';
 
 interface MatchCardProps {
@@ -112,9 +113,10 @@ export const MatchCard: React.FC<MatchCardProps> = ({ match, prediction, onPredi
           <div className="order-1 md:order-2 shrink-0">
             <PixelFlag team={match.homeTeam} className="w-8 h-5 md:w-10 md:h-7" />
           </div>
-          <div className="order-2 md:order-1 w-full overflow-hidden">
-            <span className="block text-[8px] md:text-sm font-bold leading-tight text-black truncate uppercase">
-                {match.homeTeam.namePt || match.homeTeam.name}
+          <div className="order-2 md:order-1 w-full min-w-0">
+            <span className="block text-[6.5px] md:text-sm font-bold leading-none md:leading-tight text-black uppercase truncate md:whitespace-normal md:break-words">
+                <span className="md:hidden">{getMobileTeamName(match.homeTeam.namePt || match.homeTeam.name)}</span>
+                <span className="hidden md:inline">{match.homeTeam.namePt || match.homeTeam.name}</span>
             </span>
           </div>
         </div>
@@ -150,9 +152,10 @@ export const MatchCard: React.FC<MatchCardProps> = ({ match, prediction, onPredi
             <div className="order-1 md:order-1 shrink-0">
                 <PixelFlag team={match.awayTeam} className="w-8 h-5 md:w-10 md:h-7" />
             </div>
-            <div className="order-2 md:order-2 w-full overflow-hidden">
-                <span className="block text-[8px] md:text-sm font-bold leading-tight text-black truncate uppercase">
-                    {match.awayTeam.namePt || match.awayTeam.name}
+            <div className="order-2 md:order-2 w-full min-w-0">
+                <span className="block text-[6.5px] md:text-sm font-bold leading-none md:leading-tight text-black uppercase truncate md:whitespace-normal md:break-words">
+                    <span className="md:hidden">{getMobileTeamName(match.awayTeam.namePt || match.awayTeam.name)}</span>
+                    <span className="hidden md:inline">{match.awayTeam.namePt || match.awayTeam.name}</span>
                 </span>
             </div>
         </div>

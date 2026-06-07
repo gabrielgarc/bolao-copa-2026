@@ -16,5 +16,9 @@ export const AdminService = {
     async generateToken(prefix: string) {
         const response = await apiClient.post('/Admin/tokens', { prefix });
         return response.data;
+    },
+    async getAiComment() {
+        const response = await apiClient.get('/Admin/ai-comment');
+        return response.data;
     }
 };

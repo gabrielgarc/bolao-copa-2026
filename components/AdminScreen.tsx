@@ -28,6 +28,11 @@ export const AdminScreen: React.FC = () => {
     const [tokenLoading, setTokenLoading] = useState(false);
     const [tokenMessage, setTokenMessage] = useState('');
 
+    // Comentarista AI
+    const [aiComment, setAiComment] = useState('');
+    const [aiLoading, setAiLoading] = useState(false);
+    const [aiError, setAiError] = useState('');
+
     useEffect(() => {
         const token = localStorage.getItem('adminToken');
         if (token === 'admin-secret-token') {
@@ -53,6 +58,20 @@ export const AdminScreen: React.FC = () => {
             setTokens(data);
         } catch (err) {
             console.error('Erro ao buscar tokens', err);
+        }
+    };
+
+    const handleGenerateAiComment = async () => {
+        setAiLoading(true);
+        setAiError('');
+        setAiComment('');
+        try {
+            const data = await AdminService.getAiComment();
+            setAiComment(data.comment);
+        } catch (err: any) {
+            setAiError(`Erro: ${err.response?.data?.message || err.message || 'Desconhecido'}`);
+        } finally {
+            setAiLoading(false);
         }
     };
 
@@ -354,6 +373,44 @@ export const AdminScreen: React.FC = () => {
                         </div>
                     </PixelCard>
                 </div>
+
+                {/* O Comentarista AI */}
+                <PixelCard>
+                    <h2 className="text-xl font-bold text-yellow-400 mb-4 uppercase flex items-center gap-2">
+                        <span>🎙️</span> O Comentarista AI
+                    </h2>
+                    
+                    <div className="space-y-4">
+                        <div className="bg-gray-800 border-2 border-black p-4 min-h-[120px] flex flex-col justify-center relative shadow-[inset_4px_4px_0_rgba(0,0,0,0.5)]">
+                            {aiLoading ? (
+                                <div className="text-center text-blue-400 font-bold animate-pulse">
+                                    O comentarista está analisando os lances... ⚽
+                                </div>
+                            ) : aiError ? (
+                                <div className="text-center text-red-500 font-bold">
+                                    {aiError}
+                                </div>
+                            ) : aiComment ? (
+                                <div className="text-sm font-mono text-white whitespace-pre-wrap leading-relaxed">
+                                    {aiComment}
+                                </div>
+                            ) : (
+                                <div className="text-center text-gray-500 font-bold text-sm">
+                                    Clique abaixo para pedir uma opinião pro comentarista!
+                                </div>
+                            )}
+                        </div>
+
+                        <PixelButton 
+                            variant="primary" 
+                            className="w-full" 
+                            disabled={aiLoading}
+                            onClick={handleGenerateAiComment}
+                        >
+                            {aiLoading ? 'Gerando...' : 'Pedir Comentário 🎙️'}
+                        </PixelButton>
+                    </div>
+                </PixelCard>
 
                 {/* Avisos do Bolão */}
                 <PixelCard>

@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Match, MatchStage, TeamStats } from '../types';
 import { PixelCard, PixelInput, PixelFlag, PixelButton } from './PixelComponents';
+import { getMobileTeamName } from '../utils/teamUtils';
 import { StandingsTable } from './StandingsTable';
 
 import { StandingsResponse } from '../types';
@@ -276,8 +277,8 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
         </td>
         <td className="p-0.5 md:p-2 border-r border-gray-200 text-right overflow-hidden">
           <div className="flex items-center justify-end gap-0.5 md:gap-3">
-            <span className={`uppercase truncate font-bold text-[11px] md:text-[15px] ${isLocked ? 'text-gray-400' : 'text-black'}`}>
-              <span className="md:hidden">{match.homeTeam.code}</span>
+            <span className={`uppercase font-bold text-[7px] leading-none md:text-[15px] md:leading-tight min-w-0 truncate md:whitespace-normal md:break-words ${isLocked ? 'text-gray-400' : 'text-black'}`}>
+              <span className="md:hidden">{getMobileTeamName(match.homeTeam.namePt || match.homeTeam.name)}</span>
               <span className="hidden md:inline">{match.homeTeam.namePt || match.homeTeam.name}</span>
             </span>
             <PixelFlag team={match.homeTeam} className="w-5 h-3.5 md:w-8 md:h-5 border-black shrink-0" />
@@ -335,8 +336,8 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
         <td className="p-0.5 md:p-2 text-left overflow-hidden">
           <div className="flex items-center gap-0.5 md:gap-3">
             <PixelFlag team={match.awayTeam} className="w-5 h-3.5 md:w-8 md:h-5 border-black shrink-0" />
-            <span className={`uppercase truncate font-bold text-[11px] md:text-[15px] ${isLocked && !isOfficial ? 'text-gray-400' : 'text-black'}`}>
-              <span className="md:hidden">{match.awayTeam.code}</span>
+            <span className={`uppercase font-bold text-[7px] leading-none md:text-[15px] md:leading-tight min-w-0 truncate md:whitespace-normal md:break-words ${isLocked && !isOfficial ? 'text-gray-400' : 'text-black'}`}>
+              <span className="md:hidden">{getMobileTeamName(match.awayTeam.namePt || match.awayTeam.name)}</span>
               <span className="hidden md:inline">{match.awayTeam.namePt || match.awayTeam.name}</span>
             </span>
           </div>
@@ -437,8 +438,10 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
                     <span className={`uppercase text-[9px] md:text-[11px] ${status === 'waiting' ? 'text-gray-300' :
                       status === 'correct' ? 'text-green-300' : 'text-red-300'
                       }`}>
-                      <span className="md:hidden">{team.team.code}</span>
-                      <span className="hidden md:inline">{team.team.namePt || team.team.name}</span>
+                      <span className="truncate md:whitespace-normal md:break-words w-full max-w-[50px] md:max-w-none">
+                        <span className="md:hidden">{getMobileTeamName(team.team.namePt || team.team.name)}</span>
+                        <span className="hidden md:inline">{team.team.namePt || team.team.name}</span>
+                      </span>
                     </span>
                   </div>
                   <span className={`text-[9px] md:text-[11px] ${status === 'waiting' ? 'text-gray-400' :
@@ -589,8 +592,10 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
                     <PixelFlag team={finalMatch.homeTeam} className="w-20 h-[3.33rem] md:w-48 md:h-32 border-2 md:border-4 border-yellow-400 shadow-[0_0_20px_rgba(250,204,21,0.5)]" />
                     <div className="absolute top-full mt-2 md:mt-3 w-[200%] text-center">
                       <span className="text-white font-black text-[10px] md:text-2xl uppercase tracking-wide drop-shadow-[2px_2px_0_rgba(0,0,0,1)]">
-                        <span className="md:hidden">{finalMatch.homeTeam.code}</span>
-                        <span className="hidden md:block">{finalMatch.homeTeam.namePt || finalMatch.homeTeam.name}</span>
+                        <span className="block truncate md:whitespace-normal md:break-words">
+                          <span className="md:hidden">{getMobileTeamName(finalMatch.homeTeam.namePt || finalMatch.homeTeam.name)}</span>
+                          <span className="hidden md:block">{finalMatch.homeTeam.namePt || finalMatch.homeTeam.name}</span>
+                        </span>
                       </span>
                     </div>
                   </div>
@@ -649,8 +654,10 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
                     <PixelFlag team={finalMatch.awayTeam} className="w-20 h-[3.33rem] md:w-48 md:h-32 border-2 md:border-4 border-yellow-400 shadow-[0_0_20px_rgba(250,204,21,0.5)]" />
                     <div className="absolute top-full mt-2 md:mt-3 w-[200%] text-center">
                       <span className="text-white font-black text-[10px] md:text-2xl uppercase tracking-wide drop-shadow-[2px_2px_0_rgba(0,0,0,1)]">
-                        <span className="md:hidden">{finalMatch.awayTeam.code}</span>
-                        <span className="hidden md:block">{finalMatch.awayTeam.namePt || finalMatch.awayTeam.name}</span>
+                        <span className="block truncate md:whitespace-normal md:break-words">
+                          <span className="md:hidden">{getMobileTeamName(finalMatch.awayTeam.namePt || finalMatch.awayTeam.name)}</span>
+                          <span className="hidden md:block">{finalMatch.awayTeam.namePt || finalMatch.awayTeam.name}</span>
+                        </span>
                       </span>
                     </div>
                   </div>
