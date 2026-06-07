@@ -9,7 +9,8 @@ export const getMobileTeamName = (name: string): string => {
     "Bosnia e Hezergovina": "Bósnia",
     "Arábia Saudita": "Ar. Saudita",
     "África do Sul": "Áfr. do Sul",
-    "Africa do Sul": "Áfr. do Sul"
+    "Africa do Sul": "Áfr. do Sul",
+    "Nova Zelândia": "Nv. Zelândia"
   };
   return map[name] || name;
 };
