@@ -114,7 +114,7 @@ export const MatchCard: React.FC<MatchCardProps> = ({ match, prediction, onPredi
             <PixelFlag team={match.homeTeam} className="w-8 h-5 md:w-10 md:h-7" />
           </div>
           <div className="order-2 md:order-1 w-full min-w-0">
-            <span className="block text-[6px] md:text-sm tracking-tighter md:tracking-normal font-bold leading-none md:leading-tight text-black uppercase truncate md:whitespace-normal md:break-words">
+            <span className="block text-[6px] md:text-sm tracking-tighter md:tracking-normal font-bold leading-[1.3] md:leading-tight text-black uppercase truncate md:whitespace-normal md:break-words pt-0.5">
                 <span className="md:hidden">{getMobileTeamName(match.homeTeam.namePt || match.homeTeam.name)}</span>
                 <span className="hidden md:inline">{match.homeTeam.namePt || match.homeTeam.name}</span>
             </span>
@@ -153,7 +153,7 @@ export const MatchCard: React.FC<MatchCardProps> = ({ match, prediction, onPredi
                 <PixelFlag team={match.awayTeam} className="w-8 h-5 md:w-10 md:h-7" />
             </div>
             <div className="order-2 md:order-2 w-full min-w-0">
-                <span className="block text-[6px] md:text-sm tracking-tighter md:tracking-normal font-bold leading-none md:leading-tight text-black uppercase truncate md:whitespace-normal md:break-words">
+                <span className="block text-[6px] md:text-sm tracking-tighter md:tracking-normal font-bold leading-[1.3] md:leading-tight text-black uppercase truncate md:whitespace-normal md:break-words pt-0.5">
                     <span className="md:hidden">{getMobileTeamName(match.awayTeam.namePt || match.awayTeam.name)}</span>
                     <span className="hidden md:inline">{match.awayTeam.namePt || match.awayTeam.name}</span>
                 </span>

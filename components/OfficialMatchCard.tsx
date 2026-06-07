@@ -28,7 +28,7 @@ export const OfficialMatchCard: React.FC<OfficialMatchCardProps> = ({ match }) =
       <div className="flex items-center justify-between gap-1 md:gap-2">
         <div className="flex flex-col items-center gap-1 w-[35%] min-w-0">
           <PixelFlag team={match.homeTeam} className="w-8 h-5 md:w-12 md:h-8 shrink-0" />
-          <span className="text-[6px] md:text-xs tracking-tighter md:tracking-normal font-bold text-black text-center uppercase w-full leading-none truncate md:whitespace-normal md:break-words">
+          <span className="text-[6px] md:text-xs tracking-tighter md:tracking-normal font-bold text-black text-center uppercase w-full leading-[1.3] truncate md:whitespace-normal md:break-words pt-0.5">
             <span className="md:hidden">{getMobileTeamName(match.homeTeam.namePt || match.homeTeam.name)}</span>
             <span className="hidden md:inline">{match.homeTeam.namePt || match.homeTeam.name}</span>
           </span>
@@ -48,7 +48,7 @@ export const OfficialMatchCard: React.FC<OfficialMatchCardProps> = ({ match }) =
 
         <div className="flex flex-col items-center gap-1 w-[35%] min-w-0">
           <PixelFlag team={match.awayTeam} className="w-8 h-5 md:w-12 md:h-8 shrink-0" />
-          <span className="text-[6px] md:text-xs tracking-tighter md:tracking-normal font-bold text-black text-center uppercase w-full leading-none truncate md:whitespace-normal md:break-words">
+          <span className="text-[6px] md:text-xs tracking-tighter md:tracking-normal font-bold text-black text-center uppercase w-full leading-[1.3] truncate md:whitespace-normal md:break-words pt-0.5">
             <span className="md:hidden">{getMobileTeamName(match.awayTeam.namePt || match.awayTeam.name)}</span>
             <span className="hidden md:inline">{match.awayTeam.namePt || match.awayTeam.name}</span>
           </span>
