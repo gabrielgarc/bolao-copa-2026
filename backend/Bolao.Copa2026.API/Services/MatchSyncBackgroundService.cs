@@ -73,15 +73,21 @@ namespace Bolao.Copa2026.API.Services
                         {
                             bool hasChanges = false;
 
-                            if (dbMatch.RealHomeScore != apiMatch.Score?.FullTime?.Home)
+                            // Só atualiza o placar se o novo valor não for nulo.
+                            // A API pode retornar null no FullTime durante IN_PLAY/PAUSED,
+                            // o que zerava o ranking até o próximo ciclo.
+                            var apiHome = apiMatch.Score?.FullTime?.Home;
+                            var apiAway = apiMatch.Score?.FullTime?.Away;
+
+                            if (apiHome != null && dbMatch.RealHomeScore != apiHome)
                             {
-                                dbMatch.RealHomeScore = apiMatch.Score?.FullTime?.Home;
+                                dbMatch.RealHomeScore = apiHome;
                                 hasChanges = true;
                             }
 
-                            if (dbMatch.RealAwayScore != apiMatch.Score?.FullTime?.Away)
+                            if (apiAway != null && dbMatch.RealAwayScore != apiAway)
                             {
-                                dbMatch.RealAwayScore = apiMatch.Score?.FullTime?.Away;
+                                dbMatch.RealAwayScore = apiAway;
                                 hasChanges = true;
                             }
 
