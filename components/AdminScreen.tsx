@@ -33,6 +33,15 @@ export const AdminScreen: React.FC = () => {
     const [aiLoading, setAiLoading] = useState(false);
     const [aiError, setAiError] = useState('');
 
+    // Palpites Pendentes
+    const [pendingDate, setPendingDate] = useState(() => {
+        const today = new Date();
+        return `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}`;
+    });
+    const [missingPredictions, setMissingPredictions] = useState<any[] | null>(null);
+    const [missingLoading, setMissingLoading] = useState(false);
+    const [missingError, setMissingError] = useState('');
+
     useEffect(() => {
         const token = localStorage.getItem('adminToken');
         if (token === 'admin-secret-token') {
@@ -163,6 +172,20 @@ export const AdminScreen: React.FC = () => {
             setMessage(`Erro: ${err.response?.data?.message || err.message || 'Desconhecido'}`);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleFetchMissing = async () => {
+        if (!pendingDate.trim()) return;
+        setMissingLoading(true);
+        setMissingError('');
+        try {
+            const data = await AdminService.getMissingPredictions(pendingDate.trim());
+            setMissingPredictions(data);
+        } catch (err: any) {
+            setMissingError(`Erro: ${err.response?.data?.message || err.message || 'Desconhecido'}`);
+        } finally {
+            setMissingLoading(false);
         }
     };
 
@@ -373,6 +396,58 @@ export const AdminScreen: React.FC = () => {
                         </div>
                     </PixelCard>
                 </div>
+
+                {/* Palpites Pendentes */}
+                <PixelCard>
+                    <h2 className="text-xl font-bold text-yellow-400 mb-4 uppercase">Palpites Pendentes</h2>
+                    <div className="bg-gray-800 p-3 border border-black space-y-4">
+                        <div className="flex gap-2">
+                            <PixelInput 
+                                type="text" 
+                                value={pendingDate} 
+                                onChange={(e) => setPendingDate(e.target.value)}
+                                placeholder="Ex: 11/06"
+                                className="w-full text-black"
+                            />
+                            <PixelButton variant="primary" onClick={handleFetchMissing} disabled={missingLoading}>
+                                {missingLoading ? '...' : 'Buscar'}
+                            </PixelButton>
+                        </div>
+                        
+                        {missingError && <p className="text-red-500 text-xs font-bold">{missingError}</p>}
+                        
+                        {missingPredictions !== null && (
+                            <div className="space-y-4 mt-4 max-h-64 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-600">
+                                {missingPredictions.length === 0 ? (
+                                    <p className="text-gray-400 text-sm font-bold">Nenhum jogo encontrado para esta data.</p>
+                                ) : (
+                                    missingPredictions.map((match, idx) => (
+                                        <div key={idx} className="bg-gray-900 border-2 border-gray-600 p-2">
+                                            <div className="flex justify-between items-center border-b-2 border-gray-600 pb-1 mb-2">
+                                                <span className="text-yellow-400 font-bold text-[10px] md:text-xs uppercase">{match.homeTeam} x {match.awayTeam}</span>
+                                                <span className="text-gray-400 text-[8px] md:text-[10px] uppercase font-bold">{match.time}</span>
+                                            </div>
+                                            {match.missingUsersCount === 0 ? (
+                                                <p className="text-green-400 text-[10px] font-bold">✅ Todos palpitaram!</p>
+                                            ) : (
+                                                <div>
+                                                    <p className="text-red-400 text-[10px] md:text-xs font-bold mb-1">Faltam {match.missingUsersCount}:</p>
+                                                    <div className="flex flex-wrap gap-1">
+                                                        {match.missingUsers.map((u: any) => (
+                                                            <span key={u.id} className="bg-gray-800 text-white border border-gray-600 px-1 py-0.5 text-[8px] md:text-[10px] font-bold">
+                                                                {u.name}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))
+                                )}
+                            </div>
+                        )}
+                    </div>
+                </PixelCard>
 
                 {/* O Comentarista AI */}
                 <PixelCard>

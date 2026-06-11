@@ -131,6 +131,54 @@ namespace Bolao.Copa2026.API.Controllers
             return Ok(usersData);
         }
 
+        [HttpGet("missing-predictions")]
+        public async Task<ActionResult> GetMissingPredictions([FromQuery] string date)
+        {
+            if (string.IsNullOrWhiteSpace(date))
+                return BadRequest(new { message = "Data é obrigatória." });
+
+            var searchStr = date;
+            // Se vier no formato DD/MM (ex: 11/06), converte para MM-DD para casar com yyyy-MM-dd
+            if (date.Length == 5 && date.Contains("/"))
+            {
+                var parts = date.Split('/');
+                searchStr = $"{parts[1]}-{parts[0]}";
+            }
+
+            var matches = await _matchRepo.FindAsync(m => m.Date == date || m.Date.EndsWith(searchStr));
+            if (!matches.Any())
+                return Ok(new List<object>());
+
+            var users = await _userRepo.GetAllAsync();
+            var matchIds = matches.Select(m => m.Id).ToList();
+            var predictions = await _predictionRepo.FindAsync(p => matchIds.Contains(p.MatchId));
+
+            var result = matches.Select(m => {
+                var predictedUserIds = predictions.Where(p => p.MatchId == m.Id).Select(p => p.UserId).ToHashSet();
+                var missingUsers = users
+                    .Where(u => !predictedUserIds.Contains(u.Id))
+                    .Select(u => new {
+                        id = u.Id,
+                        name = u.UserName,
+                        avatar = u.Avatar
+                    })
+                    .OrderBy(u => u.name)
+                    .ToList();
+
+                return new {
+                    matchId = m.Id,
+                    homeTeam = m.HomeTeamName ?? "TBD",
+                    awayTeam = m.AwayTeamName ?? "TBD",
+                    time = m.Time,
+                    group = m.Group,
+                    missingUsersCount = missingUsers.Count,
+                    missingUsers = missingUsers
+                };
+            }).OrderBy(m => m.time).ToList();
+
+            return Ok(result);
+        }
+
         // ==================== TOKENS DE CADASTRO ====================
 
         [HttpGet("tokens")]

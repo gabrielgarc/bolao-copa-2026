@@ -67,10 +67,12 @@ namespace Bolao.Copa2026.API.Services
                     int hour = int.Parse(timeParts[0]);
                     int min = int.Parse(timeParts[1]);
                     
-                    var matchDateTime = new DateTime(year, month, day, hour, min, 0);
-                    var nowBrasilia = DateTime.UtcNow.AddHours(-3);
+                    // As datas no banco de dados estão em UTC (do apiMatch.UtcDate)
+                    var matchDateTimeUtc = new DateTime(year, month, day, hour, min, 0, DateTimeKind.Utc);
+                    var nowUtc = DateTime.UtcNow;
                     
-                    if (nowBrasilia >= matchDateTime)
+                    // Trava o jogo se o tempo atual em UTC já passou do horário do jogo em UTC
+                    if (nowUtc >= matchDateTimeUtc)
                     {
                         return (false, "O horário deste jogo já passou!", null);
                     }

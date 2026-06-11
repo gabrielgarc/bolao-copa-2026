@@ -20,5 +20,9 @@ export const AdminService = {
     async getAiComment() {
         const response = await apiClient.get('/Admin/ai-comment');
         return response.data;
+    },
+    async getMissingPredictions(date: string) {
+        const response = await apiClient.get(`/Admin/missing-predictions?date=${encodeURIComponent(date)}`);
+        return response.data;
     }
 };
