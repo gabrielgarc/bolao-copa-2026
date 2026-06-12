@@ -16,20 +16,22 @@ import { MatchService } from './services/matchService';
 import { PredictionService } from './services/predictionService';
 import { RankingService, MyRankingData } from './services/rankingService';
 import { UserService } from './services/userService';
+import { AnnouncementService } from './services/announcementService';
+import { AiCommentService } from './services/aiCommentService';
 
 // Models Individuais
 import { MatchModel } from './models/match.model';
 import { RankingModel } from './models/ranking.model';
 import { UserModel } from './models/user.model';
+import { Announcement } from './models/announcement.model';
 import { LoginScreen } from './components/LoginScreen';
+import { AiCommentatorScreen } from './components/AiCommentatorScreen';
 import { AvatarViewer } from './components/AvatarViewer';
 import { AvatarEditor } from './components/AvatarEditor';
 import { RulesScreen } from './components/RulesScreen';
 import { HallOfFameScreen } from './components/HallOfFameScreen';
 import { AnnouncementModal } from './components/AnnouncementModal';
 import { AnnouncementsScreen } from './components/AnnouncementsScreen';
-import { AnnouncementService } from './services/announcementService';
-import { Announcement } from './models/announcement.model';
 
 type MatchesSubView = 'TABLE' | 'DATE' | 'TODAY';
 
@@ -60,6 +62,7 @@ const App: React.FC = () => {
     });
     const [pendingAnnouncement, setPendingAnnouncement] = useState<Announcement | null>(null);
     const [hasUnreadAnnouncement, setHasUnreadAnnouncement] = useState(false);
+    const [hasUnreadAiComment, setHasUnreadAiComment] = useState(false);
 
     // Persist current view
     useEffect(() => {
@@ -109,6 +112,21 @@ const App: React.FC = () => {
                     }
                 } catch (e) {
                     console.warn('Erro ao verificar avisos:', e);
+                }
+
+                // Verificar comentários de IA
+                try {
+                    const aiComments = await AiCommentService.getComments();
+                    if (aiComments && aiComments.length > 0) {
+                        const lastRead = localStorage.getItem('lastReadAiComment');
+                        if (lastRead !== aiComments[0].id) {
+                            setHasUnreadAiComment(true);
+                        } else {
+                            setHasUnreadAiComment(false);
+                        }
+                    }
+                } catch (e) {
+                    console.warn('Erro ao verificar comentários da IA:', e);
                 }
             }
         } catch (error) {
@@ -373,6 +391,7 @@ const App: React.FC = () => {
                 userAvatar={userAvatar}
                 userPoints={userPoints}
                 hasUnreadAnnouncement={hasUnreadAnnouncement}
+                hasUnreadAiComment={hasUnreadAiComment}
             />
 
             <main className="p-3 md:p-8">
@@ -492,6 +511,10 @@ const App: React.FC = () => {
 
                 {currentView === AppView.HALL_OF_FAME && (
                     <HallOfFameScreen />
+                )}
+
+                {currentView === AppView.AI_COMMENTATOR && (
+                    <AiCommentatorScreen />
                 )}
 
                 {currentView === AppView.ANNOUNCEMENTS && (

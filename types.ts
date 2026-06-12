@@ -65,6 +65,12 @@ export interface StandingsResponse {
   overallThirds: TeamStats[];
 }
 
+export interface AiComment {
+  id: string;
+  content: string;
+  createdAt: string;
+}
+
 export enum AppView {
   MATCHES = 'MATCHES',
   LEADERBOARD = 'LEADERBOARD',
@@ -74,5 +80,6 @@ export enum AppView {
   RULES = 'RULES',
   EDIT_AVATAR = 'EDIT_AVATAR',
   HALL_OF_FAME = 'HALL_OF_FAME',
-  ANNOUNCEMENTS = 'ANNOUNCEMENTS'
+  ANNOUNCEMENTS = 'ANNOUNCEMENTS',
+  AI_COMMENTATOR = 'AI_COMMENTATOR'
 }

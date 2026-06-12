@@ -13,9 +13,10 @@ interface HeaderProps {
   userAvatar?: string;
   userPoints?: number;
   hasUnreadAnnouncement?: boolean;
+  hasUnreadAiComment?: boolean;
 }
 
-export const Header: React.FC<HeaderProps> = ({ currentView, onViewChange, userName = "Jogador", userRank = 0, userAvatar, userPoints = 0, hasUnreadAnnouncement = false }) => {
+export const Header: React.FC<HeaderProps> = ({ currentView, onViewChange, userName = "Jogador", userRank = 0, userAvatar, userPoints = 0, hasUnreadAnnouncement = false, hasUnreadAiComment = false }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleNav = (view: AppView) => {
@@ -77,8 +78,11 @@ export const Header: React.FC<HeaderProps> = ({ currentView, onViewChange, userN
           {/* Hamburger Button */}
           <button 
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="flex flex-col gap-1.5 p-2 border-4 border-black bg-gray-800 active:shadow-none active:translate-y-1 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.5)]"
+            className="relative flex flex-col gap-1.5 p-2 border-4 border-black bg-gray-800 active:shadow-none active:translate-y-1 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.5)]"
           >
+            {(hasUnreadAnnouncement || hasUnreadAiComment) && (
+              <span className="absolute -top-2 -right-2 w-3.5 h-3.5 rounded-full bg-red-500 border-2 border-black animate-pulse z-10" />
+            )}
             <div className="w-6 h-1 bg-yellow-400"></div>
             <div className="w-6 h-1 bg-yellow-400"></div>
             <div className="w-6 h-1 bg-yellow-400"></div>
@@ -128,6 +132,15 @@ export const Header: React.FC<HeaderProps> = ({ currentView, onViewChange, userN
                     onClick={() => handleNav(AppView.HALL_OF_FAME)}
                   >
                     Hall da Fama
+                  </button>
+                  <button 
+                    className={`w-full text-left p-4 uppercase text-[10px] md:text-xs font-bold border-b-2 border-black transition-colors flex items-center justify-between ${currentView === AppView.AI_COMMENTATOR ? 'bg-purple-900 text-yellow-400' : 'text-yellow-400 hover:bg-gray-700'}`}
+                    onClick={() => handleNav(AppView.AI_COMMENTATOR)}
+                  >
+                    <span>Comentarista IA</span>
+                    {hasUnreadAiComment && (
+                      <span className="w-2.5 h-2.5 rounded-full bg-red-500 border border-black animate-pulse shrink-0" />
+                    )}
                   </button>
                   <button 
                     className={`w-full text-left p-4 uppercase text-[10px] md:text-xs font-bold border-b-2 border-black transition-colors flex items-center justify-between ${currentView === AppView.ANNOUNCEMENTS ? 'bg-orange-600 text-white' : 'text-yellow-400 hover:bg-gray-700'}`}

@@ -28,6 +28,7 @@ builder.Services.Configure<MatchPollingConfig>(
     builder.Configuration.GetSection("MatchPolling"));
 
 builder.Services.AddHostedService<MatchSyncBackgroundService>();
+builder.Services.AddHostedService<AiCommentBackgroundService>();
 
 builder.Services.AddHttpClient<TeamsModule>();
 builder.Services.AddScoped<TeamsModule>();
@@ -72,6 +73,8 @@ builder.Services.AddScoped<IRepository<Announcement>>(sp =>
     new MongoRepository<Announcement>(sp.GetRequiredService<IMongoDatabase>(), "announcements"));
 builder.Services.AddScoped<IRepository<RegistrationToken>>(sp => 
     new MongoRepository<RegistrationToken>(sp.GetRequiredService<IMongoDatabase>(), "registration_tokens"));
+builder.Services.AddScoped<IRepository<AiComment>>(sp => 
+    new MongoRepository<AiComment>(sp.GetRequiredService<IMongoDatabase>(), "AiComments"));
 
 // --- Injeção de Dependência dos Serviços ---
 builder.Services.AddScoped<IMatchService, MatchService>();
