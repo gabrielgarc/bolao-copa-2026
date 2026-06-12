@@ -134,18 +134,43 @@ const App: React.FC = () => {
         }
     };
 
-    // Ranking e pontos do usuário vêm do backend
+    // Cálculo do Score de Ranking com base em multiplicadores decimais para desempate
+    const rankedLeaderboard = useMemo(() => {
+        const withScores = leaderboard.map(user => {
+            // Regra do usuário: 
+            // pontos totais é o principal (bilhões)
+            // cravadas = * 10000000 (10 milhões)
+            // classificados = * 100000 (100 mil)
+            // 90 pontos = * 1000 (mil)
+            // 60 pontos = * 10
+            // 30 pontos = * 1
+            const score = BigInt(user.points) * 10000000000n +
+                          BigInt(user.fullMatches) * 10000000n +
+                          BigInt(user.qualifiedTeamsCount) * 100000n +
+                          BigInt(user.halfMatches) * 1000n +
+                          BigInt(user.outcomeMatches) * 10n +
+                          BigInt(user.partialMatches) * 1n;
+            
+            return { ...user, rankingScore: score };
+        });
+
+        // Ordena do maior pro menor
+        const sorted = withScores.sort((a, b) => (a.rankingScore < b.rankingScore ? 1 : a.rankingScore > b.rankingScore ? -1 : 0));
+
+        let currentRank = 1;
+        return sorted.map((user, index) => {
+            if (index > 0 && user.rankingScore !== sorted[index - 1].rankingScore) {
+                currentRank = index + 1;
+            }
+            return { ...user, rank: currentRank };
+        });
+    }, [leaderboard]);
+
     const { userPoints, userRank } = useMemo(() => {
         const total = myRanking.totalPoints;
-        const allRankings = [...leaderboard].sort((a, b) => b.points - a.points);
-        let rank = 1;
-        for (const user of allRankings) {
-            if (currentUser && user.name === currentUser.name) continue;
-            if (total >= user.points) break;
-            rank++;
-        }
-        return { userPoints: total, userRank: rank };
-    }, [myRanking, leaderboard, currentUser]);
+        const myRankEntry = currentUser ? rankedLeaderboard.find(u => u.name === currentUser.name) : null;
+        return { userPoints: total, userRank: myRankEntry ? myRankEntry.rank : 1 };
+    }, [myRanking, rankedLeaderboard, currentUser]);
 
     // Cálculo de pontos totais do usuário e ranking
 
@@ -417,14 +442,12 @@ const App: React.FC = () => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {[...leaderboard]
-                                            .sort((a, b) => b.points - a.points)
-                                            .map((user, index) => {
+                                        {rankedLeaderboard.map((user) => {
                                                 const isMe = currentUser && user.name === currentUser.name;
 
                                                 return (
                                                     <tr key={user.id} className={`border-b-2 border-gray-300 last:border-0 ${isMe ? 'bg-yellow-200' : 'hover:bg-yellow-50'} transition-all text-[10px] md:text-sm`}>
-                                                        <td className="p-1 md:p-2 text-center font-bold text-gray-500">#{index + 1}</td>
+                                                        <td className="p-1 md:p-2 text-center font-bold text-gray-500">#{user.rank}</td>
                                                         <td className="p-1 md:p-2 flex items-center gap-2 md:gap-4 overflow-visible relative hover:z-50">
                                                             <div className="relative group/avatar shrink-0 z-10 hover:z-50 transition-all duration-300">
                                                                 <AvatarViewer 
