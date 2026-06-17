@@ -22,7 +22,7 @@ namespace Bolao.Copa2026.API.Services
             var apiKey = _config["Gemini:ApiKey"];
             if (string.IsNullOrWhiteSpace(apiKey))
             {
-                return "🎙️ Alô garotinho! Parece que o estúdio tá sem energia... A chave da API do Gemini não foi configurada!";
+                throw new InvalidOperationException("API Key do Gemini não configurada.");
             }
 
             // Descobrir um modelo válido dinamicamente
@@ -180,11 +180,7 @@ A mentira é sempre o melhor caminho: Filosofia pura do Craque Daniel para o jor
             if (!response.IsSuccessStatusCode)
             {
                 var errorBody = await response.Content.ReadAsStringAsync();
-                if (response.StatusCode == System.Net.HttpStatusCode.ServiceUnavailable)
-                {
-                    return "🎙️ Ih rapaz, o estúdio do Google tá lotado! (Servidor sobrecarregado). Dá uns segundinhos e clica de novo!";
-                }
-                return $"🎙️ Ih rapaz, deu ruim na transmissão! Tentamos o modelo {modelName}. Erro do Gemini: {response.StatusCode} - Detalhes: {errorBody}";
+                throw new HttpRequestException($"Erro na API do Gemini: {response.StatusCode} - Detalhes: {errorBody}");
             }
 
             var responseString = await response.Content.ReadAsStringAsync();
@@ -198,11 +194,15 @@ A mentira é sempre o melhor caminho: Filosofia pura do Craque Daniel para o jor
                     .GetProperty("parts")[0]
                     .GetProperty("text")
                     .GetString();
-                return text ?? "🎙️ Fiquei sem palavras!";
+                
+                if (string.IsNullOrWhiteSpace(text))
+                    throw new InvalidOperationException("Gemini retornou texto vazio ou nulo.");
+                    
+                return text;
             }
-            catch
+            catch (Exception ex)
             {
-                return "🎙️ Rapaz, engasguei com o microfone!";
+                throw new InvalidOperationException("Falha ao processar a resposta do Gemini.", ex);
             }
         }
     }

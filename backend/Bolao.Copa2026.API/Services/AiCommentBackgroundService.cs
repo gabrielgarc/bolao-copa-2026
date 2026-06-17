@@ -29,9 +29,10 @@ namespace Bolao.Copa2026.API.Services
                 using var scope = _serviceProvider.CreateScope();
                 var commentRepo = scope.ServiceProvider.GetRequiredService<IRepository<AiComment>>();
                 var comments = await commentRepo.GetAllAsync();
-                if (!comments.Any())
+                var today = DateTime.UtcNow.Date;
+                if (!comments.Any(c => c.CreatedAt.Date == today))
                 {
-                    _logger.LogInformation("[AiComment] Nenhum comentário encontrado no banco. Gerando o primeiro imediatamente no startup...");
+                    _logger.LogInformation("[AiComment] Nenhum comentário encontrado hoje. Gerando imediatamente no startup...");
                     await GenerateAndSaveCommentAsync();
                 }
             }
@@ -178,20 +179,40 @@ namespace Bolao.Copa2026.API.Services
                     }
                 }
 
-                var generatedText = await geminiService.GenerateCommentaryAsync(contextBuilder.ToString());
-                
-                var newComment = new AiComment
+                int maxRetries = 10;
+                for (int i = 0; i < maxRetries; i++)
                 {
-                    Content = generatedText,
-                    CreatedAt = DateTime.UtcNow
-                };
+                    try
+                    {
+                        var generatedText = await geminiService.GenerateCommentaryAsync(contextBuilder.ToString());
+                        
+                        var newComment = new AiComment
+                        {
+                            Content = generatedText,
+                            CreatedAt = DateTime.UtcNow
+                        };
 
-                await commentRepo.CreateAsync(newComment);
-                _logger.LogInformation("[AiComment] Comentário gerado e salvo com sucesso no banco.");
+                        await commentRepo.CreateAsync(newComment);
+                        _logger.LogInformation("[AiComment] Comentário gerado e salvo com sucesso no banco.");
+                        break; // Sucesso, sai do loop de tentativas
+                    }
+                    catch (Exception ex)
+                    {
+                        if (i == maxRetries - 1)
+                        {
+                            _logger.LogError(ex, $"[AiComment] Erro ao gerar comentário após {maxRetries} tentativas. Nenhum comentário foi salvo hoje.");
+                        }
+                        else
+                        {
+                            _logger.LogWarning(ex, $"[AiComment] Erro ao gerar comentário (Tentativa {i + 1}/{maxRetries}). Tentando novamente em 5 minutos...");
+                            await Task.Delay(TimeSpan.FromMinutes(5));
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "[AiComment] Erro ao gerar comentário.");
+                _logger.LogError(ex, "[AiComment] Erro fatal na construção do contexto para gerar o comentário.");
             }
         }
     }
