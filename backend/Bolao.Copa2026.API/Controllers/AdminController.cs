@@ -179,6 +179,78 @@ namespace Bolao.Copa2026.API.Controllers
             return Ok(result);
         }
 
+        [HttpGet("ai-comment")]
+        public async Task<ActionResult> GenerateAiComment([FromServices] IRepository<AiComment> commentRepo)
+        {
+            try
+            {
+                var matches = await _matchRepo.GetAllAsync();
+                var users = await _userRepo.GetAllAsync();
+                var rankings = await _userRankingRepo.GetAllAsync();
+                var predictions = await _predictionRepo.GetAllAsync();
+                var comments = await commentRepo.GetAllAsync();
+
+                var finishedMatches = matches.Where(m => m.Status == "FINISHED" || m.Status == "IN_PLAY" || m.IsLocked).ToList();
+                
+                var topUsers = rankings.OrderByDescending(r => r.TotalPoints).Take(3).ToList();
+                var bottomUsers = rankings.OrderBy(r => r.TotalPoints).Take(3).ToList();
+
+                var recentComments = comments.OrderByDescending(c => c.CreatedAt).Take(5).ToList();
+
+                var contextBuilder = new System.Text.StringBuilder();
+
+                if (recentComments.Any())
+                {
+                    contextBuilder.AppendLine("=== ÚLTIMOS COMENTÁRIOS GERADOS (Para dar continuidade) ===");
+                    foreach (var c in recentComments)
+                    {
+                        contextBuilder.AppendLine($"[{c.CreatedAt:dd/MM/yyyy}] {c.Content}");
+                    }
+                    contextBuilder.AppendLine();
+                }
+
+                contextBuilder.AppendLine("=== RANKING (Top 3 e Últimos 3) ===");
+                foreach (var r in topUsers)
+                {
+                    var user = users.FirstOrDefault(u => u.Id == r.UserId);
+                    if(user != null) contextBuilder.AppendLine($"Top: {user.Name} - {r.TotalPoints} pts");
+                }
+                foreach (var r in bottomUsers)
+                {
+                    var user = users.FirstOrDefault(u => u.Id == r.UserId);
+                    if(user != null) contextBuilder.AppendLine($"Lanterna: {user.Name} - {r.TotalPoints} pts");
+                }
+
+                contextBuilder.AppendLine("\n=== JOGOS JÁ REALIZADOS ===");
+                foreach (var m in finishedMatches.OrderByDescending(m => m.Date).Take(5))
+                {
+                    contextBuilder.AppendLine($"Jogo: {m.HomeTeamName} {m.RealHomeScore} x {m.RealAwayScore} {m.AwayTeamName}");
+                    var matchPreds = predictions.Where(p => p.MatchId == m.Id).ToList();
+                    foreach(var p in matchPreds)
+                    {
+                        var user = users.FirstOrDefault(u => u.Id == p.UserId);
+                        if(user != null)
+                            contextBuilder.AppendLine($" - {user.Name} apostou {p.HomeScore}x{p.AwayScore}");
+                    }
+                }
+
+                var generatedText = await _geminiService.GenerateCommentaryAsync(contextBuilder.ToString());
+                
+                var newComment = new AiComment
+                {
+                    Content = generatedText,
+                    CreatedAt = DateTime.UtcNow
+                };
+
+                await commentRepo.CreateAsync(newComment);
+                return Ok(new { comment = generatedText });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Erro ao gerar comentário: " + ex.Message });
+            }
+        }
+
         // ==================== TOKENS DE CADASTRO ====================
 
         [HttpGet("tokens")]

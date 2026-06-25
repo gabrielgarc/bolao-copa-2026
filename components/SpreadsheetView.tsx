@@ -804,19 +804,6 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
             </div>
           )}
 
-          {currentStage === 'GROUPS' && effectiveViewMode === 'GROUP' && standings.overallThirds.length > 0 && (
-            <div className="flex flex-col gap-4 mt-8">
-              <h2 className="text-yellow-400 text-xl font-bold uppercase drop-shadow-[2px_2px_0px_rgba(0,0,0,1)] px-2">
-                Repescagem (Melhores 3º Colocados)
-              </h2>
-              <div className="w-full md:w-[60%] mx-auto">
-                <StandingsTable stats={standings.overallThirds} />
-                <p className="text-center text-xs text-white/70 mt-2">
-                  Os 8 melhores terceiros colocados avançam para a 2ª Fase junto com os dois melhores de cada grupo.
-                </p>
-              </div>
-            </div>
-          )}
         </div>
       )}
 
@@ -941,6 +928,20 @@ export const SpreadsheetView: React.FC<SpreadsheetViewProps> = ({
       )}
 
 
+
+      {currentStage === 'GROUPS' && effectiveViewMode === 'GROUP' && standings.overallThirds.length > 0 && (
+        <div className="flex flex-col gap-4 mt-8 mb-8">
+          <h2 className="text-yellow-400 text-xl md:text-2xl font-bold uppercase text-center drop-shadow-[2px_2px_0px_rgba(0,0,0,1)] px-2">
+            Repescagem (Melhores 3º Colocados)
+          </h2>
+          <div className="w-full md:w-[60%] mx-auto">
+            <StandingsTable stats={standings.overallThirds} className="shadow-[6px_6px_0px_0px_rgba(0,0,0,0.5)] mb-4" />
+            <p className="text-center text-[10px] md:text-xs font-bold text-white/70 uppercase">
+              Os 8 melhores terceiros colocados avançam para a 2ª Fase junto com os dois melhores de cada grupo.
+            </p>
+          </div>
+        </div>
+      )}
 
       {errorModalOpen && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
