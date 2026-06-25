@@ -218,56 +218,100 @@ namespace Bolao.Copa2026.API.Services
                     }
                 }
 
-                // Sorting
+                // Sorting - Algoritmo Avançado de Desempate (Regras da FIFA)
                 var sortedGroup = statsMap.Values.ToList();
-                sortedGroup.Sort((a, b) => 
+                
+                // Passo 1: Agrupar por Critérios Gerais (Pontos, Saldo, Gols Pró)
+                var tiers = sortedGroup
+                    .GroupBy(t => new { t.Points, t.GoalDiff, t.GoalsFor })
+                    .OrderByDescending(g => g.Key.Points)
+                    .ThenByDescending(g => g.Key.GoalDiff)
+                    .ThenByDescending(g => g.Key.GoalsFor)
+                    .ToList();
+
+                var finalSortedGroup = new List<TeamStatsDto>();
+
+                foreach (var tier in tiers)
                 {
-                    if (b.Points != a.Points) return b.Points.CompareTo(a.Points);
-                    if (b.GoalDiff != a.GoalDiff) return b.GoalDiff.CompareTo(a.GoalDiff);
-                    if (b.GoalsFor != a.GoalsFor) return b.GoalsFor.CompareTo(a.GoalsFor);
-
-                    // Head-to-Head
-                    var directMatch = groupMatches.FirstOrDefault(m => 
-                        (m.HomeTeamId == a.TeamId && m.AwayTeamId == b.TeamId) || 
-                        (m.HomeTeamId == b.TeamId && m.AwayTeamId == a.TeamId));
-
-                    if (directMatch != null)
+                    var tiedTeams = tier.ToList();
+                    
+                    if (tiedTeams.Count == 1)
                     {
-                        int? hScore = null, aScore = null;
-                        if (predictions.TryGetValue(directMatch.Id, out var p))
-                        {
-                            hScore = p.HomeScore;
-                            aScore = p.AwayScore;
-                        }
-                        else if (!isUserMode && directMatch.RealHomeScore.HasValue)
-                        {
-                            // Official standings only: fall back to real result for H2H
-                            hScore = directMatch.RealHomeScore;
-                            aScore = directMatch.RealAwayScore;
-                        }
-
-                        if (hScore.HasValue && aScore.HasValue && hScore.Value != aScore.Value)
-                        {
-                            bool homeWon = hScore.Value > aScore.Value;
-                            if (directMatch.HomeTeamId == a.TeamId) return homeWon ? -1 : 1;
-                            if (directMatch.HomeTeamId == b.TeamId) return homeWon ? 1 : -1;
-                        }
+                        finalSortedGroup.Add(tiedTeams[0]);
                     }
+                    else
+                    {
+                        // Passo 2: Empate detectado - Criar Mini-Tabela de Confronto Direto
+                        var tiedTeamIds = tiedTeams.Select(t => t.TeamId).ToHashSet();
+                        
+                        var h2hStats = new Dictionary<Guid, TeamStatsDto>();
+                        foreach (var tId in tiedTeamIds)
+                        {
+                            h2hStats[tId] = new TeamStatsDto { TeamId = tId, Team = statsMap[tId].Team };
+                        }
 
-                    // Tiebreaker Score (Manual Override)
-                    if (b.Team.TiebreakerScore != a.Team.TiebreakerScore) 
-                        return b.Team.TiebreakerScore.CompareTo(a.Team.TiebreakerScore);
+                        // Processar apenas os jogos entre as equipes empatadas
+                        var tiedMatches = groupMatches.Where(m => tiedTeamIds.Contains(m.HomeTeamId) && tiedTeamIds.Contains(m.AwayTeamId));
+                        
+                        foreach (var match in tiedMatches)
+                        {
+                            int? hScore = null, aScore = null;
+                            if (predictions.TryGetValue(match.Id, out var p))
+                            {
+                                hScore = p.HomeScore;
+                                aScore = p.AwayScore;
+                            }
+                            else if (!isUserMode && match.RealHomeScore.HasValue && match.RealAwayScore.HasValue)
+                            {
+                                hScore = match.RealHomeScore;
+                                aScore = match.RealAwayScore;
+                            }
 
-                    return a.Team.Name.CompareTo(b.Team.Name);
-                });
+                            if (hScore.HasValue && aScore.HasValue)
+                            {
+                                var h = h2hStats[match.HomeTeamId];
+                                var a = h2hStats[match.AwayTeamId];
+                                
+                                h.GoalsFor += hScore.Value;
+                                a.GoalsFor += aScore.Value;
+                                h.GoalDiff += (hScore.Value - aScore.Value);
+                                a.GoalDiff += (aScore.Value - hScore.Value);
+                                
+                                if (hScore.Value > aScore.Value) h.Points += 3;
+                                else if (aScore.Value > hScore.Value) a.Points += 3;
+                                else { h.Points += 1; a.Points += 1; }
+                            }
+                        }
 
-                // Top 2 Qualified
-                for (int i = 0; i < sortedGroup.Count; i++)
-                {
-                    if (i < 2) sortedGroup[i].IsQualified = true;
+                        // Passo 3: Ordenar o subgrupo usando os dados da Mini-Tabela
+                        tiedTeams.Sort((a, b) => 
+                        {
+                            var h2hA = h2hStats[a.TeamId];
+                            var h2hB = h2hStats[b.TeamId];
+
+                            // Critérios de Confronto Direto
+                            if (h2hB.Points != h2hA.Points) return h2hB.Points.CompareTo(h2hA.Points);
+                            if (h2hB.GoalDiff != h2hA.GoalDiff) return h2hB.GoalDiff.CompareTo(h2hA.GoalDiff);
+                            if (h2hB.GoalsFor != h2hA.GoalsFor) return h2hB.GoalsFor.CompareTo(h2hA.GoalsFor);
+
+                            // Passo 4: Fair Play / Sorteio (Override Manual)
+                            if (b.Team.TiebreakerScore != a.Team.TiebreakerScore) 
+                                return b.Team.TiebreakerScore.CompareTo(a.Team.TiebreakerScore);
+
+                            return a.Team.Name.CompareTo(b.Team.Name);
+                        });
+
+                        finalSortedGroup.AddRange(tiedTeams);
+                    }
                 }
 
-                response.Groups[groupMatches.Key] = sortedGroup;
+                // Top 2 Qualified
+                for (int i = 0; i < finalSortedGroup.Count; i++)
+                {
+                    if (i < 2) finalSortedGroup[i].IsQualified = true;
+                }
+
+                response.Groups[groupMatches.Key] = finalSortedGroup;
             }
 
             // Repescagem - Third places
