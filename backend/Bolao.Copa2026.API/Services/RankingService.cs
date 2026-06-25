@@ -192,44 +192,50 @@ namespace Bolao.Copa2026.API.Services
                     foreach (var team in userGroupTeams.Where(t => t.IsQualified))
                     {
                         var teamIdStr = team.TeamId.ToString();
-                        var pos = userGroupTeams.IndexOf(team);
                         
-                        if (pos < 2)
+                        if (!thisGroupFinished || officialKey == null)
                         {
-                            // 1st & 2nd: check against this group's official qualifiers
-                            if (!thisGroupFinished)
+                            qualifiedTeamStatuses[teamIdStr] = "waiting";
+                        }
+                        else
+                        {
+                            var realGroupStandings = officialStandings.Groups[officialKey];
+                            var realPos = realGroupStandings.FindIndex(t => t.TeamId == team.TeamId);
+
+                            if (realPos >= 0 && realPos < 2)
                             {
-                                qualifiedTeamStatuses[teamIdStr] = "waiting";
-                            }
-                            else if (officialKey != null && officialQualifiedPerGroup[officialKey].Contains(team.TeamId))
-                            {
+                                // Finished in Top 2 -> definitely qualified
                                 qualifiedTeamStatuses[teamIdStr] = "correct";
                                 qualifiedTeamsCount++;
                                 correctQualifiedTeamIds.Add(team.TeamId);
                                 groupBonus += 50;
                             }
+                            else if (realPos == 2)
+                            {
+                                // Finished 3rd -> depends on overall thirds
+                                if (allGroupStageFinished)
+                                {
+                                    if (officialThirdPlaceTeams.Contains(team.TeamId))
+                                    {
+                                        qualifiedTeamStatuses[teamIdStr] = "correct";
+                                        qualifiedTeamsCount++;
+                                        correctQualifiedTeamIds.Add(team.TeamId);
+                                        groupBonus += 50;
+                                    }
+                                    else
+                                    {
+                                        qualifiedTeamStatuses[teamIdStr] = "wrong";
+                                    }
+                                }
+                                else
+                                {
+                                    // Group finished, but not all groups. 3rd place must wait.
+                                    qualifiedTeamStatuses[teamIdStr] = "waiting";
+                                }
+                            }
                             else
                             {
-                                qualifiedTeamStatuses[teamIdStr] = "wrong";
-                            }
-                        }
-                        else
-                        {
-                            // 3rd place: check against overall thirds (only when all groups finished)
-                            if (!allGroupStageFinished)
-                            {
-                                qualifiedTeamStatuses[teamIdStr] = "waiting";
-                            }
-                            else if (officialThirdPlaceTeams.Contains(team.TeamId))
-                            {
-                                qualifiedTeamStatuses[teamIdStr] = "correct";
-                                qualifiedTeamsCount++;
-                                if (!correctQualifiedTeamIds.Contains(team.TeamId))
-                                    correctQualifiedTeamIds.Add(team.TeamId);
-                                groupBonus += 50;
-                            }
-                            else
-                            {
+                                // Finished 4th or worse -> definitely wrong
                                 qualifiedTeamStatuses[teamIdStr] = "wrong";
                             }
                         }
