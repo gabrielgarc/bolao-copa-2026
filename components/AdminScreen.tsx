@@ -42,6 +42,10 @@ export const AdminScreen: React.FC = () => {
     const [missingLoading, setMissingLoading] = useState(false);
     const [missingError, setMissingError] = useState('');
 
+    // Recalcular Pontos
+    const [recalcLoading, setRecalcLoading] = useState(false);
+    const [recalcMessage, setRecalcMessage] = useState('');
+
     useEffect(() => {
         const token = localStorage.getItem('adminToken');
         if (token === 'admin-secret-token') {
@@ -175,6 +179,19 @@ export const AdminScreen: React.FC = () => {
         }
     };
 
+    const handleRecalculate = async () => {
+        setRecalcLoading(true);
+        setRecalcMessage('');
+        try {
+            const response = await apiClient.post('/Admin/recalculate');
+            setRecalcMessage(`✅ ${response.data?.message || 'Pontuação recalculada com sucesso!'}`);
+        } catch (err: any) {
+            setRecalcMessage(`❌ Erro: ${err.response?.data?.message || err.message || 'Desconhecido'}`);
+        } finally {
+            setRecalcLoading(false);
+        }
+    };
+
     const handleFetchMissing = async () => {
         if (!pendingDate.trim()) return;
         setMissingLoading(true);
@@ -249,81 +266,36 @@ export const AdminScreen: React.FC = () => {
                     </div>
                 )}
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Ações Rápidas */}
+                {/* Seção de Mocks - oculta em produção */}
+                <div className="hidden">
                     <PixelCard>
                         <h2 className="text-xl font-bold text-yellow-400 mb-4 uppercase">Simulações / Mocks</h2>
                         <div className="space-y-3">
-                            <div className="bg-gray-800 p-3 border border-black space-y-2">
-                                <h3 className="text-sm font-bold text-gray-300">Simulação Cronológica</h3>
-                                <PixelButton 
-                                    variant="action" 
-                                    className="w-full" 
-                                    disabled={loading}
-                                    onClick={() => handleAction('mock/next')}
-                                >
-                                    ⚽ Simular Próximo Jogo
-                                </PixelButton>
-                            </div>
+                            <PixelButton variant="danger" className="w-full" disabled={loading} onClick={() => handleAction('mock/clear', 'DELETE')}>🗑️ Limpar Todos os Mocks</PixelButton>
+                            <PixelButton variant="secondary" className="w-full" disabled={loading} onClick={() => handleAction('clear', 'DELETE')}>⚠️ Resetar Banco de Dados Oficial</PixelButton>
+                        </div>
+                    </PixelCard>
+                </div>
 
-                            <div className="bg-gray-800 p-3 border border-black space-y-2">
-                                <h3 className="text-sm font-bold text-gray-300">Simular Fase Inteira</h3>
-                                <div className="flex flex-wrap gap-2">
-                                    {[
-                                        { id: 'ALL', label: 'Tudo' },
-                                        { id: 'GROUP_STAGE', label: 'Grupos' },
-                                        { id: 'LAST_32', label: '1/16 (32)' },
-                                        { id: 'LAST_16', label: '1/8 (16)' },
-                                        { id: 'QUARTER_FINALS', label: 'Quartas' },
-                                        { id: 'SEMI_FINALS', label: 'Semis' },
-                                        { id: 'THIRD_PLACE', label: '3º Lugar' },
-                                        { id: 'FINAL', label: 'Final' }
-                                    ].map(s => (
-                                        <button 
-                                            key={s.id}
-                                            disabled={loading}
-                                            onClick={() => handleAction(`mock/stage?stage=${s.id}`)}
-                                            className="bg-gray-700 hover:bg-gray-600 px-3 py-1 border border-black text-[10px] font-bold"
-                                        >
-                                            {s.label}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-
-                            <div className="bg-gray-800 p-3 border border-black space-y-2">
-                                <h3 className="text-sm font-bold text-gray-300">Simular Grupos</h3>
-                                <div className="flex flex-wrap gap-2">
-                                    {['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'].map(g => (
-                                        <button 
-                                            key={g}
-                                            disabled={loading}
-                                            onClick={() => handleAction(`mock/group/${g}`)}
-                                            className="bg-gray-700 hover:bg-gray-600 px-3 py-1 border border-black text-xs font-bold"
-                                        >
-                                            Grupo {g}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-                            
-                            <PixelButton 
-                                variant="danger" 
-                                className="w-full" 
-                                disabled={loading}
-                                onClick={() => handleAction('mock/clear', 'DELETE')}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Recalcular Pontos */}
+                    <PixelCard>
+                        <h2 className="text-xl font-bold text-yellow-400 mb-2 uppercase">🔄 Recalcular Pontos</h2>
+                        <p className="text-xs text-gray-400 mb-4">Recalcula a pontuação de todos os participantes com base nos resultados reais e palpites registrados. Use após inserir resultados manualmente.</p>
+                        <div className="space-y-3">
+                            <PixelButton
+                                variant="primary"
+                                className="w-full"
+                                disabled={recalcLoading}
+                                onClick={handleRecalculate}
                             >
-                                🗑️ Limpar Todos os Mocks
+                                {recalcLoading ? '⏳ Recalculando...' : '🔄 Recalcular Todos os Pontos'}
                             </PixelButton>
-
-                            <PixelButton 
-                                variant="secondary" 
-                                className="w-full" 
-                                disabled={loading}
-                                onClick={() => handleAction('clear', 'DELETE')}
-                            >
-                                ⚠️ Resetar Banco de Dados Oficial
-                            </PixelButton>
+                            {recalcMessage && (
+                                <p className={`text-xs font-bold ${recalcMessage.startsWith('✅') ? 'text-green-400' : 'text-red-400'}`}>
+                                    {recalcMessage}
+                                </p>
+                            )}
                         </div>
                     </PixelCard>
 
