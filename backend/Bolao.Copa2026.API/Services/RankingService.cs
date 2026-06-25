@@ -101,7 +101,7 @@ namespace Bolao.Copa2026.API.Services
                 
                 if (groupFinished)
                 {
-                    var qualifiedIds = teams.Where(t => t.IsQualified).Select(t => t.TeamId).ToHashSet();
+                    var qualifiedIds = teams.Take(2).Where(t => t.IsQualified).Select(t => t.TeamId).ToHashSet();
                     officialQualifiedPerGroup[groupKey] = qualifiedIds;
                 }
             }
