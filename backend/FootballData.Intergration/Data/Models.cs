@@ -279,6 +279,15 @@ namespace FootballData.Intergration.Data
 
         [JsonPropertyName("halfTime")]
         public HalfTime HalfTime { get; set; }
+
+        [JsonPropertyName("regularTime")]
+        public FullTime RegularTime { get; set; }
+
+        [JsonPropertyName("extraTime")]
+        public FullTime ExtraTime { get; set; }
+
+        [JsonPropertyName("penalties")]
+        public FullTime Penalties { get; set; }
     }
 
     public class FullTime

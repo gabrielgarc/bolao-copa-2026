@@ -79,6 +79,19 @@ namespace Bolao.Copa2026.API.Services
                             var apiHome = apiMatch.Score?.FullTime?.Home;
                             var apiAway = apiMatch.Score?.FullTime?.Away;
 
+                            // Se o jogo foi para pênaltis, ignora os gols dos pênaltis.
+                            // O resultado final será o placar do tempo regulamentar + prorrogação.
+                            if (apiMatch.Score?.Duration == "PENALTY_SHOOTOUT")
+                            {
+                                var regHome = apiMatch.Score.RegularTime?.Home ?? 0;
+                                var regAway = apiMatch.Score.RegularTime?.Away ?? 0;
+                                var extHome = apiMatch.Score.ExtraTime?.Home ?? 0;
+                                var extAway = apiMatch.Score.ExtraTime?.Away ?? 0;
+
+                                apiHome = regHome + extHome;
+                                apiAway = regAway + extAway;
+                            }
+
                             if (apiHome != null && dbMatch.RealHomeScore != apiHome)
                             {
                                 dbMatch.RealHomeScore = apiHome;
