@@ -1,5 +1,100 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { PixelCard } from './PixelComponents';
+
+// ---------- Fogos de artifício (Canvas) ----------
+const FW_COLORS = [
+  '#facc15', '#f87171', '#60a5fa', '#34d399',
+  '#f472b6', '#a78bfa', '#fb923c', '#ffffff',
+];
+
+interface FWParticle {
+  x: number; y: number;
+  vx: number; vy: number;
+  alpha: number; color: string;
+  size: number;
+}
+
+const FireworksCanvas: React.FC = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let animId: number;
+    const particles: FWParticle[] = [];
+
+    const resize = () => {
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+    };
+    resize();
+    window.addEventListener('resize', resize);
+
+    const burst = () => {
+      const cx = 20 + Math.random() * (canvas.width - 40);
+      const cy = 10 + Math.random() * canvas.height * 0.55;
+      const color = FW_COLORS[Math.floor(Math.random() * FW_COLORS.length)];
+      const count = 28 + Math.floor(Math.random() * 20);
+      for (let i = 0; i < count; i++) {
+        const angle = (Math.PI * 2 * i) / count;
+        const speed = 2.5 + Math.random() * 4;
+        particles.push({
+          x: cx, y: cy,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          alpha: 1,
+          color,
+          size: 1.5 + Math.random() * 2,
+        });
+      }
+    };
+
+    burst();
+    const burstInterval = setInterval(burst, 900);
+
+    const draw = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.035;
+        p.vx *= 0.97;
+        p.alpha -= 0.013;
+        if (p.alpha <= 0) { particles.splice(i, 1); continue; }
+        ctx.save();
+        ctx.globalAlpha = p.alpha;
+        ctx.fillStyle = p.color;
+        ctx.shadowBlur = 6;
+        ctx.shadowColor = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+      animId = requestAnimationFrame(draw);
+    };
+    draw();
+
+    return () => {
+      clearInterval(burstInterval);
+      cancelAnimationFrame(animId);
+      window.removeEventListener('resize', resize);
+    };
+  }, []);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className="absolute inset-0 w-full h-full pointer-events-none"
+      style={{ zIndex: 0 }}
+    />
+  );
+};
+// -------------------------------------------------
 
 interface WinnerRecord {
   year: number;
@@ -10,6 +105,13 @@ interface WinnerRecord {
 }
 
 const winnersData: WinnerRecord[] = [
+  {
+    year: 2026,
+    location: "EUA / CAN / MEX",
+    themeClass: "bg-gradient-to-br from-blue-950 to-red-950 border-red-400 text-red-100",
+    firstPlace: "Urbano Garcia",
+    secondPlace: "Tomás Garcia"
+  },
   {
     year: 2022,
     location: "Catar",
@@ -80,13 +182,16 @@ export const HallOfFameScreen: React.FC = () => {
                 ${record.themeClass}
               `}
             >
+              {/* Fogos de artifício exclusivos do card 2026 */}
+              {record.year === 2026 && <FireworksCanvas />}
+
               {/* Marca D'Água do Ano */}
               <div className="absolute right-2 -bottom-4 text-7xl font-black opacity-10 select-none pointer-events-none font-mono">
                 {record.year}
               </div>
 
               {/* Cabeçalho do Card */}
-              <div className="flex justify-between items-center mb-4 border-b-2 border-dashed border-white/20 pb-2">
+              <div className="flex justify-between items-center mb-4 border-b-2 border-dashed border-white/20 pb-2 relative z-10">
                 <span className="font-bold text-lg md:text-xl font-mono tracking-wider">
                   Copa de {record.year}
                 </span>
@@ -96,7 +201,7 @@ export const HallOfFameScreen: React.FC = () => {
               </div>
 
               {/* Pódio de Vencedores */}
-              <div className="space-y-4 relative z-10">
+              <div className="space-y-4 relative z-10" style={{ position: 'relative', zIndex: 10 }}>
                 {/* 1º Lugar */}
                 <div className="flex items-center gap-3 bg-black/30 p-3 border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,0.4)]">
                   <img
@@ -146,7 +251,7 @@ export const HallOfFameScreen: React.FC = () => {
             ★ Quem será o próximo nome a entrar na história? ★
           </p>
           <p className="text-[10px] text-white/50 uppercase font-mono">
-            Faça seus palpites para a Copa de 2026 e conquiste sua vaga no pódio!
+            Será que você estará no pódio na próxima edição?
           </p>
         </div>
       </PixelCard>
